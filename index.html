@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Expenses</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f8fafc">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- นำเข้า Google Identity Services สำหรับปุ่ม Login -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', 'Kanit', sans-serif; 
+            color: #0f172a; 
+            -webkit-tap-highlight-color: transparent; 
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+            overflow-x: hidden; 
+        }
+
+        .ambient-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; }
+        .ambient-glow-1 { position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(99, 102, 241, 0.15); border-radius: 50%; filter: blur(80px); }
+        .ambient-glow-2 { position: absolute; bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: rgba(225, 29, 72, 0.1); border-radius: 50%; filter: blur(80px); }
+
+        .modern-card { background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 24px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02); }
+        .input-style { background: #f1f5f9; border: 1.5px solid transparent; transition: all 0.2s ease; appearance: none; }
+        .input-style:focus { background: #ffffff; border-color: #0f172a; box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.05); }
+        
+        .btn-modern { background: #0f172a; color: white; transition: all 0.2s; box-shadow: 0 8px 16px rgba(15, 23, 42, 0.15); }
+        .btn-modern:active { transform: scale(0.96); box-shadow: 0 4px 8px rgba(15, 23, 42, 0.1); }
+        
+        .nav-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-active { color: #0f172a !important; font-weight: 800; background: #f1f5f9; border-radius: 100px; }
+        
+        .page-content { display: none; }
+        .page-active { display: block; animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .day-details { display: none; overflow: hidden; }
+        .day-details.active { display: block; animation: fadeDown 0.2s ease-out forwards;}
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .rotate-icon { transition: transform 0.3s ease; }
+        .rotated { transform: rotate(180deg); }
+        
+        .menu-dropdown { opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .menu-dropdown.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        
+        #toast-notification { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="pb-32 relative">
+
+    <div class="ambient-bg">
+        <div class="ambient-glow-1"></div>
+        <div class="ambient-glow-2"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="fixed top-8 left-1/2 transform -translate-x-1/2 z-[100] -translate-y-32 opacity-0 pointer-events-none w-auto whitespace-nowrap">
+        <div id="toast-bg" class="bg-slate-900 text-white px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-3">
+            <i id="toast-icon" class="fas fa-check-circle text-emerald-400 text-lg"></i>
+            <span id="toast-message" class="font-bold text-sm tracking-wide">Success!</span>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div id="logout-modal" class="fixed inset-0 z-[300] bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center px-6 transition-opacity duration-300 opacity-0">
+        <div class="modern-card p-8 w-full max-w-sm text-center transform scale-95 transition-transform duration-300" id="logout-modal-content">
+            <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full mx-auto flex items-center justify-center text-2xl mb-4">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Sign Out</h3>
+            <p class="text-sm font-medium text-slate-500 mb-8">Are you sure you want to log out of your wallet?</p>
+            <div class="flex gap-3">
+                <button onclick="closeLogoutModal()" class="flex-1 py-3.5 rounded-2xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200 transition-colors">Cancel</button>
+                <button onclick="confirmLogout()" class="flex-1 py-3.5 rounded-2xl bg-rose-500 text-white font-bold text-sm hover:bg-rose-600 transition-colors shadow-lg shadow-rose-500/20">Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login-page" class="fixed inset-0 z-[200] bg-slate-50 flex items-center justify-center px-6 transition-opacity duration-500">
+        <div class="ambient-bg"><div class="ambient-glow-1"></div><div class="ambient-glow-2"></div></div>
+        <div class="modern-card p-8 w-full max-w-sm text-center shadow-2xl shadow-slate-200/50">
+            <div class="w-16 h-16 bg-slate-900 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl mb-5 shadow-xl shadow-slate-900/20">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight mb-1">Expenses</h2>
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-8">Wallet</p>
+            
+            <div class="flex justify-center mt-4">
+                <div id="g_id_onload"
+                     data-context="signin"
+                     data-ux_mode="popup"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin"
+                     data-type="standard"
+                     data-shape="rectangular"
+                     data-theme="outline"
+                     data-text="signin_with"
+                     data-size="large"
+                     data-logo_alignment="left">
+                </div>
+            </div>
+            <p id="login-error" class="text-rose-500 text-xs font-bold mt-4 hidden">Unauthorized Email</p>
+        </div>
+    </div>
+
+    <div id="main-app" class="hidden">
+        <!-- Top Navigation -->
+        <nav class="sticky top-0 z-50 px-6 py-4 bg-f8fafc/80 backdrop-blur-xl flex justify-between items-center relative">
+            <div class="flex items-center gap-3 relative z-10">
+                <div class="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-md shadow-slate-900/20">
+                    <img id="user-profile-img" src="" alt="Profile" class="w-full h-full rounded-xl object-cover hidden">
+                    <i id="user-profile-icon" class="fas fa-wallet text-xs"></i>
+                </div>
+                <span class="font-bold text-slate-900 text-sm hidden sm:block">Wallet</span>
+            </div>
+            
+            <div class="absolute left-1/2 transform -translate-x-1/2 text-sm font-black text-slate-900 tracking-widest z-0 flex items-center gap-1.5">
+                <i class="fas fa-receipt text-rose-500"></i> Expenses
+            </div>
+
+            <button id="menu-btn" onclick="toggleMenu(event)" class="text-slate-600 hover:text-slate-900 transition-colors focus:outline-none w-9 h-9 flex items-center justify-center rounded-xl bg-white shadow-sm border border-slate-100 relative z-10">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="top-menu" class="menu-dropdown absolute top-16 right-6 w-64 max-h-[75vh] overflow-y-auto modern-card p-2 z-50">
+                <ul class="flex flex-col space-y-1">
+                    <li>
+                        <button onclick="switchPage('dashboard');" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-3"><i class="fas fa-chart-pie w-4 text-indigo-500"></i> Analytics</button>
+                    </li>
+                    <div class="border-t border-slate-100 my-1"></div>
+                    <li><button onclick="exportToExcel(); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-3"><i class="fas fa-file-export w-4 text-emerald-500"></i> Export Data</button></li>
+                    <div class="border-t border-slate-100 my-1"></div>
+                    <li><button onclick="logout()" class="w-full text-left px-4 py-3 text-sm font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors flex items-center gap-3"><i class="fas fa-sign-out-alt w-4 text-rose-500"></i> Sign Out</button></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- PAGE: HOME -->
+        <div id="page-home" class="page-content page-active max-w-xl mx-auto px-5 py-2 space-y-5">
+            <!-- Balance Card -->
+            <div class="modern-card p-6 mt-2 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -z-10 opacity-50"></div>
+                
+                <div class="flex justify-between items-start mb-2">
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Available Balance</p>
+                    <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100"><i class="fas fa-piggy-bank text-slate-400 text-xs"></i></div>
+                </div>
+                
+                <div class="flex items-baseline gap-2 mb-6">
+                    <h3 id="cash-remaining" class="font-black text-slate-900 tracking-tight text-4xl">0</h3>
+                    <span class="text-sm font-bold text-slate-400">THB</span>
+                </div>
+                
+                <div class="w-full bg-slate-100 rounded-full h-2.5 mb-3 overflow-hidden">
+                    <div id="budget-progress-bar" class="bg-slate-900 h-2.5 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                </div>
+
+                <div class="flex justify-between items-center text-[11px] font-bold">
+                    <span class="text-slate-400">Spent: <span id="cash-used-text" class="text-slate-700">0</span></span>
+                    <span class="text-slate-400">Total Income: <span id="budget-base-text" class="text-slate-700">0</span> THB</span>
+                </div>
+            </div>
+
+            <!-- Expense Form -->
+            <section class="modern-card p-6">
+                <h3 class="text-sm font-bold text-slate-900 mb-5">Add New Transaction</h3>
+                <form id="expense-form" class="space-y-4">
+                    
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Amount <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <input type="number" id="amount" placeholder="0" class="w-full bg-slate-50 border-none rounded-2xl p-5 text-3xl font-black text-slate-900 outline-none text-center focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all" required oninvalid="this.setCustomValidity('Please complete this form.')" oninput="this.setCustomValidity('')">
+                            <span class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">THB</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mt-2">
+                        <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Date</label><input type="date" id="date" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none" required></div>
+                        <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Payment</label>
+                            <select id="payment" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none">
+                                <option value="Cash">💵 Cash</option>
+                                <option value="Credit Card / E-Wallet">💳 Credit Card / E-Wallet</option>
+                                <option value="Internet Banking / QR Payment">🏦 Internet Banking / QR Payment</option>
+                                <option value="Loan etc.">💸 Loan etc.</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Category</label>
+                        <select id="category" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none" required>
+                            <optgroup label="EXPENSES">
+                                <option value="Food">🍱 Food & Dining</option>
+                                <option value="Transport">🚆 Transport</option>
+                                <option value="Gasoline">⛽ Gasoline</option>
+                                <option value="Shopping">🛍️ Shopping</option>
+                                <option value="Bills">🧾 Bills & Utilities</option>
+                                <option value="Housing">🏠 Housing</option>
+                                <option value="Health">💆 Health & Beauty</option>
+                                <option value="Entertainment">🎬 Subscription / Entertainment</option>
+                                <option value="Other">✨ Other Expenses</option>
+                            </optgroup>
+                            <optgroup label="INCOME">
+                                <option value="Salary">💰 Salary</option>
+                                <option value="Extra Income">💵 Extra Income</option>
+                                <option value="Other Income">✨ Other Income</option>
+                            </optgroup>
+                            <optgroup label="INVESTMENT">
+                                <option value="Invest">📈 Investment</option>
+                                <option value="Invest_Other">✨ Other Investment</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Note <span class="text-rose-500">*</span></label>
+                        <input type="text" id="details" placeholder="Add note..." class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none" required>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <div class="relative">
+                            <input type="file" id="receipt-file" accept="image/*" capture="environment" class="hidden">
+                            <label for="receipt-file" id="receipt-label" class="flex items-center justify-center gap-2 h-full py-3.5 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                                <i class="fas fa-camera text-slate-400 text-sm"></i>
+                                <span class="text-[10px] text-slate-600 font-bold truncate max-w-[80px]" id="receipt-text">Receipt</span>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-center gap-2 h-full py-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                            <input type="checkbox" id="save-location" checked class="w-4 h-4 accent-slate-900 rounded">
+                            <label for="save-location" class="text-[10px] font-bold text-slate-600 uppercase">Save GPS</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="w-full btn-modern py-4 rounded-2xl text-sm font-bold flex justify-center items-center gap-2 mt-4">
+                        Save Record <i class="fas fa-check"></i>
+                    </button>
+                </form>
+            </section>
+        </div>
+
+        <!-- PAGE: HISTORY -->
+        <div id="page-history" class="page-content max-w-xl mx-auto px-5 py-4 space-y-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-black text-slate-900 tracking-tight">Timeline</h2>
+                <div class="relative bg-white rounded-lg border border-slate-200 shadow-sm">
+                    <select id="sort-filter" onchange="updateUI()" class="bg-transparent text-slate-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer pr-7">
+                        <option value="latest" selected>⏱️ Latest</option>
+                        <option value="date">📅 Date</option>
+                        <option value="payment">💳 Payment</option>
+                        <option value="category">📂 Category</option>
+                        <option value="price-high">💰 Price (High)</option>
+                        <option value="price-low">💰 Price (Low)</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400"><i class="fas fa-chevron-down text-[8px]"></i></div>
+                </div>
+            </div>
+            <div id="history-list" class="space-y-3"></div>
+        </div>
+        
+        <!-- PAGE: SUMMARY -->
+        <div id="page-analytics" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
+            <h2 class="text-xl font-black text-slate-900 tracking-tight">Summary</h2>
+            <div class="modern-card p-6 text-center space-y-4 relative overflow-hidden">
+                <div class="flex justify-between text-xs font-bold text-rose-500"><span>Total Expenses</span><span id="total-expenses-text">0 THB</span></div>
+                <div class="flex justify-between text-xs font-bold text-emerald-500"><span>Total Income</span><span id="total-income-text">0 THB</span></div>
+                <div class="pt-4 border-t border-slate-100 flex justify-between items-end">
+                    <div class="flex flex-col text-left">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Balance</span>
+                        <span id="total-balance-text" class="text-3xl font-black text-slate-900 leading-none">0</span>
+                    </div>
+                </div>
+            </div>
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest pt-2">By Payment</h3>
+            <div id="payment-summary-container" class="grid grid-cols-2 gap-3"></div>
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest pt-2">Daily Log</h3>
+            <div id="stats-container" class="space-y-3"></div>
+        </div>
+
+        <!-- PAGE: DASHBOARD -->
+        <div id="page-dashboard" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-xl font-black text-slate-900 tracking-tight">Analytics</h2>
+                <button onclick="switchPage('home')" class="text-slate-400 hover:text-slate-900 transition-colors w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            
+            <div class="modern-card p-6">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-4">Expenses Overview</h3>
+                <div class="relative w-full max-w-[200px] mx-auto">
+                    <canvas id="overallCategoryChart"></canvas>
+                </div>
+                <div id="category-dashboard-list" class="mt-6 space-y-0.5 border-t border-slate-100 pt-4"></div>
+            </div>
+
+            <div class="modern-card p-6">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Daily Focus</h3>
+                    <div class="relative bg-slate-50 rounded-md border border-slate-100">
+                        <select id="dashboard-date-filter" onchange="updateDailyCategoryChart()" class="bg-transparent text-slate-600 text-[10px] font-bold px-2 py-1 outline-none appearance-none pr-5 cursor-pointer">
+                            <option value="">No Data</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-slate-400"><i class="fas fa-chevron-down text-[8px]"></i></div>
+                    </div>
+                </div>
+                <div class="relative w-full max-w-[200px] mx-auto pt-2">
+                    <canvas id="dailyCategoryChart"></canvas>
+                </div>
+                <div id="daily-category-list" class="mt-6 space-y-0.5 border-t border-slate-100 pt-4"></div>
+            </div>
+        </div>
+
+        <!-- Floating Bottom Navigation -->
+        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[400px] bg-white/80 backdrop-blur-xl border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.08)] rounded-full p-1.5 flex justify-between items-center">
+            <button onclick="switchPage('home')" id="nav-home" class="nav-btn w-1/3 py-3 rounded-full flex flex-col items-center gap-1 text-slate-400 nav-active">
+                <i class="fas fa-plus text-lg"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">Add</span>
+            </button>
+            <button onclick="switchPage('history')" id="nav-history" class="nav-btn w-1/3 py-3 rounded-full flex flex-col items-center gap-1 text-slate-400">
+                <i class="fas fa-list-ul text-lg"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">History</span>
+            </button>
+            <button onclick="switchPage('analytics')" id="nav-analytics" class="nav-btn w-1/3 py-3 rounded-full flex flex-col items-center gap-1 text-slate-400">
+                <i class="fas fa-chart-simple text-lg"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">Stats</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // 🔴 การตั้งค่า API
+        // =========================================================================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-3xQ5oXCj-4WQogJ-c4-4aD3Qmf4qkvRPCF2_16o7d985NanzcSkF4cbMMci8VOgO/exec'; 
+        const CLIENT_ID = '535120292244-ibdol7mbqv9enkaq2g4r5hd2ldu1jng3.apps.googleusercontent.com';
+        const ALLOWED_EMAIL = 's.sawangsap@gmail.com'; 
+        // =========================================================================
+
+        const FIXED_BUDGET = 0; 
+        let expenses = []; 
+        let myOverallCategoryChart = null; 
+        let myDailyCategoryChart = null; 
+        let globalDailyCategoryStats = {};
+        
+        const globalColorsMap = { 
+            'Food': '#f43f5e', 'Transport': '#3b82f6', 'Gasoline': '#eab308',
+            'Shopping': '#10b981', 'Bills': '#f97316', 'Housing': '#6366f1',
+            'Health': '#d946ef', 'Entertainment': '#8b5cf6', 'Other': '#64748b',
+            'Salary': '#10b981', 'Extra Income': '#34d399', 'Other Income': '#6ee7b7',
+            'Invest': '#0ea5e9', 'Invest_Other': '#38bdf8'
+        };
+        
+        let receiptBase64 = null;
+        let receiptName = null;
+
+        // ฟังก์ชันเรียก API จาก GitHub ไปยัง Google Apps Script
+        async function callApi(action, payload = {}) {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: action, payload: payload, rowId: payload.rowId })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error("API Error:", error);
+                return { status: "Error" };
+            }
+        }
+
+        window.onload = function() { 
+            document.getElementById('g_id_onload').setAttribute('data-client_id', CLIENT_ID);
+            const loginTimestamp = localStorage.getItem('loginTimestamp');
+            const now = Date.now();
+            const THIRTY_MINUTES = 30 * 60 * 1000;
+
+            if (loginTimestamp && (now - parseInt(loginTimestamp)) < THIRTY_MINUTES) {
+                localStorage.setItem('loginTimestamp', now.toString());
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('date').valueAsDate = new Date(); 
+                
+                const profileImg = localStorage.getItem('userProfileImg');
+                if(profileImg) {
+                    document.getElementById('user-profile-img').src = profileImg;
+                    document.getElementById('user-profile-img').classList.remove('hidden');
+                    document.getElementById('user-profile-icon').classList.add('hidden');
+                }
+                loadDataFromSheet(); 
+            } else {
+                localStorage.removeItem('loginTimestamp');
+                document.getElementById('login-page').classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+                document.getElementById('main-app').classList.add('hidden');
+            }
+
+            document.getElementById('receipt-file').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                document.getElementById('receipt-text').innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    receiptBase64 = event.target.result;
+                    receiptName = file.name;
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        // ฟังก์ชันจัดการผลลัพธ์จาก Google Sign in
+        function handleCredentialResponse(response) {
+            const responsePayload = decodeJwtResponse(response.credential);
+            
+            // เช็คว่าใช่อีเมลเจ้าของกระเป๋าตังหรือไม่
+            if(responsePayload.email === ALLOWED_EMAIL) {
+                localStorage.setItem('loginTimestamp', Date.now().toString()); 
+                localStorage.setItem('userProfileImg', responsePayload.picture); 
+                
+                document.getElementById('login-page').classList.add('opacity-0'); 
+                setTimeout(() => { 
+                    document.getElementById('login-page').classList.add('hidden'); 
+                    document.getElementById('main-app').classList.remove('hidden'); 
+                    document.getElementById('date').valueAsDate = new Date(); 
+                    
+                    document.getElementById('user-profile-img').src = responsePayload.picture;
+                    document.getElementById('user-profile-img').classList.remove('hidden');
+                    document.getElementById('user-profile-icon').classList.add('hidden');
+                    
+                    loadDataFromSheet(); 
+                }, 500); 
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        function decodeJwtResponse(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('top-menu');
+            const menuBtn = document.getElementById('menu-btn');
+            if (menu && menuBtn) {
+                if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) {
+                    menu.classList.remove('active');
+                }
+            }
+        });
+
+        function logout() { 
+            const modal = document.getElementById('logout-modal'); 
+            const content = document.getElementById('logout-modal-content'); 
+            modal.classList.remove('hidden'); 
+            setTimeout(() => { 
+                modal.classList.remove('opacity-0'); 
+                content.classList.remove('scale-95'); 
+                content.classList.add('scale-100'); 
+            }, 10); 
+            toggleMenu(); 
+        }
+
+        function closeLogoutModal() { 
+            const modal = document.getElementById('logout-modal'); 
+            const content = document.getElementById('logout-modal-content'); 
+            modal.classList.add('opacity-0'); 
+            content.classList.remove('scale-100'); 
+            content.classList.add('scale-95'); 
+            setTimeout(() => { 
+                modal.classList.add('hidden'); 
+            }, 300); 
+        }
+
+        function confirmLogout() { 
+            localStorage.removeItem('loginTimestamp'); 
+            localStorage.removeItem('userProfileImg');
+            location.reload(); 
+        }
+
+        function showToast(message, isError = false) { 
+            const toast = document.getElementById('toast-notification'); 
+            const toastMsg = document.getElementById('toast-message'); 
+            const toastIcon = document.getElementById('toast-icon'); 
+            
+            toastMsg.innerText = message; 
+            
+            if (isError) { 
+                toastIcon.className = "fas fa-exclamation-circle text-rose-400 text-lg"; 
+            } else { 
+                toastIcon.className = "fas fa-check-circle text-emerald-400 text-lg"; 
+            } 
+            
+            toast.classList.remove('-translate-y-32', 'opacity-0'); 
+            toast.classList.add('translate-y-0', 'opacity-100'); 
+            
+            setTimeout(() => { 
+                toast.classList.remove('translate-y-0', 'opacity-100'); 
+                toast.classList.add('-translate-y-32', 'opacity-0'); 
+            }, 3000); 
+        }
+
+        function toggleDropdown(id) { 
+            const el = document.getElementById(id); 
+            const icon = document.getElementById('icon-' + id);
+            if(el.classList.contains('hidden')) { 
+                el.classList.remove('hidden'); 
+                el.classList.add('flex'); 
+                if(icon) icon.classList.add('rotate-180');
+            } else { 
+                el.classList.add('hidden'); 
+                el.classList.remove('flex'); 
+                if(icon) icon.classList.remove('rotate-180');
+            } 
+        }
+
+        function toggleMenu(e) { 
+            if(e) e.stopPropagation(); 
+            document.getElementById('top-menu').classList.toggle('active'); 
+        }
+
+        function switchPage(pageId) { 
+            if(localStorage.getItem('loginTimestamp')) { 
+                localStorage.setItem('loginTimestamp', Date.now().toString()); 
+            } 
+            
+            ['home', 'history', 'analytics', 'dashboard'].forEach(id => { 
+                const pageEl = document.getElementById('page-' + id); 
+                if(pageEl) pageEl.classList.remove('page-active'); 
+                const navEl = document.getElementById('nav-' + id); 
+                if(navEl) navEl.classList.remove('nav-active'); 
+            }); 
+            
+            document.getElementById('page-' + pageId).classList.add('page-active'); 
+            const targetNav = document.getElementById('nav-' + pageId); 
+            if(targetNav) targetNav.classList.add('nav-active'); 
+            
+            document.getElementById('top-menu').classList.remove('active'); 
+            
+            if (pageId === 'history' || pageId === 'analytics' || pageId === 'dashboard') {
+                loadDataFromSheet(); 
+            } else {
+                updateUI(); 
+            }
+            window.scrollTo(0,0); 
+        }
+
+        async function loadDataFromSheet() { 
+            const list = document.getElementById('history-list'); 
+            if(list) list.innerHTML = '<div class="text-center p-10 text-slate-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-slate-800 text-2xl mb-3"></i><br>Syncing Data...</div>'; 
+            
+            const res = await callApi("get");
+            if(res.status === "Success" && res.data) {
+                expenses = res.data;
+            }
+            updateUI();
+        }
+
+        function toggleDay(date) { 
+            const el = document.getElementById('details-' + date); 
+            const icon = document.getElementById('icon-' + date); 
+            if(el) el.classList.toggle('active'); 
+            if(icon) icon.classList.toggle('rotated'); 
+        }
+
+        function getIcon(cat) { 
+            const icons = { 
+                'Food': 'fa-utensils', 
+                'Transport': 'fa-car',
+                'Gasoline': 'fa-gas-pump',
+                'Shopping': 'fa-bag-shopping',
+                'Bills': 'fa-file-invoice-dollar',
+                'Housing': 'fa-house',
+                'Health': 'fa-heart',
+                'Entertainment': 'fa-film',
+                'Other': 'fa-receipt',
+                'Salary': 'fa-money-bill-wave',
+                'Extra Income': 'fa-coins',
+                'Other Income': 'fa-hand-holding-dollar',
+                'Invest': 'fa-chart-pie',
+                'Invest_Other': 'fa-seedling'
+            }; 
+            return icons[cat] || 'fa-receipt'; 
+        }
+
+        function renderDoughnutChart(ctxId, chartVar, dataObj) { 
+            const ctx = document.getElementById(ctxId); 
+            if(!ctx) return chartVar; 
+            
+            const labels = Object.keys(dataObj); 
+            const dataValues = Object.values(dataObj); 
+            const bgColors = labels.map(cat => globalColorsMap[cat] || '#94a3b8'); 
+            
+            if(chartVar) chartVar.destroy(); 
+            
+            Chart.defaults.font.family = "'Plus Jakarta Sans', 'Kanit', sans-serif";
+            
+            return new Chart(ctx, { 
+                type: 'doughnut', 
+                data: { 
+                    labels: labels, 
+                    datasets: [{ 
+                        data: dataValues, 
+                        backgroundColor: bgColors, 
+                        borderWidth: 2, 
+                        borderColor: '#ffffff',
+                        hoverOffset: 4 
+                    }] 
+                }, 
+                options: { 
+                    responsive: true, 
+                    cutout: '75%', 
+                    plugins: { 
+                        legend: { 
+                            display: false 
+                        }, 
+                        tooltip: { 
+                            backgroundColor: '#0f172a',
+                            padding: 12,
+                            cornerRadius: 12,
+                            callbacks: { 
+                                label: function(context) { 
+                                    return ' ' + new Intl.NumberFormat('en-US').format(context.parsed) + ' THB'; 
+                                } 
+                            } 
+                        } 
+                    } 
+                } 
+            }); 
+        }
+
+        function updateDailyCategoryChart() { 
+            const dateStr = document.getElementById('dashboard-date-filter').value; 
+            const dataObj = globalDailyCategoryStats[dateStr] || {}; 
+            myDailyCategoryChart = renderDoughnutChart('dailyCategoryChart', myDailyCategoryChart, dataObj); 
+            
+            const listContainer = document.getElementById('daily-category-list'); 
+            listContainer.innerHTML = ''; 
+            
+            const sortedCat = Object.keys(dataObj).map(k => ({label: k, val: dataObj[k]})).sort((a,b) => b.val - a.val); 
+            
+            if(sortedCat.length === 0) { 
+                listContainer.innerHTML = '<div class="text-center text-xs text-slate-400 py-3 font-medium">No Data Available</div>'; 
+                return; 
+            } 
+            
+            const dailyTotal = sortedCat.reduce((sum, item) => sum + item.val, 0);
+            
+            sortedCat.forEach(item => { 
+                const percent = dailyTotal > 0 ? ((item.val / dailyTotal) * 100).toFixed(1) : 0;
+                const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
+
+                const div = document.createElement('div'); 
+                div.className = "flex justify-between items-center text-xs px-2 py-2.5 border-b border-slate-50 last:border-0"; 
+                div.innerHTML = `
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-3 h-3 rounded-full" style="background-color: ${globalColorsMap[item.label] || '#94a3b8'}"></span>
+                        <div class="flex items-baseline gap-1.5">
+                            <span class="font-bold text-slate-700">${item.label}</span>
+                            <span class="text-[10px] text-slate-400 font-medium">(${displayPercent}%)</span>
+                        </div>
+                    </div>
+                    <span class="font-black text-slate-900">${item.val.toLocaleString()} THB</span>`; 
+                listContainer.appendChild(div); 
+            }); 
+        }
+
+        function updateUI() {
+            const list = document.getElementById('history-list');
+            const stats = document.getElementById('stats-container');
+            const pSum = document.getElementById('payment-summary-container');
+            
+            if(!list || !stats) return; 
+            
+            list.innerHTML = ''; 
+            stats.innerHTML = ''; 
+            pSum.innerHTML = '';
+
+            if (expenses.length === 0) {
+                list.innerHTML = '<div class="text-center p-10 text-slate-400 font-bold text-xs bg-white rounded-2xl border border-slate-100 shadow-sm"><i class="fas fa-inbox text-3xl mb-3 text-slate-200"></i><br>No Data Available</div>';
+                stats.innerHTML = '<div class="text-center p-10 text-slate-400 font-bold text-xs bg-white rounded-2xl border border-slate-100 shadow-sm"><i class="fas fa-inbox text-3xl mb-3 text-slate-200"></i><br>No Data Available</div>';
+            }
+            
+            let totalExpense = 0, totalIncome = 0, cashUsed = 0; 
+            const daily = {};
+            const payStats = { 'Cash': 0, 'Credit Card / E-Wallet': 0, 'Internet Banking / QR Payment': 0, 'Loan etc.': 0 };
+            
+            let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
+            let sortedExpenses = [...expenses];
+            
+            sortedExpenses.sort((a,b) => {
+                let dateB = new Date(b.date + ' ' + (b.time || '00:00')); 
+                let dateA = new Date(a.date + ' ' + (a.time || '00:00'));
+                let isIncomeA = ["Salary", "Extra Income", "Other Income"].includes(a.category); 
+                let amtA = parseFloat(a.amount) || 0; 
+                let realAmtA = isIncomeA ? amtA : -amtA;
+                let isIncomeB = ["Salary", "Extra Income", "Other Income"].includes(b.category); 
+                let amtB = parseFloat(b.amount) || 0; 
+                let realAmtB = isIncomeB ? amtB : -amtB;
+                
+                if (sortType === 'latest') return expenses.indexOf(b) - expenses.indexOf(a); 
+                if (sortType === 'date') return dateB - dateA; 
+                if (sortType === 'payment') return a.payment === b.payment ? dateB - dateA : a.payment.localeCompare(b.payment); 
+                if (sortType === 'category') return a.category === b.category ? dateB - dateA : a.category.localeCompare(b.category); 
+                if (sortType === 'price-high') return realAmtB - realAmtA; 
+                if (sortType === 'price-low') return realAmtA - realAmtB; 
+                return 0;
+            });
+            
+            const categoryStats = {}; 
+            globalDailyCategoryStats = {};
+
+            sortedExpenses.forEach((item) => {
+                const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
+                const amt = parseFloat(item.amount) || 0;
+                const impact = isIncome ? amt : -amt; 
+                
+                if (isIncome) { 
+                    totalIncome += amt; 
+                } else { 
+                    totalExpense += amt; 
+                    if (!categoryStats[item.category]) categoryStats[item.category] = 0; 
+                    categoryStats[item.category] += amt; 
+                    
+                    if (!globalDailyCategoryStats[item.date]) globalDailyCategoryStats[item.date] = {}; 
+                    if (!globalDailyCategoryStats[item.date][item.category]) globalDailyCategoryStats[item.date][item.category] = 0; 
+                    globalDailyCategoryStats[item.date][item.category] += amt; 
+                }
+                
+                let pKey = item.payment; 
+                if (!payStats.hasOwnProperty(pKey)) payStats[pKey] = 0; 
+                if (pKey === "Cash") cashUsed += (isIncome ? 0 : amt); 
+                
+                payStats[pKey] += impact;
+                
+                if (!daily[item.date]) daily[item.date] = { total: 0, categories: {} }; 
+                daily[item.date].total += impact; 
+                
+                if (!daily[item.date].categories[item.category]) {
+                    daily[item.date].categories[item.category] = { amt: 0, isIncome: isIncome };
+                }
+                daily[item.date].categories[item.category].amt += amt;
+                
+                // วาดหน้า History
+                const div = document.createElement('div'); 
+                div.className = "modern-card p-4 flex justify-between items-center"; 
+                div.innerHTML = `
+                    <div class="flex gap-3.5 items-center text-left">
+                        <div class="w-11 h-11 ${isIncome ? 'bg-emerald-50 text-emerald-500' : 'bg-slate-50 text-slate-800 border border-slate-100'} rounded-2xl flex items-center justify-center">
+                            <i class="fas ${getIcon(item.category)} text-base"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <p class="font-bold text-slate-900 text-sm leading-tight">${item.category}</p>
+                                <span class="text-[8px] font-bold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded uppercase tracking-wider border border-slate-200 whitespace-nowrap">${item.payment}</span>
+                            </div>
+                            <p class="text-[10px] font-bold text-slate-400 mt-0.5 truncate max-w-[120px]">${item.details || "-"}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-base font-black ${isIncome ? 'text-emerald-500' : 'text-slate-900'}">${isIncome ? '+' : '-'}${amt.toLocaleString()}</p>
+                        <div class="flex justify-end gap-2.5 mt-1 items-center">
+                            ${item.receipt ? `<a href="${item.receipt}" target="_blank" class="text-slate-400 hover:text-slate-900 transition-colors"><i class="fas fa-image"></i></a>` : ''}
+                            ${item.location ? `<a href="${item.location}" target="_blank" class="text-slate-400 hover:text-slate-900 transition-colors"><i class="fas fa-location-dot"></i></a>` : ''}
+                            <button onclick="deleteItem(${item.rowId})" class="text-slate-300 hover:text-rose-500 transition-colors ml-1"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>`; 
+                list.appendChild(div);
+            });
+
+            const dateDropdown = document.getElementById('dashboard-date-filter'); 
+            if (dateDropdown) { 
+                const currentSelectedDate = dateDropdown.value; 
+                dateDropdown.innerHTML = ''; 
+                const sortedDates = Object.keys(globalDailyCategoryStats).sort((a,b) => new Date(b) - new Date(a)); 
+                
+                if(sortedDates.length === 0) { 
+                    dateDropdown.innerHTML = '<option value="">No Data</option>'; 
+                } else { 
+                    sortedDates.forEach(date => { 
+                        const opt = document.createElement('option'); 
+                        opt.value = date; 
+                        opt.text = date; 
+                        if(date === currentSelectedDate) opt.selected = true; 
+                        dateDropdown.appendChild(opt); 
+                    }); 
+                    if(!currentSelectedDate || !globalDailyCategoryStats[currentSelectedDate]) { 
+                        dateDropdown.value = sortedDates[0]; 
+                    } 
+                } 
+            }
+            
+            Object.entries(payStats).forEach(([method, total]) => { 
+                if (total !== 0 || ['Cash', 'Credit Card / E-Wallet', 'Internet Banking / QR Payment', 'Loan etc.'].includes(method)) { 
+                    const payDiv = document.createElement('div'); 
+                    payDiv.className = "modern-card p-4 text-left border border-slate-100 shadow-none bg-slate-50/50"; 
+                    let displayName = method; 
+                    let textColor = total < 0 ? "text-rose-500" : (total > 0 ? "text-emerald-500" : "text-slate-900");
+                    let prefix = total > 0 ? "+" : "";
+                    
+                    payDiv.innerHTML = `
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">${displayName}</span>
+                        <p class="text-lg font-black ${textColor} mt-1 leading-none">${prefix}${total.toLocaleString()}</p>`; 
+                    pSum.appendChild(payDiv); 
+                } 
+            });
+            
+            // วาดหน้า Daily Log ในหน้า Summary
+            Object.keys(daily).sort((a,b) => new Date(b) - new Date(a)).forEach(date => { 
+                const data = daily[date];
+                const mainDiv = document.createElement('div'); 
+                let totalColor = data.total >= 0 ? "text-emerald-500" : "text-slate-900";
+                let totalPrefix = data.total > 0 ? "+" : "";
+                
+                mainDiv.className = "modern-card overflow-hidden"; 
+                mainDiv.innerHTML = `
+                    <div onclick="toggleDay('${date}')" class="p-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center font-black text-xs border border-slate-200">${date.split('-')[2]}</div>
+                            <p class="text-[11px] font-bold text-slate-500 uppercase">${date}</p>
+                        </div>
+                        <div class="flex items-center gap-3 text-right">
+                            <p class="text-base font-black ${totalColor}">${totalPrefix}${data.total.toLocaleString()}</p>
+                            <i id="icon-${date}" class="fas fa-chevron-down text-slate-300 text-xs rotate-icon"></i>
+                        </div>
+                    </div>
+                    <div id="details-${date}" class="day-details pb-3 px-4 bg-slate-50/80 border-t border-slate-100 text-left">
+                        ${Object.keys(data.categories).map(cat => {
+                            const catInfo = data.categories[cat];
+                            return `
+                            <div class="flex justify-between items-center text-xs py-2 border-b border-slate-200/50 last:border-0">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${globalColorsMap[cat] || '#94a3b8'}"></span>
+                                    <span class="font-bold text-slate-700">${cat}</span>
+                                </div>
+                                <span class="font-black ${catInfo.isIncome ? 'text-emerald-500' : 'text-slate-900'}">${catInfo.isIncome ? '+' : '-'}${catInfo.amt.toLocaleString()}</span>
+                            </div>`;
+                        }).join('')}
+                    </div>`; 
+                stats.appendChild(mainDiv); 
+            });
+
+            const baseBudget = FIXED_BUDGET + totalIncome;
+            const remaining = baseBudget - totalExpense; 
+            let percent = baseBudget > 0 ? (totalExpense / baseBudget) : 0; 
+            percent = Math.max(0, Math.min(1, percent)); 
+            
+            const bar = document.getElementById('budget-progress-bar');
+            if(bar) { 
+                setTimeout(() => { bar.style.width = (percent * 100) + '%'; }, 100); 
+                
+                if (percent >= 1) bar.style.backgroundColor = "#e11d48"; 
+                else if (percent >= 0.8) bar.style.backgroundColor = "#f59e0b"; 
+                else bar.style.backgroundColor = "#0f172a"; 
+            }
+            
+            document.getElementById('cash-remaining').innerText = remaining.toLocaleString(); 
+            const usedEl = document.getElementById('cash-used-text'); 
+            if(usedEl) usedEl.innerText = totalExpense.toLocaleString();
+
+            const baseBudgetEl = document.getElementById('budget-base-text');
+            if(baseBudgetEl) baseBudgetEl.innerText = baseBudget.toLocaleString();
+            
+            document.getElementById('total-expenses-text').innerText = totalExpense.toLocaleString() + " THB"; 
+            document.getElementById('total-income-text').innerText = totalIncome.toLocaleString() + " THB"; 
+            
+            let netBalance = totalIncome - totalExpense;
+            let balanceEl = document.getElementById('total-balance-text');
+            balanceEl.innerText = netBalance.toLocaleString();
+            if(netBalance < 0) {
+                balanceEl.classList.add('text-rose-500');
+                balanceEl.classList.remove('text-slate-900');
+            } else {
+                balanceEl.classList.remove('text-rose-500');
+                balanceEl.classList.add('text-slate-900');
+            }
+            
+            myOverallCategoryChart = renderDoughnutChart('overallCategoryChart', myOverallCategoryChart, categoryStats);
+            
+            const overallListContainer = document.getElementById('category-dashboard-list'); 
+            if(overallListContainer) { 
+                overallListContainer.innerHTML = ''; 
+                const sortedCatOverall = Object.keys(categoryStats).map(k => ({label: k, val: categoryStats[k]})).sort((a,b) => b.val - a.val); 
+                
+                const overallTotal = sortedCatOverall.reduce((sum, item) => sum + item.val, 0);
+                
+                sortedCatOverall.forEach(item => { 
+                    const percent = overallTotal > 0 ? ((item.val / overallTotal) * 100).toFixed(1) : 0;
+                    const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
+
+                    const div = document.createElement('div'); 
+                    div.className = "flex justify-between items-center text-xs px-2 py-2.5 border-b border-slate-50 last:border-0"; 
+                    div.innerHTML = `
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-3 h-3 rounded-full" style="background-color: ${globalColorsMap[item.label] || '#94a3b8'}"></span>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="font-bold text-slate-700">${item.label}</span>
+                                <span class="text-[10px] text-slate-400 font-medium">(${displayPercent}%)</span>
+                            </div>
+                        </div>
+                        <span class="font-black text-slate-900">${item.val.toLocaleString()} THB</span>`; 
+                    overallListContainer.appendChild(div); 
+                }); 
+            }
+            updateDailyCategoryChart();
+        }
+
+        async function getCurrentLocation() { 
+            return new Promise(res => { 
+                if(!navigator.geolocation) return res(""); 
+                navigator.geolocation.getCurrentPosition(
+                    p => res(`https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`), 
+                    () => res(""), 
+                    { timeout: 5000 } 
+                ); 
+            }); 
+        }
+
+        document.getElementById('expense-form').addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            const detailsVal = document.getElementById('details').value; 
+            const amountVal = document.getElementById('amount').value;
+            
+            if (!detailsVal || !detailsVal.trim()) { 
+                showToast("Please enter a Note!", true); 
+                return; 
+            }
+            if (!amountVal || parseFloat(amountVal) <= 0) { 
+                showToast("Please enter a valid amount!", true); 
+                return; 
+            }
+            
+            const btn = document.getElementById('submit-btn'); 
+            btn.disabled = true; 
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...'; 
+            
+            const loc = document.getElementById('save-location').checked ? await getCurrentLocation() : "";
+            
+            const payload = { 
+                date: document.getElementById('date').value, 
+                time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }), 
+                payment: document.getElementById('payment').value, 
+                category: document.getElementById('category').value, 
+                details: detailsVal.trim(), 
+                amount: amountVal, 
+                location: loc, 
+                receiptBase64: receiptBase64, 
+                receiptName: receiptName 
+            };
+            
+            if(localStorage.getItem('loginTimestamp')) { 
+                localStorage.setItem('loginTimestamp', Date.now().toString()); 
+            }
+            
+            const res = await callApi("save", payload);
+            if(res.status === "Success") { 
+                showToast("Record saved successfully!"); 
+                e.target.reset(); 
+                document.getElementById('date').valueAsDate = new Date(); 
+                receiptBase64 = null; 
+                receiptName = null; 
+                document.getElementById('receipt-text').innerText = "Receipt"; 
+                loadDataFromSheet(); 
+            } else { 
+                showToast("Error: " + res.message, true); 
+            } 
+            btn.disabled = false; 
+            btn.innerHTML = 'Save Record <i class="fas fa-check"></i>'; 
+        });
+
+        async function deleteItem(rowId) { 
+            if(confirm('Delete this record permanently?')) { 
+                showToast("Deleting...");
+                
+                const res = await callApi("delete", { rowId: rowId });
+                if(res.status === "Success") {
+                    showToast("Deleted successfully!");
+                    loadDataFromSheet(); 
+                } else {
+                    showToast("Error: " + res.message, true);
+                }
+            } 
+        }
+
+        function exportToExcel() { 
+            if (expenses.length === 0) { 
+                showToast("No data to export", true); 
+                return; 
+            } 
+            const ws = XLSX.utils.json_to_sheet(expenses);
+            const wb = XLSX.utils.book_new(); 
+            XLSX.utils.book_append_sheet(wb, ws, "Expenses"); 
+            XLSX.writeFile(wb, `Wallet_${new Date().toISOString().slice(0,10)}.xlsx`); 
+        }
+    </script>
+</body>
+</html>
