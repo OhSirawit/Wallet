@@ -106,7 +106,6 @@
             <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-8">Wallet</p>
             
             <div class="flex justify-center mt-4">
-                <!-- ฝังรหัส Client ID ตรงนี้เลยเพื่อป้องกันบั๊ก -->
                 <div id="g_id_onload"
                      data-client_id="535120292244-ibdol7mbqv9enkaq2g4r5hd2ldu1jng3.apps.googleusercontent.com"
                      data-context="signin"
@@ -356,7 +355,6 @@
         // 🔴 การตั้งค่า API
         // =========================================================================
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-3xQ5oXCj-4WQogJ-c4-4aD3Qmf4qkvRPCF2_16o7d985NanzcSkF4cbMMci8VOgO/exec'; 
-        const ALLOWED_EMAIL = 's.sawangsap@gmail.com'; 
         // =========================================================================
 
         const FIXED_BUDGET = 0; 
@@ -428,29 +426,52 @@
             });
         };
 
-        // ฟังก์ชันจัดการผลลัพธ์จาก Google Sign in
-        function handleCredentialResponse(response) {
+        // ฟังก์ชันจัดการผลลัพธ์จาก Google Sign in (เวอร์ชันมีระบบ Approval)
+        async function handleCredentialResponse(response) {
             const responsePayload = decodeJwtResponse(response.credential);
+            const userEmail = responsePayload.email;
             
-            // เช็คว่าใช่อีเมลเจ้าของกระเป๋าตังหรือไม่
-            if(responsePayload.email === ALLOWED_EMAIL) {
-                localStorage.setItem('loginTimestamp', Date.now().toString()); 
-                localStorage.setItem('userProfileImg', responsePayload.picture); 
-                
-                document.getElementById('login-page').classList.add('opacity-0'); 
-                setTimeout(() => { 
-                    document.getElementById('login-page').classList.add('hidden'); 
-                    document.getElementById('main-app').classList.remove('hidden'); 
-                    document.getElementById('date').valueAsDate = new Date(); 
+            const loginError = document.getElementById('login-error');
+            loginError.classList.remove('hidden', 'text-rose-500');
+            loginError.classList.add('text-indigo-500');
+            loginError.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking account status...';
+
+            // ส่งอีเมลไปเช็คกับ Google Sheets ว่าได้รับอนุมัติไหม
+            const res = await callApi("checkUser", { email: userEmail });
+            
+            if(res.status === "Success") {
+                if(res.userStatus === "Approved") {
+                    // แอดมินอนุมัติแล้ว เข้าใช้งานได้
+                    localStorage.setItem('loginTimestamp', Date.now().toString()); 
+                    localStorage.setItem('userProfileImg', responsePayload.picture); 
                     
-                    document.getElementById('user-profile-img').src = responsePayload.picture;
-                    document.getElementById('user-profile-img').classList.remove('hidden');
-                    document.getElementById('user-profile-icon').classList.add('hidden');
-                    
-                    loadDataFromSheet(); 
-                }, 500); 
+                    document.getElementById('login-page').classList.add('opacity-0'); 
+                    setTimeout(() => { 
+                        document.getElementById('login-page').classList.add('hidden'); 
+                        document.getElementById('main-app').classList.remove('hidden'); 
+                        document.getElementById('date').valueAsDate = new Date(); 
+                        
+                        document.getElementById('user-profile-img').src = responsePayload.picture;
+                        document.getElementById('user-profile-img').classList.remove('hidden');
+                        document.getElementById('user-profile-icon').classList.add('hidden');
+                        
+                        loadDataFromSheet(); 
+                    }, 500); 
+                } else if (res.userStatus === "Pending") {
+                    // รอการอนุมัติ
+                    loginError.classList.remove('text-indigo-500');
+                    loginError.classList.add('text-amber-500');
+                    loginError.innerHTML = '<i class="fas fa-clock"></i> Waiting for Admin Approval';
+                } else {
+                    // โดนแบน / ปฏิเสธ
+                    loginError.classList.remove('text-indigo-500');
+                    loginError.classList.add('text-rose-500');
+                    loginError.innerHTML = '<i class="fas fa-ban"></i> Access Denied';
+                }
             } else {
-                document.getElementById('login-error').classList.remove('hidden');
+                loginError.classList.remove('text-indigo-500');
+                loginError.classList.add('text-rose-500');
+                loginError.innerText = "System Error. Please try again.";
             }
         }
 
