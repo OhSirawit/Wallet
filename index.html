@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Expenses</title>
     
+    <!-- นำเข้าไฟล์ manifest สำหรับทำ Web App (เต็มจอ) -->
+    <link rel="manifest" href="manifest.json">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
@@ -352,7 +355,7 @@
 
     <script>
         // =========================================================================
-        // 🔴 การตั้งค่า API (อัปเดตลิงก์ใหม่แล้ว!)
+        // 🔴 การตั้งค่า API
         // =========================================================================
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxe1TuPJcqDxFQBQtJytMw8N6H1ZqP6os1UHjXurZ55ofZeBT8ik6frxKhUZpTpau92/exec'; 
         // =========================================================================
@@ -426,7 +429,7 @@
             });
         };
 
-        // ฟังก์ชันจัดการผลลัพธ์จาก Google Sign in (เวอร์ชันมีระบบ Approval)
+        // ฟังก์ชันจัดการผลลัพธ์จาก Google Sign in
         async function handleCredentialResponse(response) {
             const responsePayload = decodeJwtResponse(response.credential);
             const userEmail = responsePayload.email;
@@ -436,12 +439,10 @@
             loginError.classList.add('text-indigo-500');
             loginError.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking account status...';
 
-            // ส่งอีเมลไปเช็คกับ Google Sheets ว่าได้รับอนุมัติไหม
             const res = await callApi("checkUser", { email: userEmail });
             
             if(res.status === "Success") {
                 if(res.userStatus === "Approved") {
-                    // แอดมินอนุมัติแล้ว เข้าใช้งานได้
                     localStorage.setItem('loginTimestamp', Date.now().toString()); 
                     localStorage.setItem('userProfileImg', responsePayload.picture); 
                     
@@ -458,12 +459,10 @@
                         loadDataFromSheet(); 
                     }, 500); 
                 } else if (res.userStatus === "Pending") {
-                    // รอการอนุมัติ
                     loginError.classList.remove('text-indigo-500');
                     loginError.classList.add('text-amber-500');
                     loginError.innerHTML = '<i class="fas fa-clock"></i> Waiting for Admin Approval';
                 } else {
-                    // โดนแบน / ปฏิเสธ
                     loginError.classList.remove('text-indigo-500');
                     loginError.classList.add('text-rose-500');
                     loginError.innerHTML = '<i class="fas fa-ban"></i> Access Denied';
@@ -1040,5 +1039,3 @@
     </script>
 </body>
 </html>
-
-
