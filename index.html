@@ -17,6 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <!-- นำเข้า Google Identity Services สำหรับปุ่ม Login -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <style>
@@ -130,13 +131,15 @@
     <div id="main-app" class="hidden">
         <!-- Top Navigation -->
         <nav class="sticky top-0 z-50 px-6 py-4 bg-f8fafc/80 backdrop-blur-xl flex justify-between items-center relative">
-            <div class="flex items-center gap-3 relative z-10">
+            
+            <!-- ✅ แก้ไขให้ตรงนี้กดได้ แล้วไปหน้า Profile -->
+            <button onclick="switchPage('profile')" class="flex items-center gap-3 relative z-10 hover:opacity-75 transition-opacity text-left focus:outline-none">
                 <div class="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-md shadow-slate-900/20">
                     <img id="user-profile-img" src="" alt="Profile" class="w-full h-full rounded-xl object-cover hidden">
                     <i id="user-profile-icon" class="fas fa-wallet text-xs"></i>
                 </div>
-                <span class="font-bold text-slate-900 text-sm hidden sm:block" id="nav-display-name">Wallet</span>
-            </div>
+                <span class="font-bold text-slate-900 text-sm hidden sm:block truncate max-w-[120px]" id="nav-display-name">Wallet</span>
+            </button>
             
             <div class="absolute left-1/2 transform -translate-x-1/2 text-sm font-black text-slate-900 tracking-widest z-0 flex items-center gap-1.5">
                 <i class="fas fa-receipt text-rose-500"></i> Expenses
@@ -149,10 +152,6 @@
             <!-- Dropdown Menu -->
             <div id="top-menu" class="menu-dropdown absolute top-16 right-6 w-64 max-h-[75vh] overflow-y-auto modern-card p-2 z-50">
                 <ul class="flex flex-col space-y-1">
-                    <li>
-                        <button onclick="switchPage('profile'); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-3"><i class="fas fa-user-edit w-4 text-blue-500"></i> Edit Profile</button>
-                    </li>
-                    <div class="border-t border-slate-100 my-1"></div>
                     <li>
                         <button onclick="switchPage('dashboard'); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-3"><i class="fas fa-chart-pie w-4 text-indigo-500"></i> Analytics</button>
                     </li>
@@ -341,7 +340,7 @@
         <!-- PAGE: EDIT PROFILE -->
         <div id="page-profile" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
             <div class="flex justify-between items-center mb-2">
-                <h2 class="text-xl font-black text-slate-900 tracking-tight">Edit Profile</h2>
+                <h2 class="text-xl font-black text-slate-900 tracking-tight">Personal Information</h2>
                 <button onclick="switchPage('home')" class="text-slate-400 hover:text-slate-900 transition-colors w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
                     <i class="fas fa-times text-sm"></i>
                 </button>
@@ -359,9 +358,10 @@
                         <input type="file" id="profile-pic-upload" accept="image/*" class="hidden">
                     </div>
                     
-                    <div class="w-full space-y-1.5 mt-4">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Display Name</label>
-                        <input type="text" id="profile-display-name" class="w-full input-style rounded-xl p-3.5 text-sm font-bold outline-none" placeholder="Your Name">
+                    <!-- ✅ เปลี่ยนหัวข้อเป็น 1. USER ตามที่ขอ -->
+                    <div class="w-full space-y-1.5 mt-4 text-left">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">1. User (Display Name)</label>
+                        <input type="text" id="profile-display-name" class="w-full input-style rounded-xl p-3.5 text-sm font-bold outline-none" placeholder="Your Display Name">
                     </div>
                     
                     <button onclick="saveProfile()" id="btn-save-profile" class="w-full btn-modern py-4 rounded-2xl text-sm font-bold mt-4 flex justify-center items-center gap-2">
@@ -390,7 +390,7 @@
 
     <script>
         // =========================================================================
-        // 🔴 การตั้งค่า API (ลิงก์ใหม่ของคุณ)
+        // 🔴 การตั้งค่า API (ลิงก์ของคุณ)
         // =========================================================================
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbypic2k8IZsPscwg54Z4MpIHozdIzq-MRCfeub1vuclkldlR7ngfL8MrkqJtjDqpm6W/exec'; 
         // =========================================================================
@@ -885,13 +885,11 @@
                 }
                 daily[item.date].categories[item.category].amt += amt;
                 
-                // ตรวจสอบและแสดงชื่อคนบันทึก (ให้แสดงเฉพาะเมื่อมีชื่อ)
                 let recordedByText = "";
                 if (item.recordedBy && item.recordedBy !== '-' && item.recordedBy !== 'undefined' && item.recordedBy.trim() !== '') {
                     recordedByText = `<span class="text-[8.5px] font-bold bg-slate-100 border border-slate-200 text-slate-500 px-2 py-0.5 rounded-full whitespace-nowrap shadow-sm"><i class="fas fa-user-circle text-slate-400 mr-1"></i>${item.recordedBy}</span>`;
                 }
 
-                // วาดหน้า History
                 const div = document.createElement('div'); 
                 div.className = "modern-card p-4 flex justify-between items-center"; 
                 div.innerHTML = `
@@ -1089,7 +1087,6 @@
             
             const loc = document.getElementById('save-location').checked ? await getCurrentLocation() : "";
             
-            // ใช้ชื่อ Display Name ในการบันทึก ถ้าไม่มีให้ใช้อีเมลตัด @
             const recordedByName = localStorage.getItem('userDisplayName') || 
                                    (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
             
@@ -1103,7 +1100,7 @@
                 location: loc, 
                 receiptBase64: receiptBase64, 
                 receiptName: receiptName,
-                recordedBy: recordedByName // ส่งชื่อที่ตั้งไว้ไปบันทึก
+                recordedBy: recordedByName 
             };
             
             if(localStorage.getItem('loginTimestamp')) { 
