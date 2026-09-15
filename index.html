@@ -19,6 +19,19 @@
     
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
+    <!-- 🔴 ระบบแจ้งเตือน OneSignal Web Push (เพิ่มใหม่) -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "4ecc9c5b-e815-4025-9a4d-41f184a18dd9",
+          safari_web_id: "web.onesignal.auto.1f1e5b5b-9f41-4253-8171-f20d7e1a840b",
+          notifyButton: { enable: true },
+        });
+      });
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
         
@@ -386,9 +399,9 @@
 
     <script>
         // =========================================================================
-        // 🔴 การตั้งค่า API ล่าสุด (อัปเดตแล้ว!)
+        // 🔴 การตั้งค่า API ล่าสุด (อัปเดตเป็นลิงก์ใหม่แล้ว!)
         // =========================================================================
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzN8zSSjED8vcY3jmWHrhFXwjYTuaf9OATU0UKcEvXzMOjri-U4NodYdlxcfHgILYcf/exec'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1aPP1xYujXjovamlrRCylSh_kslCN6yotpNtl8Koob2R2j5iVzTLnG2LUKM_nmNL3/exec'; 
         // =========================================================================
 
         const FIXED_BUDGET = 0; 
