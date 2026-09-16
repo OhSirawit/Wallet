@@ -21,15 +21,17 @@
     <!-- 🔴 ระบบแจ้งเตือน OneSignal Web Push -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "4ecc9c5b-e815-4025-9a4d-41f184a18dd9",
-          safari_web_id: "web.onesignal.auto.1f1e5b5b-9f41-4253-8171-f20d7e1a840b",
-          notifyButton: { enable: true },
-        });
-      });
-    </script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "4ecc9c5b-e815-4025-9a4d-41f184a18dd9",
+      safari_web_id: "web.onesignal.auto.1f1e5b5b-9f41-4253-8171-f20d7e1a840b",
+      notifyButton: { enable: true },
+      serviceWorkerParam: { scope: "/Wallet/" },
+      serviceWorkerPath: "/Wallet/OneSignalSDKWorker.js"
+    });
+  });
+</script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
