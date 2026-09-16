@@ -16,10 +16,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <!-- 🔴 ระบบแจ้งเตือน OneSignal Web Push (เพิ่มใหม่) -->
+    <!-- 🔴 ระบบแจ้งเตือน OneSignal Web Push -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -44,37 +43,27 @@
             background-color: #f8fafc;
             overflow-x: hidden; 
         }
-
         .ambient-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; }
         .ambient-glow-1 { position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(99, 102, 241, 0.15); border-radius: 50%; filter: blur(80px); }
         .ambient-glow-2 { position: absolute; bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: rgba(225, 29, 72, 0.1); border-radius: 50%; filter: blur(80px); }
-
         .modern-card { background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 24px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02); }
         .input-style { background: #f1f5f9; border: 1.5px solid transparent; transition: all 0.2s ease; appearance: none; }
         .input-style:focus { background: #ffffff; border-color: #0f172a; box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.05); }
-        
         .btn-modern { background: #0f172a; color: white; transition: all 0.2s; box-shadow: 0 8px 16px rgba(15, 23, 42, 0.15); }
         .btn-modern:active { transform: scale(0.96); box-shadow: 0 4px 8px rgba(15, 23, 42, 0.1); }
-        
         .nav-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .nav-active { color: #0f172a !important; font-weight: 800; background: #f1f5f9; border-radius: 100px; }
-        
         .page-content { display: none; }
         .page-active { display: block; animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        
         .day-details { display: none; overflow: hidden; }
         .day-details.active { display: block; animation: fadeDown 0.2s ease-out forwards;}
         @keyframes fadeDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-
         .rotate-icon { transition: transform 0.3s ease; }
         .rotated { transform: rotate(180deg); }
-        
         .menu-dropdown { opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         .menu-dropdown.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
-        
         #toast-notification { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
-        
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
@@ -347,7 +336,9 @@
             </div>
         </div>
 
-        <!-- PAGE: EDIT PROFILE -->
+        <!-- ========================================== -->
+        <!-- PAGE: EDIT PROFILE (หน้าแก้ไข Profile อยู่ตรงนี้ครับ!) -->
+        <!-- ========================================== -->
         <div id="page-profile" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-xl font-black text-slate-900 tracking-tight">Personal Information</h2>
@@ -369,7 +360,7 @@
                     </div>
                     
                     <div class="w-full space-y-1.5 mt-4 text-left">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">1. User (Display Name)</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">User (Display Name)</label>
                         <input type="text" id="profile-display-name" class="w-full input-style rounded-xl p-3.5 text-sm font-bold outline-none" placeholder="Your Display Name">
                     </div>
                     
@@ -398,12 +389,8 @@
     </div>
 
     <script>
-        // =========================================================================
-        // 🔴 การตั้งค่า API ล่าสุด (อัปเดตเป็นลิงก์ใหม่แล้ว!)
-        // =========================================================================
+        // API สำหรับ Google Apps Script
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1aPP1xYujXjovamlrRCylSh_kslCN6yotpNtl8Koob2R2j5iVzTLnG2LUKM_nmNL3/exec'; 
-        // =========================================================================
-
         const FIXED_BUDGET = 0; 
         let expenses = []; 
         let myOverallCategoryChart = null; 
@@ -420,7 +407,6 @@
         
         let receiptBase64 = null;
         let receiptName = null;
-
         let newProfilePicBase64 = null;
         let newProfilePicName = null;
 
@@ -895,7 +881,6 @@
                     recordedByText = `<span class="text-[8.5px] font-bold bg-slate-100 border border-slate-200 text-slate-500 px-2 py-0.5 rounded-full whitespace-nowrap shadow-sm"><i class="fas fa-user-circle text-slate-400 mr-1"></i>${item.recordedBy}</span>`;
                 }
 
-                // 🕒 แสดงวันที่และเวลาในหน้า History ตามที่เราทำล่าสุด
                 const div = document.createElement('div'); 
                 div.className = "modern-card p-4 flex justify-between items-center"; 
                 div.innerHTML = `
