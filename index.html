@@ -18,21 +18,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <!-- 🔴 ระบบแจ้งเตือน OneSignal Web Push -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "4ecc9c5b-e815-4025-9a4d-41f184a18dd9",
-      safari_web_id: "web.onesignal.auto.1f1e5b5b-9f41-4253-8171-f20d7e1a840b",
-      notifyButton: { enable: true },
-      serviceWorkerParam: { scope: "/Wallet/" },
-      serviceWorkerPath: "/Wallet/OneSignalSDKWorker.js"
-    });
-  });
-</script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
         
@@ -390,9 +375,9 @@
 
     <script>
         // =========================================================================
-        // 🔴 ลิงก์ใหม่ล่าสุด ที่คุยกับโค้ด Apps Script เวอร์ชั่นที่แก้บัก OneSignal แล้ว
+        // อัปเดตลิงก์ Web App ล่าสุด ที่เชื่อมต่อกับ Google Apps Script ของคุณแล้ว
         // =========================================================================
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTjuw1Bb3kR9E_nMKqFhg69VG_cccxKkKbv7DMiVwVA9MKD7ym-MPxCsCRFN3NHegd/exec'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7u5Dm0fyZn3JMuh6-Duzhu0RLHzu-2QoZpsivt0q70xGFyaIN8IKtjWf-hzPb5Zzn/exec'; 
         
         const FIXED_BUDGET = 0; 
         let expenses = []; 
