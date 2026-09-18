@@ -186,38 +186,35 @@
         </nav>
 
         <!-- PAGE: HOME -->
-        <div id="page-home" class="page-content page-active max-w-xl mx-auto px-5 py-3 space-y-6">
+        <div id="page-home" class="page-content page-active max-w-xl mx-auto px-5 py-3 space-y-5">
             
-            <!-- Balance Card พร้อมวันที่อัปเดตมุมขวาบน -->
-            <div class="modern-card p-6 mt-2 relative overflow-hidden bg-gradient-to-br from-[#9b2def] to-[#ed3d85] border-none shadow-xl shadow-fuchsia-600/20 text-white">
+            <!-- แถบแสดงเวลาอัปเดตล่าสุด มุมบนขวา -->
+            <div class="flex justify-end -mb-3 relative z-10">
+                <span id="last-updated-text" class="text-[9px] font-bold text-slate-500 bg-white/90 backdrop-blur-sm px-2.5 py-1.5 rounded-full border border-slate-100 shadow-sm"><i class="fas fa-clock text-violet-400 mr-1"></i> Updated : -</span>
+            </div>
+
+            <!-- Balance Card -->
+            <div class="modern-card p-6 mt-2 relative overflow-hidden bg-gradient-to-br from-violet-600 via-fuchsia-600 to-pink-500 border-none shadow-xl shadow-fuchsia-600/20 text-white">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -z-10 opacity-10 transform translate-x-10 -translate-y-10 blur-xl"></div>
                 <div class="absolute bottom-0 left-0 w-32 h-32 bg-yellow-300 rounded-full -z-10 opacity-20 transform -translate-x-10 translate-y-10 blur-xl"></div>
                 
                 <div class="flex justify-between items-start mb-2 relative z-10">
-                    <div class="flex flex-col mt-1.5">
-                        <p class="text-xs font-bold uppercase tracking-wider text-white/90">Available Balance</p>
-                    </div>
-                    <!-- ส่วนแสดงเวลาอัปเดต และไอคอน มุมบนขวา -->
-                    <div class="flex flex-col items-end gap-1.5">
-                        <span id="last-updated-text" class="text-[9px] font-medium text-white/90 whitespace-nowrap bg-white/10 px-2 py-0.5 rounded backdrop-blur-sm shadow-sm border border-white/10">Updated : -</span>
-                        <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
-                            <i class="fas fa-piggy-bank text-white text-xs"></i>
-                        </div>
-                    </div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-fuchsia-100">Available Balance</p>
+                    <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30"><i class="fas fa-piggy-bank text-white text-xs"></i></div>
                 </div>
                 
-                <div class="flex items-baseline gap-2 mb-6 mt-2 relative z-10">
+                <div class="flex items-baseline gap-2 mb-6 relative z-10">
                     <h3 id="cash-remaining" class="font-black tracking-tight text-5xl">0</h3>
-                    <span class="text-sm font-bold text-white/90">THB</span>
+                    <span class="text-sm font-bold text-fuchsia-100">THB</span>
                 </div>
                 
                 <div class="w-full bg-white/30 rounded-full h-2 mb-3 overflow-hidden relative z-10">
                     <div id="budget-progress-bar" class="bg-white h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
                 </div>
 
-                <div class="flex justify-between items-center text-[11px] font-bold relative z-10 opacity-90">
-                    <span>Spent: <span id="cash-used-text">0</span></span>
-                    <span>Total Income: <span id="budget-base-text">0</span> THB</span>
+                <div class="flex justify-between items-center text-[11px] font-bold relative z-10">
+                    <span class="text-fuchsia-100">Spent: <span id="cash-used-text" class="text-white">0</span></span>
+                    <span class="text-fuchsia-100">Total Income: <span id="budget-base-text" class="text-white">0</span> THB</span>
                 </div>
             </div>
 
@@ -391,7 +388,7 @@
                         <input type="file" id="profile-pic-upload" accept="image/*" class="hidden">
                     </div>
                     
-                    <!-- 🛑 เพิ่มช่อง Email / Username (Read-only) แก้ไขไม่ได้ -->
+                    <!-- ช่อง Email (Read-only) แก้ไขไม่ได้ -->
                     <div class="w-full space-y-1.5 mt-6 text-left">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wide ml-1">Email / Username</label>
                         <input type="text" id="profile-email-readonly" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-4 text-sm font-bold text-slate-400 cursor-not-allowed outline-none" readonly>
@@ -432,8 +429,8 @@
     </div>
 
     <script>
-        // 🛑 อัปเดตลิงก์ Web App ล่าสุด (Version 21)
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyc46XfOG0LykzEN-AhAGzhhKeByPSeUdVupu3vqqd8-k0PQqb2HuN6JPy3u2BHe9U/exec'; 
+        // 🛑 อัปเดตลิงก์ Web App ใหม่ล่าสุด
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwI7igmfJnwwNKCaVKn_WnKqG8b70Qmlk2YXI1GZkHQ6emOGmX8vFrSe2zcBQ9z-SDM/exec'; 
         
         const FIXED_BUDGET = 0; 
         let expenses = []; 
@@ -493,9 +490,10 @@
         window.onload = function() { 
             const loginTimestamp = localStorage.getItem('loginTimestamp');
             const now = Date.now();
-            const THIRTY_MINUTES = 30 * 60 * 1000;
+            // 🛑 เปลี่ยนเวลา Session เป็น 7 วัน
+            const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
-            if (loginTimestamp && (now - parseInt(loginTimestamp)) < THIRTY_MINUTES) {
+            if (loginTimestamp && (now - parseInt(loginTimestamp)) < SEVEN_DAYS) {
                 localStorage.setItem('loginTimestamp', now.toString());
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
@@ -735,7 +733,7 @@
             } else if (pageId === 'profile') {
                 document.getElementById('profile-display-name').value = localStorage.getItem('userDisplayName') || '';
                 
-                // 🛑 ดึง Email มาแสดงแบบแก้ไขไม่ได้
+                // ดึง Email มาแสดงแบบแก้ไขไม่ได้
                 document.getElementById('profile-email-readonly').value = localStorage.getItem('userEmail') || '';
                 
                 document.getElementById('profile-preview').src = localStorage.getItem('userProfileImg') || 'https://via.placeholder.com/150';
@@ -927,7 +925,6 @@
             let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
             let sortedExpenses = [...expenses];
             
-            // 🛑 รวมการจัดเรียงทุกแบบรวมถึง user ไว้ที่นี่
             sortedExpenses.sort((a,b) => {
                 let dateB = new Date(b.date + ' ' + (b.time || '00:00')); 
                 let dateA = new Date(a.date + ' ' + (a.time || '00:00'));
