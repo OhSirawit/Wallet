@@ -391,7 +391,13 @@
                         <input type="file" id="profile-pic-upload" accept="image/*" class="hidden">
                     </div>
                     
+                    <!-- 🛑 เพิ่มช่อง Email / Username (Read-only) แก้ไขไม่ได้ -->
                     <div class="w-full space-y-1.5 mt-6 text-left">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wide ml-1">Email / Username</label>
+                        <input type="text" id="profile-email-readonly" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-4 text-sm font-bold text-slate-400 cursor-not-allowed outline-none" readonly>
+                    </div>
+
+                    <div class="w-full space-y-1.5 mt-4 text-left">
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Display Name</label>
                         <input type="text" id="profile-display-name" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-violet-400 text-slate-800" placeholder="Your Display Name">
                     </div>
@@ -426,7 +432,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyOe9t1MCcMs6lz3ar9bfezmgYRMxVSNH3y7_cuFzYcqtraNHS87_KyWIt8XMtZ4zBs/exec'; 
+        // 🛑 อัปเดตลิงก์ Web App ล่าสุด (Version 21)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyc46XfOG0LykzEN-AhAGzhhKeByPSeUdVupu3vqqd8-k0PQqb2HuN6JPy3u2BHe9U/exec'; 
         
         const FIXED_BUDGET = 0; 
         let expenses = []; 
@@ -447,7 +454,7 @@
         let newProfilePicBase64 = null;
         let newProfilePicName = null;
 
-        // 🛑 ฟังก์ชันอัปเดตข้อความวันที่ล่าสุดให้เป็นรูปแบบ: 18 September 2026 : 13:58:01 PM
+        // ฟังก์ชันอัปเดตข้อความวันที่ล่าสุดให้เป็นรูปแบบ: 18 September 2026 : 13:58:01 PM
         function updateTimestampDisplay() {
             const now = new Date();
             const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -727,6 +734,10 @@
                 loadDataFromSheet(); 
             } else if (pageId === 'profile') {
                 document.getElementById('profile-display-name').value = localStorage.getItem('userDisplayName') || '';
+                
+                // 🛑 ดึง Email มาแสดงแบบแก้ไขไม่ได้
+                document.getElementById('profile-email-readonly').value = localStorage.getItem('userEmail') || '';
+                
                 document.getElementById('profile-preview').src = localStorage.getItem('userProfileImg') || 'https://via.placeholder.com/150';
                 newProfilePicBase64 = null;
                 newProfilePicName = null;
@@ -916,6 +927,7 @@
             let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
             let sortedExpenses = [...expenses];
             
+            // 🛑 รวมการจัดเรียงทุกแบบรวมถึง user ไว้ที่นี่
             sortedExpenses.sort((a,b) => {
                 let dateB = new Date(b.date + ' ' + (b.time || '00:00')); 
                 let dateA = new Date(a.date + ' ' + (a.time || '00:00'));
