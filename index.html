@@ -196,7 +196,13 @@
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Password</label>
-                    <input type="password" id="login-password" class="w-full input-style rounded-xl p-3.5 text-sm font-bold outline-none border border-slate-100 text-slate-800" placeholder="Enter password">
+                    <div class="relative">
+                        <input type="password" id="login-password" class="w-full input-style rounded-xl p-3.5 pr-12 text-sm font-bold outline-none border border-slate-100 text-slate-800" placeholder="Enter password">
+                        <!-- ปุ่มดวงตาเปิดปิดรหัสผ่าน -->
+                        <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye-icon')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500 focus:outline-none">
+                            <i id="login-eye-icon" class="fas fa-eye-slash"></i>
+                        </button>
+                    </div>
                 </div>
                 <button onclick="loginWithPassword()" class="w-full bg-slate-900 text-white py-3.5 rounded-xl text-sm font-bold mt-2 shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-colors">
                     Sign In <i class="fas fa-arrow-right ml-1"></i>
@@ -502,9 +508,27 @@
                         <input type="text" id="profile-display-name" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-violet-400 text-slate-800" placeholder="Your Display Name">
                     </div>
                     
+                    <!-- 🛑 ฟอร์มเปลี่ยนรหัสผ่านใหม่ (ต้องกรอก 2 ครั้ง) -->
                     <div class="w-full space-y-1.5 mt-4 text-left">
                         <label class="text-[10px] font-bold text-rose-500 uppercase tracking-wide ml-1">New Password (Optional)</label>
-                        <input type="password" id="profile-new-password" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-rose-400 text-slate-800" placeholder="Leave blank to keep current password">
+                        <div class="relative">
+                            <input type="password" id="profile-new-password" class="w-full input-style rounded-xl p-4 pr-12 text-sm font-bold outline-none border-2 border-slate-100 focus:border-rose-400 text-slate-800" placeholder="Enter new password">
+                            <!-- ปุ่มดวงตาเปิดปิดรหัสผ่าน -->
+                            <button type="button" onclick="togglePasswordVisibility('profile-new-password', 'profile-eye-icon-1')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 focus:outline-none">
+                                <i id="profile-eye-icon-1" class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full space-y-1.5 mt-4 text-left">
+                        <label class="text-[10px] font-bold text-rose-500 uppercase tracking-wide ml-1">Confirm New Password</label>
+                        <div class="relative">
+                            <input type="password" id="profile-confirm-password" class="w-full input-style rounded-xl p-4 pr-12 text-sm font-bold outline-none border-2 border-slate-100 focus:border-rose-400 text-slate-800" placeholder="Confirm new password">
+                            <!-- ปุ่มดวงตาเปิดปิดรหัสผ่าน -->
+                            <button type="button" onclick="togglePasswordVisibility('profile-confirm-password', 'profile-eye-icon-2')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 focus:outline-none">
+                                <i id="profile-eye-icon-2" class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <button onclick="saveProfile()" id="btn-save-profile" class="w-full btn-modern py-4 rounded-2xl text-sm font-bold mt-4 flex justify-center items-center gap-2">
@@ -532,7 +556,7 @@
     </div>
 
     <script>
-        // 🛑 อัปเดตลิงก์ Web App ใหม่ล่าสุด
+        // ลิงก์ Web App ล่าสุด
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDs1Mcb6xffNLjVnxA6AT9j0zy6rgUFz-SIeabsVCUo_4uYLmhaqSQ8ml663lu4kyi/exec'; 
         
         const FIXED_BUDGET = 0; 
@@ -556,6 +580,21 @@
             'Salary': '#10b981', 'Extra Income': '#34d399', 'Other Income': '#6ee7b7',
             'Invest': '#0284c7', 'Invest_Other': '#38bdf8'
         };
+
+        // 🛑 ฟังก์ชันเปิด-ปิดการแสดงผลรหัสผ่าน (สลับไอคอนรูปดวงตา)
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            }
+        }
 
         function updateTimestampDisplay() {
             const now = new Date();
@@ -838,20 +877,33 @@
                 document.getElementById('profile-preview').src = localStorage.getItem('userProfileImg') || 'https://via.placeholder.com/150';
                 newProfilePicBase64 = null; 
                 newProfilePicName = null;
+                
+                // คืนค่าปุ่มดวงตาและช่องรหัสผ่านเป็นค่าเริ่มต้นเสมอเมื่อเปิดหน้า Profile
+                document.getElementById('profile-new-password').type = 'password';
+                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash';
+                document.getElementById('profile-confirm-password').type = 'password';
+                document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
             } else { 
                 updateUI(); 
             }
             window.scrollTo(0,0); 
         }
 
+        // 🛑 อัปเดตฟังก์ชันบันทึกโปรไฟล์ เพื่อตรวจสอบรหัสผ่าน 2 ครั้ง
         async function saveProfile() {
             const displayName = document.getElementById('profile-display-name').value;
             const newPassword = document.getElementById('profile-new-password').value; 
+            const confirmPassword = document.getElementById('profile-confirm-password').value; 
             const email = localStorage.getItem('userEmail');
             
             if(!displayName) { 
                 showToast("Please enter a display name", true); 
                 return; 
+            }
+
+            if(newPassword && newPassword !== confirmPassword) {
+                showToast("Passwords do not match!", true);
+                return;
             }
             
             const btn = document.getElementById('btn-save-profile'); 
@@ -872,7 +924,14 @@
                 showToast("Profile updated!"); 
                 localStorage.setItem('userDisplayName', displayName); 
                 document.getElementById('nav-display-name').innerText = displayName; 
+                
+                // ล้างช่องรหัสผ่านทั้ง 2 ช่อง และคืนค่ารูปแบบซ่อนรหัส
                 document.getElementById('profile-new-password').value = ''; 
+                document.getElementById('profile-confirm-password').value = ''; 
+                document.getElementById('profile-new-password').type = 'password';
+                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash';
+                document.getElementById('profile-confirm-password').type = 'password';
+                document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
                 
                 if(newProfilePicBase64) { 
                     document.getElementById('user-profile-img').src = newProfilePicBase64; 
