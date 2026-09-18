@@ -99,9 +99,9 @@
     </div>
 
     <!-- Login Page -->
-    <div id="login-page" class="fixed inset-0 z-[200] bg-slate-50 flex items-center justify-center px-6 transition-opacity duration-500">
+    <div id="login-page" class="fixed inset-0 z-[200] bg-slate-50 flex items-center justify-center px-6 transition-opacity duration-500 overflow-y-auto">
         <div class="ambient-bg"><div class="ambient-glow-1"></div><div class="ambient-glow-2"></div></div>
-        <div class="modern-card p-8 w-full max-w-sm text-center border-none shadow-2xl shadow-purple-500/10">
+        <div class="modern-card p-8 w-full max-w-sm text-center border-none shadow-2xl shadow-purple-500/10 my-8">
             <div class="w-20 h-20 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl mb-6 shadow-xl shadow-fuchsia-500/30 transform rotate-3 hover:rotate-0 transition-transform">
                 <i class="fas fa-wallet"></i>
             </div>
@@ -125,6 +125,29 @@
                      data-logo_alignment="left">
                 </div>
             </div>
+            
+            <!-- เส้นคั่น -->
+            <div class="relative flex items-center py-6">
+                <div class="flex-grow border-t border-slate-200"></div>
+                <span class="flex-shrink-0 mx-4 text-slate-400 text-[10px] font-bold uppercase tracking-widest">Or login with</span>
+                <div class="flex-grow border-t border-slate-200"></div>
+            </div>
+            
+            <!-- ฟอร์ม Username / Password -->
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Username (Email)</label>
+                    <input type="text" id="login-username" class="w-full input-style rounded-xl p-3.5 text-sm font-bold outline-none border border-slate-100 text-slate-800" placeholder="Enter username">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Password</label>
+                    <input type="password" id="login-password" class="w-full input-style rounded-xl p-3.5 text-sm font-bold outline-none border border-slate-100 text-slate-800" placeholder="Enter password">
+                </div>
+                <button onclick="loginWithPassword()" class="w-full bg-slate-900 text-white py-3.5 rounded-xl text-sm font-bold mt-2 shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-colors">
+                    Sign In <i class="fas fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+
             <p id="login-error" class="text-rose-500 text-xs font-bold mt-4 hidden">Unauthorized Email</p>
         </div>
     </div>
@@ -271,7 +294,6 @@
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Timeline</h2>
                 <div class="relative bg-white rounded-xl border border-slate-100 shadow-sm">
-                    <!-- 🛑 เพิ่มตัวเลือก User ไว้ตรงนี้แล้วครับ -->
                     <select id="sort-filter" onchange="updateUI()" class="bg-transparent text-violet-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer pr-7">
                         <option value="latest" selected>⏱️ Latest</option>
                         <option value="date">📅 Date</option>
@@ -366,6 +388,12 @@
                         <input type="text" id="profile-display-name" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-violet-400 text-slate-800" placeholder="Your Display Name">
                     </div>
                     
+                    <!-- 🛑 เพิ่มช่องเปลี่ยน Password -->
+                    <div class="w-full space-y-1.5 mt-4 text-left">
+                        <label class="text-[10px] font-bold text-rose-500 uppercase tracking-wide ml-1">New Password (Optional)</label>
+                        <input type="text" id="profile-new-password" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-rose-400 text-slate-800" placeholder="Leave blank to keep current password">
+                    </div>
+                    
                     <button onclick="saveProfile()" id="btn-save-profile" class="w-full btn-modern py-4 rounded-2xl text-sm font-bold mt-4 flex justify-center items-center gap-2">
                         Save Changes <i class="fas fa-save text-white/80"></i>
                     </button>
@@ -391,8 +419,8 @@
     </div>
 
     <script>
-        // 🛑 อัปเดต URL เป็นเวอร์ชันล่าสุดที่ให้มาครับ
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOrOb036Gu3c4WpblaNLdgxpyVlefsMgp7OwXDDAUTFffO9LnbwQx6_Ta91GZAU2TT/exec'; 
+        // 🛑 อัปเดตลิงก์ล่าสุด
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyOe9t1MCcMs6lz3ar9bfezmgYRMxVSNH3y7_cuFzYcqtraNHS87_KyWIt8XMtZ4zBs/exec'; 
         
         const FIXED_BUDGET = 0; 
         let expenses = []; 
@@ -530,6 +558,51 @@
                 loginError.innerText = "System Error. Please try again.";
             }
         }
+        
+        // 🛑 ฟังก์ชัน Login ด้วย Password 
+        async function loginWithPassword() {
+            const user = document.getElementById('login-username').value;
+            const pass = document.getElementById('login-password').value;
+            const loginError = document.getElementById('login-error');
+            
+            if(!user || !pass) {
+                loginError.classList.remove('hidden', 'text-violet-500');
+                loginError.classList.add('text-rose-500');
+                loginError.innerHTML = "Please enter username and password";
+                return;
+            }
+            
+            loginError.classList.remove('hidden', 'text-rose-500');
+            loginError.classList.add('text-violet-500');
+            loginError.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking credentials...';
+            
+            const res = await callApi("loginWithPassword", { username: user, password: pass });
+            
+            if (res.status === "Success") {
+                localStorage.setItem('loginTimestamp', Date.now().toString()); 
+                localStorage.setItem('userEmail', user); 
+                localStorage.setItem('userDisplayName', res.displayName);
+                localStorage.setItem('userProfileImg', res.profilePic || 'https://ui-avatars.com/api/?name=' + user + '&background=8b5cf6&color=fff');
+                
+                document.getElementById('login-page').classList.add('opacity-0'); 
+                setTimeout(() => { 
+                    document.getElementById('login-page').classList.add('hidden'); 
+                    document.getElementById('main-app').classList.remove('hidden'); 
+                    document.getElementById('date').valueAsDate = new Date(); 
+                    
+                    document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg');
+                    document.getElementById('user-profile-img').classList.remove('hidden');
+                    document.getElementById('user-profile-icon').classList.add('hidden');
+                    document.getElementById('nav-display-name').innerText = res.displayName;
+                    
+                    loadDataFromSheet(); 
+                }, 500);
+            } else {
+                loginError.classList.remove('text-violet-500');
+                loginError.classList.add('text-rose-500');
+                loginError.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + (res.message || "Login failed");
+            }
+        }
 
         function decodeJwtResponse(token) {
             var base64Url = token.split('.')[1];
@@ -636,8 +709,10 @@
             window.scrollTo(0,0); 
         }
 
+        // 🛑 อัปเดตฟังก์ชัน Save Profile ให้ส่งรหัสผ่านใหม่
         async function saveProfile() {
             const displayName = document.getElementById('profile-display-name').value;
+            const newPassword = document.getElementById('profile-new-password').value; 
             const email = localStorage.getItem('userEmail');
             if(!displayName) { showToast("Please enter a display name", true); return; }
             
@@ -648,6 +723,7 @@
             const payload = {
                 email: email,
                 displayName: displayName,
+                password: newPassword, // ส่งรหัสผ่านไปหลังบ้าน
                 profilePicBase64: newProfilePicBase64,
                 profilePicName: newProfilePicName
             };
@@ -657,6 +733,7 @@
                 showToast("Profile updated!");
                 localStorage.setItem('userDisplayName', displayName);
                 document.getElementById('nav-display-name').innerText = displayName;
+                document.getElementById('profile-new-password').value = ''; // ล้างช่องรหัสผ่าน
                 
                 if(newProfilePicBase64) {
                     document.getElementById('user-profile-img').src = newProfilePicBase64;
@@ -812,7 +889,6 @@
             let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
             let sortedExpenses = [...expenses];
             
-            // 🛑 เพิ่มเงื่อนไข sortType === 'user' เข้าไปเรียบร้อยแล้ว
             sortedExpenses.sort((a,b) => {
                 let dateB = new Date(b.date + ' ' + (b.time || '00:00')); 
                 let dateA = new Date(a.date + ' ' + (a.time || '00:00'));
@@ -829,6 +905,7 @@
                 if (sortType === 'category') return a.category === b.category ? dateB - dateA : a.category.localeCompare(b.category); 
                 if (sortType === 'price-high') return realAmtB - realAmtA; 
                 if (sortType === 'price-low') return realAmtA - realAmtB; 
+                // 🛑 เรียงตามชื่อ User
                 if (sortType === 'user') {
                     let userA = a.recordedBy || "";
                     let userB = b.recordedBy || "";
