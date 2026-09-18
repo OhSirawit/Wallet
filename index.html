@@ -188,28 +188,36 @@
         <!-- PAGE: HOME -->
         <div id="page-home" class="page-content page-active max-w-xl mx-auto px-5 py-3 space-y-6">
             
-            <!-- Balance Card -->
-            <div class="modern-card p-6 mt-2 relative overflow-hidden bg-gradient-to-br from-violet-600 via-fuchsia-600 to-pink-500 border-none shadow-xl shadow-fuchsia-600/20 text-white">
+            <!-- Balance Card พร้อมวันที่อัปเดตมุมขวาบน -->
+            <div class="modern-card p-6 mt-2 relative overflow-hidden bg-gradient-to-br from-[#9b2def] to-[#ed3d85] border-none shadow-xl shadow-fuchsia-600/20 text-white">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -z-10 opacity-10 transform translate-x-10 -translate-y-10 blur-xl"></div>
                 <div class="absolute bottom-0 left-0 w-32 h-32 bg-yellow-300 rounded-full -z-10 opacity-20 transform -translate-x-10 translate-y-10 blur-xl"></div>
                 
                 <div class="flex justify-between items-start mb-2 relative z-10">
-                    <p class="text-xs font-bold uppercase tracking-wider text-fuchsia-100">Available Balance</p>
-                    <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30"><i class="fas fa-piggy-bank text-white text-xs"></i></div>
+                    <div class="flex flex-col mt-1.5">
+                        <p class="text-xs font-bold uppercase tracking-wider text-white/90">Available Balance</p>
+                    </div>
+                    <!-- ส่วนแสดงเวลาอัปเดต และไอคอน มุมบนขวา -->
+                    <div class="flex flex-col items-end gap-1.5">
+                        <span id="last-updated-text" class="text-[9px] font-medium text-white/90 whitespace-nowrap bg-white/10 px-2 py-0.5 rounded backdrop-blur-sm shadow-sm border border-white/10">Updated : -</span>
+                        <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
+                            <i class="fas fa-piggy-bank text-white text-xs"></i>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="flex items-baseline gap-2 mb-6 relative z-10">
+                <div class="flex items-baseline gap-2 mb-6 mt-2 relative z-10">
                     <h3 id="cash-remaining" class="font-black tracking-tight text-5xl">0</h3>
-                    <span class="text-sm font-bold text-fuchsia-100">THB</span>
+                    <span class="text-sm font-bold text-white/90">THB</span>
                 </div>
                 
                 <div class="w-full bg-white/30 rounded-full h-2 mb-3 overflow-hidden relative z-10">
                     <div id="budget-progress-bar" class="bg-white h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
                 </div>
 
-                <div class="flex justify-between items-center text-[11px] font-bold relative z-10">
-                    <span class="text-fuchsia-100">Spent: <span id="cash-used-text" class="text-white">0</span></span>
-                    <span class="text-fuchsia-100">Total Income: <span id="budget-base-text" class="text-white">0</span> THB</span>
+                <div class="flex justify-between items-center text-[11px] font-bold relative z-10 opacity-90">
+                    <span>Spent: <span id="cash-used-text">0</span></span>
+                    <span>Total Income: <span id="budget-base-text">0</span> THB</span>
                 </div>
             </div>
 
@@ -388,7 +396,6 @@
                         <input type="text" id="profile-display-name" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-violet-400 text-slate-800" placeholder="Your Display Name">
                     </div>
                     
-                    <!-- 🛑 เพิ่มช่องเปลี่ยน Password -->
                     <div class="w-full space-y-1.5 mt-4 text-left">
                         <label class="text-[10px] font-bold text-rose-500 uppercase tracking-wide ml-1">New Password (Optional)</label>
                         <input type="text" id="profile-new-password" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-rose-400 text-slate-800" placeholder="Leave blank to keep current password">
@@ -419,7 +426,6 @@
     </div>
 
     <script>
-        // 🛑 อัปเดตลิงก์ล่าสุด
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyOe9t1MCcMs6lz3ar9bfezmgYRMxVSNH3y7_cuFzYcqtraNHS87_KyWIt8XMtZ4zBs/exec'; 
         
         const FIXED_BUDGET = 0; 
@@ -440,6 +446,28 @@
         let receiptName = null;
         let newProfilePicBase64 = null;
         let newProfilePicName = null;
+
+        // 🛑 ฟังก์ชันอัปเดตข้อความวันที่ล่าสุดให้เป็นรูปแบบ: 18 September 2026 : 13:58:01 PM
+        function updateTimestampDisplay() {
+            const now = new Date();
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const day = now.getDate().toString().padStart(2, '0');
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const strHours = hours.toString().padStart(2, '0');
+            
+            const timeString = `Updated : ${day} ${month} ${year} : ${strHours}:${minutes}:${seconds} ${ampm}`;
+            const updateEl = document.getElementById('last-updated-text');
+            if(updateEl) updateEl.innerText = timeString;
+        }
 
         async function callApi(action, payload = {}) {
             try {
@@ -559,7 +587,6 @@
             }
         }
         
-        // 🛑 ฟังก์ชัน Login ด้วย Password 
         async function loginWithPassword() {
             const user = document.getElementById('login-username').value;
             const pass = document.getElementById('login-password').value;
@@ -709,7 +736,6 @@
             window.scrollTo(0,0); 
         }
 
-        // 🛑 อัปเดตฟังก์ชัน Save Profile ให้ส่งรหัสผ่านใหม่
         async function saveProfile() {
             const displayName = document.getElementById('profile-display-name').value;
             const newPassword = document.getElementById('profile-new-password').value; 
@@ -723,7 +749,7 @@
             const payload = {
                 email: email,
                 displayName: displayName,
-                password: newPassword, // ส่งรหัสผ่านไปหลังบ้าน
+                password: newPassword, 
                 profilePicBase64: newProfilePicBase64,
                 profilePicName: newProfilePicName
             };
@@ -733,7 +759,7 @@
                 showToast("Profile updated!");
                 localStorage.setItem('userDisplayName', displayName);
                 document.getElementById('nav-display-name').innerText = displayName;
-                document.getElementById('profile-new-password').value = ''; // ล้างช่องรหัสผ่าน
+                document.getElementById('profile-new-password').value = ''; 
                 
                 if(newProfilePicBase64) {
                     document.getElementById('user-profile-img').src = newProfilePicBase64;
@@ -754,6 +780,7 @@
             if(res.status === "Success" && res.data) {
                 expenses = res.data;
             }
+            updateTimestampDisplay(); // อัปเดตเวลาเมื่อโหลดข้อมูลสำเร็จ
             updateUI();
         }
 
@@ -905,7 +932,6 @@
                 if (sortType === 'category') return a.category === b.category ? dateB - dateA : a.category.localeCompare(b.category); 
                 if (sortType === 'price-high') return realAmtB - realAmtA; 
                 if (sortType === 'price-low') return realAmtA - realAmtB; 
-                // 🛑 เรียงตามชื่อ User
                 if (sortType === 'user') {
                     let userA = a.recordedBy || "";
                     let userB = b.recordedBy || "";
