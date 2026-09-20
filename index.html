@@ -229,7 +229,6 @@
         
         <div class="modern-card p-8 w-full max-w-sm text-center border-none shadow-2xl shadow-purple-500/10 my-8">
             
-            <!-- โลโก้แบบโมเดิร์น -->
             <div class="w-24 h-24 mx-auto mb-6 relative group cursor-default">
                 <div class="absolute inset-1 bg-gradient-to-tr from-fuchsia-500 to-violet-500 rounded-[2rem] blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div class="absolute inset-0 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-[2rem] transform -rotate-3 group-hover:rotate-0 transition-all duration-500 shadow-2xl flex items-center justify-center overflow-hidden border border-white/30 backdrop-blur-xl">
@@ -246,7 +245,6 @@
             <h2 class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tighter mb-1 relative z-10">Expenses</h2>
             <p class="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] mb-8 relative z-10">Smart Wallet</p>
             
-            <!-- Google Sign-In -->
             <div class="flex justify-center mt-4">
                 <div id="g_id_onload" 
                      data-client_id="535120292244-ibdol7mbqv9enkaq2g4r5hd2ldu1jng3.apps.googleusercontent.com" 
@@ -271,7 +269,6 @@
                 <div class="flex-grow border-t border-slate-200"></div>
             </div>
             
-            <!-- Login with Username / Password -->
             <div class="space-y-3 text-left">
                 <div>
                     <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Username (Email)</label>
@@ -316,7 +313,7 @@
                 <i class="fas fa-ellipsis-v"></i>
             </button>
 
-            <!-- Dropdown Menu (Stats ย้ายมาอยู่นี่) -->
+            <!-- Dropdown Menu -->
             <div id="top-menu" class="menu-dropdown absolute top-16 right-6 w-64 max-h-[75vh] overflow-y-auto modern-card p-2 z-50 shadow-2xl border-none">
                 <ul class="flex flex-col space-y-1">
                     <li>
@@ -349,7 +346,6 @@
         <!-- PAGE: HOME -->
         <div id="page-home" class="page-content page-active max-w-xl mx-auto px-5 py-3 space-y-5">
             
-            <!-- Balance Card -->
             <div class="modern-card p-6 mt-2 relative overflow-hidden bg-gradient-to-br from-[#9b2def] to-[#ed3d85] border-none shadow-xl shadow-fuchsia-600/20 text-white">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -z-10 opacity-10 transform translate-x-10 -translate-y-10 blur-xl"></div>
                 <div class="absolute bottom-0 left-0 w-32 h-32 bg-yellow-300 rounded-full -z-10 opacity-20 transform -translate-x-10 translate-y-10 blur-xl"></div>
@@ -358,7 +354,6 @@
                     <div class="flex flex-col mt-1.5">
                         <p class="text-xs font-bold uppercase tracking-wider text-white/90">All Time Balance</p>
                     </div>
-                    <!-- เวลาอัปเดตมุมขวาบน ภายในกล่องสีชมพู -->
                     <div class="flex flex-col items-end gap-2">
                         <span id="last-updated-text-card" class="text-[9px] font-medium text-white/90 bg-white/20 px-2.5 py-1 rounded-md backdrop-blur-md border border-white/30 shadow-sm whitespace-nowrap">
                             <i class="fas fa-clock mr-1"></i> Updated : -
@@ -390,7 +385,7 @@
                     <h3 id="form-title" class="text-sm font-bold text-slate-800 flex items-center gap-2">
                         <i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction
                     </h3>
-                    <button id="cancel-edit-btn" onclick="cancelEdit()" class="hidden text-[10px] font-bold bg-rose-50 text-rose-500 px-3 py-1.5 rounded-full hover:bg-rose-100 transition-colors">
+                    <button id="cancel-edit-btn" onclick="cancelEdit()" type="button" class="hidden text-[10px] font-bold bg-rose-50 text-rose-500 px-3 py-1.5 rounded-full hover:bg-rose-100 transition-colors">
                         <i class="fas fa-times mr-1"></i>Cancel Edit
                     </button>
                 </div>
@@ -424,7 +419,6 @@
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Category</label>
                         <select id="category" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer" required>
-                            <!-- 🛑 เอา Subscriptions ออกจากหน้าหลักแล้ว -->
                             <optgroup label="EXPENSES">
                                 <option value="Food">🍱 Food & Dining</option>
                                 <option value="Transport">🚆 Transport</option>
@@ -474,7 +468,7 @@
             </section>
         </div>
 
-        <!-- 🛑 PAGE: SUBSCRIPTIONS (เพิ่มฟอร์มบันทึกแล้ว) -->
+        <!-- 🛑 PAGE: SUBSCRIPTIONS -->
         <div id="page-subscriptions" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Subscriptions</h2>
@@ -491,11 +485,16 @@
                 </div>
             </div>
             
-            <!-- ฟอร์มสำหรับเพิ่มรายการ Subscriptions -->
-            <section class="modern-card p-6 border-none shadow-lg shadow-slate-200/50">
-                <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <i class="fas fa-plus-circle text-violet-500"></i> Add Subscription
-                </h3>
+            <!-- 🛑 ฟอร์มสำหรับเพิ่ม/แก้ไขรายการ Subscriptions -->
+            <section class="modern-card p-6 border-none shadow-lg shadow-slate-200/50" id="subs-form-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="subs-form-title" class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-plus-circle text-violet-500"></i> Add Subscription
+                    </h3>
+                    <button id="cancel-subs-edit-btn" onclick="cancelSubsEdit()" type="button" class="hidden text-[10px] font-bold bg-rose-50 text-rose-500 px-3 py-1.5 rounded-full hover:bg-rose-100 transition-colors">
+                        <i class="fas fa-times mr-1"></i>Cancel Edit
+                    </button>
+                </div>
                 <form id="subs-form" class="space-y-4">
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Item / Name <span class="text-rose-500">*</span></label>
@@ -530,7 +529,7 @@
             <h3 class="text-xs font-bold text-violet-500 uppercase tracking-widest pt-2 flex items-center gap-2">
                 <i class="fas fa-list-ul"></i> Active Subscriptions
             </h3>
-            <p class="text-[10px] text-slate-400 leading-tight">เพิ่ม/จัดการรายการ Subscription ของคุณที่นี่ ยอดเหล่านี้จะไม่ถูกนำไปคำนวณรวมในรายจ่ายหลักจนกว่าคุณจะบันทึกในหน้า Home</p>
+            <p class="text-[10px] text-slate-400 leading-tight">ยอดเหล่านี้จะไม่ถูกคำนวณรวมในหน้าหลัก จนกว่าคุณจะบันทึกเป็นรายจ่าย</p>
             
             <div id="subscriptions-list" class="space-y-3"></div>
         </div>
@@ -557,7 +556,6 @@
             
             <div id="history-list" class="space-y-3"></div>
             
-            <!-- ปุ่ม Load More Pagination -->
             <button id="load-more-btn" onclick="loadMoreHistory()" class="hidden w-full py-3.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-200 transition-colors mt-4">
                 Load More
             </button>
@@ -567,7 +565,6 @@
         <div id="page-analytics" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Summary</h2>
-                <!-- สรุปยอดประจำเดือน -->
                 <div class="relative bg-white rounded-xl border border-slate-100 shadow-sm">
                     <input type="month" id="summary-month-filter" onchange="updateUI()" class="bg-transparent text-violet-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer w-[120px]">
                 </div>
@@ -695,7 +692,7 @@
             </div>
         </div>
 
-        <!-- Floating Bottom Navigation (ปรับให้เหลือ 3 ปุ่ม) -->
+        <!-- Floating Bottom Navigation -->
         <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[400px] bg-white/85 backdrop-blur-xl border border-slate-100 shadow-[0_10px_40px_rgba(139,92,246,0.15)] rounded-[2rem] p-2 flex justify-between items-center">
             <button onclick="switchPage('home')" id="nav-home" class="nav-btn w-1/3 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400 nav-active">
                 <i class="fas fa-layer-group text-xl mb-0.5"></i>
@@ -713,7 +710,6 @@
     </div>
 
     <script>
-        // ลิงก์ Web App ล่าสุด
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDs1Mcb6xffNLjVnxA6AT9j0zy6rgUFz-SIeabsVCUo_4uYLmhaqSQ8ml663lu4kyi/exec'; 
         
         const FIXED_BUDGET = 0; 
@@ -727,7 +723,10 @@
         let newProfilePicBase64 = null;
         let newProfilePicName = null;
         
+        // 🛑 ตัวแปรสำหรับการแก้ไข
         let editingRowId = null;
+        let editingSubsRowId = null; 
+        
         let currentHistoryLimit = 20;
 
         const globalColorsMap = { 
@@ -814,8 +813,9 @@
                 localStorage.setItem('loginTimestamp', now.toString());
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
+                
                 document.getElementById('date').valueAsDate = new Date(); 
-                document.getElementById('subs-date').valueAsDate = new Date(); // สำหรับฟอร์ม Subs
+                document.getElementById('subs-date').valueAsDate = new Date(); 
                 
                 const profileImg = localStorage.getItem('userProfileImg');
                 const displayName = localStorage.getItem('userDisplayName');
@@ -888,7 +888,7 @@
                         document.getElementById('login-page').classList.add('hidden'); 
                         document.getElementById('main-app').classList.remove('hidden'); 
                         document.getElementById('date').valueAsDate = new Date(); 
-                        document.getElementById('subs-date').valueAsDate = new Date();
+                        document.getElementById('subs-date').valueAsDate = new Date(); 
                         
                         document.getElementById('user-profile-img').src = finalPic; 
                         document.getElementById('user-profile-img').classList.remove('hidden'); 
@@ -941,7 +941,7 @@
                     document.getElementById('login-page').classList.add('hidden'); 
                     document.getElementById('main-app').classList.remove('hidden'); 
                     document.getElementById('date').valueAsDate = new Date(); 
-                    document.getElementById('subs-date').valueAsDate = new Date();
+                    document.getElementById('subs-date').valueAsDate = new Date(); 
                     
                     document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg'); 
                     document.getElementById('user-profile-img').classList.remove('hidden'); 
@@ -1125,13 +1125,16 @@
         async function loadDataFromSheet() { 
             const list = document.getElementById('history-list'); 
             const subsList = document.getElementById('subscriptions-list');
+            
             if(list) list.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
             if(subsList) subsList.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
             
             const res = await callApi("get");
+            
             if(res.status === "Success" && res.data) { 
                 expenses = res.data; 
             }
+            
             updateTimestampDisplay(); 
             updateUI();
         }
@@ -1141,6 +1144,7 @@
             updateUI(); 
         }
 
+        // 🛑 ฟังก์ชันแก้ไขสำหรับ รายจ่ายหลัก (หน้า Home)
         function openEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
             if(!item) return;
@@ -1152,6 +1156,7 @@
             
             let catSelect = document.getElementById('category');
             let optionExists = Array.from(catSelect.options).some(opt => opt.value === item.category);
+            
             if (!optionExists) {
                 let tempOpt = document.createElement("option");
                 tempOpt.value = item.category;
@@ -1180,7 +1185,36 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // ฟังก์ชันบันทึกรายการสำหรับหน้า Home (รายรับ/รายจ่ายปกติ)
+        // 🛑 ฟังก์ชันแก้ไขสำหรับ Subscriptions
+        function openSubsEditForm(rowId) {
+            const item = expenses.find(x => x.rowId == rowId);
+            if(!item) return;
+            
+            editingSubsRowId = rowId;
+            document.getElementById('subs-amount').value = item.amount;
+            document.getElementById('subs-date').value = item.date;
+            document.getElementById('subs-payment').value = item.payment;
+            document.getElementById('subs-details').value = item.details;
+            
+            document.getElementById('subs-form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Subscription';
+            document.getElementById('subs-submit-btn').innerHTML = 'Update Subscription';
+            document.getElementById('cancel-subs-edit-btn').classList.remove('hidden');
+            
+            switchPage('subscriptions');
+            setTimeout(() => { document.getElementById('subs-form-section').scrollIntoView({ behavior: 'smooth' }); }, 300);
+        }
+
+        function cancelSubsEdit() {
+            editingSubsRowId = null;
+            document.getElementById('subs-form').reset();
+            document.getElementById('subs-date').valueAsDate = new Date();
+            
+            document.getElementById('subs-form-title').innerHTML = '<i class="fas fa-plus-circle text-violet-500"></i> Add Subscription';
+            document.getElementById('subs-submit-btn').innerHTML = 'Save Subscription';
+            document.getElementById('cancel-subs-edit-btn').classList.add('hidden');
+        }
+
+        // 🛑 Submit สำหรับฟอร์มหลัก
         document.getElementById('expense-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
@@ -1234,7 +1268,7 @@
             btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
-        // 🛑 ฟังก์ชันบันทึกรายการสำหรับหน้า Subscriptions
+        // 🛑 Submit สำหรับฟอร์ม Subscriptions
         document.getElementById('subs-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
@@ -1254,7 +1288,7 @@
                 date: document.getElementById('subs-date').value, 
                 time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }), 
                 payment: document.getElementById('subs-payment').value, 
-                category: "Subscription_List", // บันทึกเป็นหมวดหมู่ลับ
+                category: "Subscription_List", 
                 details: detailsVal.trim(), 
                 amount: amountVal, 
                 location: "", 
@@ -1267,12 +1301,14 @@
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
             }
             
-            const res = await callApi("save", payload);
+            const actionType = editingSubsRowId ? "edit" : "save";
+            const rowIdToSend = editingSubsRowId || null;
+
+            const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
-                showToast("Subscription saved successfully!"); 
-                document.getElementById('subs-form').reset();
-                document.getElementById('subs-date').valueAsDate = new Date();
+                showToast(editingSubsRowId ? "Subscription updated!" : "Subscription saved successfully!"); 
+                cancelSubsEdit();
                 loadDataFromSheet(); 
             } else { 
                 showToast("Error: " + res.message, true); 
@@ -1376,12 +1412,14 @@
             listContainer.innerHTML = ''; 
             
             const sortedCat = Object.keys(dataObj).map(k => ({label: k, val: dataObj[k]})).sort((a,b) => b.val - a.val); 
+            
             if(sortedCat.length === 0) { 
                 listContainer.innerHTML = '<div class="text-center text-xs text-slate-400 py-4 font-medium">No Data Available</div>'; 
                 return; 
             } 
             
             const dailyTotal = sortedCat.reduce((sum, item) => sum + item.val, 0);
+            
             sortedCat.forEach(item => { 
                 const percent = dailyTotal > 0 ? ((item.val / dailyTotal) * 100).toFixed(1) : 0; 
                 const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
@@ -1458,7 +1496,6 @@
             const categoryStats = {}; 
             globalDailyCategoryStats = {};
 
-            // 🛑 แยกข้อมูลที่เป็น Subscription_List ออกมาไม่ให้ไปปนกับรายจ่ายหลัก
             let regularExpenses = [];
             let subsExpenses = [];
             
@@ -1565,7 +1602,7 @@
                 }
             });
 
-            // 🛑 3. เรนเดอร์หน้า Subscriptions (ดึงเฉพาะ Subscription_List)
+            // 🛑 3. เรนเดอร์หน้า Subscriptions 
             let totalSubsCost = 0;
             if (subsExpenses.length === 0) {
                 if (subsList) subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">There are no recent subscription records in your history.</span></div>';
@@ -1587,7 +1624,10 @@
                             </div>
                             <div class="text-right flex flex-col items-end">
                                 <p class="text-base font-black text-rose-500">${amt.toLocaleString()} THB</p>
-                                <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors mt-1"><i class="fas fa-trash-alt"></i></button>
+                                <div class="flex gap-3 mt-1 items-center">
+                                    <button onclick="openSubsEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors"><i class="fas fa-edit"></i></button>
+                                    <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>
+                                </div>
                             </div>`;
                         subsList.appendChild(div);
                     }
