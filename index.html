@@ -6,7 +6,6 @@
     <title>Expenses</title>
     
     <link rel="manifest" href="manifest.json">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
@@ -25,58 +24,114 @@
             font-family: 'Plus Jakarta Sans', 'Kanit', sans-serif; 
             color: #0f172a; 
             -webkit-tap-highlight-color: transparent; 
-            margin: 0;
-            padding: 0;
-            background-color: #f8fafc;
+            margin: 0; 
+            padding: 0; 
+            background-color: #f8fafc; 
             overflow-x: hidden; 
         }
         
         .ambient-bg { 
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            z-index: -1; 
+            pointer-events: none; 
+            overflow: hidden; 
         }
+        
         .ambient-glow-1 { 
-            position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vw; background: rgba(139, 92, 246, 0.2); border-radius: 50%; filter: blur(90px); 
+            position: absolute; 
+            top: -10%; 
+            left: -10%; 
+            width: 60vw; 
+            height: 60vw; 
+            background: rgba(139, 92, 246, 0.2); 
+            border-radius: 50%; 
+            filter: blur(90px); 
         }
+        
         .ambient-glow-2 { 
-            position: absolute; bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: rgba(236, 72, 153, 0.15); border-radius: 50%; filter: blur(90px); 
+            position: absolute; 
+            bottom: -10%; 
+            right: -10%; 
+            width: 60vw; 
+            height: 60vw; 
+            background: rgba(236, 72, 153, 0.15); 
+            border-radius: 50%; 
+            filter: blur(90px); 
         }
+        
         .ambient-glow-3 { 
-            position: absolute; top: 40%; left: 40%; width: 50vw; height: 50vw; background: rgba(56, 189, 248, 0.15); border-radius: 50%; filter: blur(100px); 
+            position: absolute; 
+            top: 40%; 
+            left: 40%; 
+            width: 50vw; 
+            height: 50vw; 
+            background: rgba(56, 189, 248, 0.15); 
+            border-radius: 50%; 
+            filter: blur(100px); 
         }
         
         .modern-card { 
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 1); border-radius: 24px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 1); 
+            border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); 
         }
         
         .input-style { 
-            background: #f8fafc; border: 2px solid transparent; transition: all 0.3s ease; appearance: none; 
+            background: #f8fafc; 
+            border: 2px solid transparent; 
+            transition: all 0.3s ease; 
+            appearance: none; 
         }
+        
         .input-style:focus { 
-            background: #ffffff; border-color: #c4b5fd; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); 
+            background: #ffffff; 
+            border-color: #c4b5fd; 
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); 
         }
         
         .btn-modern { 
-            background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 20px rgba(219, 39, 119, 0.2); border: none; 
+            background: linear-gradient(135deg, #8b5cf6, #ec4899); 
+            color: white; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-shadow: 0 10px 20px rgba(219, 39, 119, 0.2); 
+            border: none; 
         }
+        
         .btn-modern:hover { 
-            transform: translateY(-2px); box-shadow: 0 12px 25px rgba(219, 39, 119, 0.3); 
+            transform: translateY(-2px); 
+            box-shadow: 0 12px 25px rgba(219, 39, 119, 0.3); 
         }
+        
         .btn-modern:active { 
-            transform: scale(0.96) translateY(0); box-shadow: 0 5px 10px rgba(219, 39, 119, 0.2); 
+            transform: scale(0.96) translateY(0); 
+            box-shadow: 0 5px 10px rgba(219, 39, 119, 0.2); 
         }
         
         .nav-btn { 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
         }
+        
         .nav-active { 
-            color: #8b5cf6 !important; font-weight: 800; background: #f5f3ff; border-radius: 100px; box-shadow: inset 0 2px 4px rgba(139, 92, 246, 0.05); 
+            color: #8b5cf6 !important; 
+            font-weight: 800; 
+            background: #f5f3ff; 
+            border-radius: 100px; 
+            box-shadow: inset 0 2px 4px rgba(139, 92, 246, 0.05); 
         }
         
         .page-content { 
             display: none; 
         }
+        
         .page-active { 
-            display: block; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+            display: block; 
+            animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
         }
         
         @keyframes fadeUp { 
@@ -85,10 +140,13 @@
         }
         
         .day-details { 
-            display: none; overflow: hidden; 
+            display: none; 
+            overflow: hidden; 
         }
+        
         .day-details.active { 
-            display: block; animation: fadeDown 0.3s ease-out forwards;
+            display: block; 
+            animation: fadeDown 0.3s ease-out forwards;
         }
         
         @keyframes fadeDown { 
@@ -99,25 +157,35 @@
         .rotate-icon { 
             transition: transform 0.3s ease; 
         }
+        
         .rotated { 
             transform: rotate(180deg); 
         }
         
         .menu-dropdown { 
-            opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            opacity: 0; 
+            pointer-events: none; 
+            transform: translateY(-10px); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
         }
+        
         .menu-dropdown.active { 
-            opacity: 1; pointer-events: auto; transform: translateY(0); 
+            opacity: 1; 
+            pointer-events: auto; 
+            transform: translateY(0); 
         }
         
         #toast-notification { 
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
         }
+        
         ::-webkit-scrollbar { 
             width: 4px; 
         }
+        
         ::-webkit-scrollbar-thumb { 
-            background: #c4b5fd; border-radius: 4px; 
+            background: #c4b5fd; 
+            border-radius: 4px; 
         }
     </style>
 </head>
@@ -154,19 +222,19 @@
 
     <!-- Login Page -->
     <div id="login-page" class="fixed inset-0 z-[200] bg-slate-50 flex items-center justify-center px-6 transition-opacity duration-500 overflow-y-auto">
-        <div class="ambient-bg"><div class="ambient-glow-1"></div><div class="ambient-glow-2"></div></div>
+        <div class="ambient-bg">
+            <div class="ambient-glow-1"></div>
+            <div class="ambient-glow-2"></div>
+        </div>
+        
         <div class="modern-card p-8 w-full max-w-sm text-center border-none shadow-2xl shadow-purple-500/10 my-8">
             
-            <!-- 🚀 โลโก้ใหม่สไตล์ Modern Fintech -->
+            <!-- โลโก้แบบโมเดิร์น -->
             <div class="w-24 h-24 mx-auto mb-6 relative group cursor-default">
-                <!-- เงาเรืองแสงด้านหลัง -->
                 <div class="absolute inset-1 bg-gradient-to-tr from-fuchsia-500 to-violet-500 rounded-[2rem] blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <!-- กล่องโลโก้หลัก Glassmorphism -->
                 <div class="absolute inset-0 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-[2rem] transform -rotate-3 group-hover:rotate-0 transition-all duration-500 shadow-2xl flex items-center justify-center overflow-hidden border border-white/30 backdrop-blur-xl">
-                    <!-- ดีเทลแสงสะท้อนมุมกล่อง -->
                     <div class="absolute -right-2 -top-2 w-14 h-14 bg-white/20 rounded-full blur-lg"></div>
                     <div class="absolute -left-2 -bottom-2 w-14 h-14 bg-black/10 rounded-full blur-lg"></div>
-                    <!-- รูปทรง Abstract (กราฟแท่ง) -->
                     <div class="flex items-end gap-1.5 z-10">
                         <div class="w-2.5 h-6 bg-white/70 rounded-full"></div>
                         <div class="w-2.5 h-12 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.6)] transform -translate-y-1"></div>
@@ -174,37 +242,36 @@
                     </div>
                 </div>
             </div>
-            <!-- ปรับตัวหนังสือให้ดูพรีเมียมขึ้น -->
+            
             <h2 class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tighter mb-1 relative z-10">Expenses</h2>
             <p class="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] mb-8 relative z-10">Smart Wallet</p>
             
             <!-- Google Sign-In -->
             <div class="flex justify-center mt-4">
-                <div id="g_id_onload"
-                     data-client_id="535120292244-ibdol7mbqv9enkaq2g4r5hd2ldu1jng3.apps.googleusercontent.com"
-                     data-context="signin"
-                     data-ux_mode="popup"
-                     data-callback="handleCredentialResponse"
+                <div id="g_id_onload" 
+                     data-client_id="535120292244-ibdol7mbqv9enkaq2g4r5hd2ldu1jng3.apps.googleusercontent.com" 
+                     data-context="signin" 
+                     data-ux_mode="popup" 
+                     data-callback="handleCredentialResponse" 
                      data-auto_prompt="false">
                 </div>
-                <div class="g_id_signin"
-                     data-type="standard"
-                     data-shape="rectangular"
-                     data-theme="outline"
-                     data-text="signin_with"
-                     data-size="large"
+                <div class="g_id_signin" 
+                     data-type="standard" 
+                     data-shape="rectangular" 
+                     data-theme="outline" 
+                     data-text="signin_with" 
+                     data-size="large" 
                      data-logo_alignment="left">
                 </div>
             </div>
             
-            <!-- เส้นคั่น -->
             <div class="relative flex items-center py-6">
                 <div class="flex-grow border-t border-slate-200"></div>
                 <span class="flex-shrink-0 mx-4 text-slate-400 text-[10px] font-bold uppercase tracking-widest">Or login with</span>
                 <div class="flex-grow border-t border-slate-200"></div>
             </div>
             
-            <!-- ฟอร์ม Username / Password -->
+            <!-- Login with Username / Password -->
             <div class="space-y-3 text-left">
                 <div>
                     <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Username (Email)</label>
@@ -214,7 +281,6 @@
                     <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Password</label>
                     <div class="relative">
                         <input type="password" id="login-password" class="w-full input-style rounded-xl p-3.5 pr-12 text-sm font-bold outline-none border border-slate-100 text-slate-800" placeholder="Enter password">
-                        <!-- ปุ่มดวงตาเปิดปิดรหัสผ่าน -->
                         <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye-icon')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500 focus:outline-none">
                             <i id="login-eye-icon" class="fas fa-eye-slash"></i>
                         </button>
@@ -224,7 +290,7 @@
                     Sign In <i class="fas fa-arrow-right ml-1"></i>
                 </button>
             </div>
-
+            
             <p id="login-error" class="text-rose-500 text-xs font-bold mt-4 hidden">Unauthorized Email</p>
         </div>
     </div>
@@ -286,9 +352,9 @@
                     <div class="flex flex-col mt-1.5">
                         <p class="text-xs font-bold uppercase tracking-wider text-white/90">All Time Balance</p>
                     </div>
-                    <!-- เวลาอัปเดตมุมขวาบน -->
+                    <!-- เวลาอัปเดตมุมขวาบน ภายในกล่องสีชมพู -->
                     <div class="flex flex-col items-end gap-2">
-                        <span id="last-updated-text" class="text-[9px] font-medium text-white/90 bg-white/20 px-2.5 py-1 rounded-md backdrop-blur-md border border-white/30 shadow-sm whitespace-nowrap">
+                        <span id="last-updated-text-card" class="text-[9px] font-medium text-white/90 bg-white/20 px-2.5 py-1 rounded-md backdrop-blur-md border border-white/30 shadow-sm whitespace-nowrap">
                             <i class="fas fa-clock mr-1"></i> Updated : -
                         </span>
                         <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
@@ -322,8 +388,8 @@
                         <i class="fas fa-times mr-1"></i>Cancel Edit
                     </button>
                 </div>
+                
                 <form id="expense-form" class="space-y-4">
-                    
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Amount <span class="text-rose-500">*</span></label>
                         <div class="relative">
@@ -357,6 +423,7 @@
                                 <option value="Gasoline">⛽ Gasoline</option>
                                 <option value="Shopping">🛍️ Shopping</option>
                                 <option value="Bills">🧾 Bills & Utilities</option>
+                                <option value="Subscription">🔄 Subscriptions</option>
                                 <option value="Housing">🏠 Housing</option>
                                 <option value="Health">💆 Health & Beauty</option>
                                 <option value="Entertainment">🎬 Entertainment</option>
@@ -400,6 +467,31 @@
             </section>
         </div>
 
+        <!-- PAGE: SUBSCRIPTIONS -->
+        <div id="page-subscriptions" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Subscriptions</h2>
+                <button onclick="switchPage('home')" class="text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-sm">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            
+            <div class="modern-card p-6 text-center space-y-2 relative overflow-hidden bg-gradient-to-br from-indigo-500 to-violet-600 border-none shadow-xl shadow-violet-500/20 text-white">
+                <p class="text-xs font-bold uppercase tracking-wider text-violet-200">Monthly Estimated Cost</p>
+                <div class="flex items-baseline justify-center gap-2">
+                    <h3 id="total-subs-cost" class="font-black tracking-tight text-5xl">0</h3>
+                    <span class="text-sm font-bold text-violet-200">THB</span>
+                </div>
+            </div>
+            
+            <h3 class="text-xs font-bold text-violet-500 uppercase tracking-widest pt-2 flex items-center gap-2">
+                <i class="fas fa-list-ul"></i> Active Subscriptions
+            </h3>
+            <p class="text-[10px] text-slate-400 leading-tight">ระบบจะสรุปยอดค่าใช้จ่ายที่ถูกบันทึกในหมวดหมู่ <b>Subscriptions</b> โดยอัตโนมัติ (ดึงยอดล่าสุดของแต่ละชื่อที่บันทึก)</p>
+            
+            <div id="subscriptions-list" class="space-y-3"></div>
+        </div>
+
         <!-- PAGE: HISTORY -->
         <div id="page-history" class="page-content max-w-xl mx-auto px-5 py-4 space-y-4">
             <div class="flex justify-between items-center mb-4">
@@ -414,7 +506,9 @@
                         <option value="price-low">💰 Price (Low)</option>
                         <option value="user">👤 User</option>
                     </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-violet-400"><i class="fas fa-chevron-down text-[8px]"></i></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-violet-400">
+                        <i class="fas fa-chevron-down text-[8px]"></i>
+                    </div>
                 </div>
             </div>
             
@@ -430,7 +524,7 @@
         <div id="page-analytics" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Summary</h2>
-                <!-- สรุปยอดประจำเดือน (Monthly Dashboard) -->
+                <!-- สรุปยอดประจำเดือน -->
                 <div class="relative bg-white rounded-xl border border-slate-100 shadow-sm">
                     <input type="month" id="summary-month-filter" onchange="updateUI()" class="bg-transparent text-violet-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer w-[120px]">
                 </div>
@@ -438,10 +532,12 @@
             
             <div class="modern-card p-6 text-center space-y-4 relative overflow-hidden border-none shadow-lg shadow-slate-200/50">
                 <div class="flex justify-between text-xs font-bold text-rose-500 bg-rose-50 px-3 py-2 rounded-lg">
-                    <span>Total Expenses</span><span id="total-expenses-text">0 THB</span>
+                    <span>Total Expenses</span>
+                    <span id="total-expenses-text">0 THB</span>
                 </div>
                 <div class="flex justify-between text-xs font-bold text-emerald-500 bg-emerald-50 px-3 py-2 rounded-lg">
-                    <span>Total Income</span><span id="total-income-text">0 THB</span>
+                    <span>Total Income</span>
+                    <span id="total-income-text">0 THB</span>
                 </div>
                 <div class="pt-4 border-t border-slate-100 flex justify-between items-end">
                     <div class="flex flex-col text-left">
@@ -450,9 +546,15 @@
                     </div>
                 </div>
             </div>
-            <h3 class="text-xs font-bold text-violet-500 uppercase tracking-widest pt-2 flex items-center gap-2"><i class="fas fa-wallet"></i> By Payment</h3>
+            
+            <h3 class="text-xs font-bold text-violet-500 uppercase tracking-widest pt-2 flex items-center gap-2">
+                <i class="fas fa-wallet"></i> By Payment
+            </h3>
             <div id="payment-summary-container" class="grid grid-cols-2 gap-3"></div>
-            <h3 class="text-xs font-bold text-fuchsia-500 uppercase tracking-widest pt-2 flex items-center gap-2"><i class="fas fa-calendar-day"></i> Daily Log</h3>
+            
+            <h3 class="text-xs font-bold text-fuchsia-500 uppercase tracking-widest pt-2 flex items-center gap-2">
+                <i class="fas fa-calendar-day"></i> Daily Log
+            </h3>
             <div id="stats-container" class="space-y-3"></div>
         </div>
 
@@ -480,7 +582,9 @@
                         <select id="dashboard-date-filter" onchange="updateDailyCategoryChart()" class="bg-transparent text-violet-700 text-[10px] font-bold px-3 py-1.5 outline-none appearance-none pr-6 cursor-pointer">
                             <option value="">No Data</option>
                         </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-violet-400"><i class="fas fa-chevron-down text-[8px]"></i></div>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-violet-400">
+                            <i class="fas fa-chevron-down text-[8px]"></i>
+                        </div>
                     </div>
                 </div>
                 <div class="relative w-full max-w-[200px] mx-auto pt-2">
@@ -521,12 +625,10 @@
                         <input type="text" id="profile-display-name" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-violet-400 text-slate-800" placeholder="Your Display Name">
                     </div>
                     
-                    <!-- 🛑 ฟอร์มเปลี่ยนรหัสผ่านใหม่ (ต้องกรอก 2 ครั้ง) -->
                     <div class="w-full space-y-1.5 mt-4 text-left">
                         <label class="text-[10px] font-bold text-rose-500 uppercase tracking-wide ml-1">New Password (Optional)</label>
                         <div class="relative">
                             <input type="password" id="profile-new-password" class="w-full input-style rounded-xl p-4 pr-12 text-sm font-bold outline-none border-2 border-slate-100 focus:border-rose-400 text-slate-800" placeholder="Leave blank to keep current password">
-                            <!-- ปุ่มดวงตาเปิดปิดรหัสผ่าน -->
                             <button type="button" onclick="togglePasswordVisibility('profile-new-password', 'profile-eye-icon-1')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 focus:outline-none">
                                 <i id="profile-eye-icon-1" class="fas fa-eye-slash"></i>
                             </button>
@@ -537,7 +639,6 @@
                         <label class="text-[10px] font-bold text-rose-500 uppercase tracking-wide ml-1">Confirm New Password</label>
                         <div class="relative">
                             <input type="password" id="profile-confirm-password" class="w-full input-style rounded-xl p-4 pr-12 text-sm font-bold outline-none border-2 border-slate-100 focus:border-rose-400 text-slate-800" placeholder="Confirm new password">
-                            <!-- ปุ่มดวงตาเปิดปิดรหัสผ่าน -->
                             <button type="button" onclick="togglePasswordVisibility('profile-confirm-password', 'profile-eye-icon-2')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 focus:outline-none">
                                 <i id="profile-eye-icon-2" class="fas fa-eye-slash"></i>
                             </button>
@@ -553,15 +654,19 @@
 
         <!-- Floating Bottom Navigation -->
         <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[400px] bg-white/85 backdrop-blur-xl border border-slate-100 shadow-[0_10px_40px_rgba(139,92,246,0.15)] rounded-[2rem] p-2 flex justify-between items-center">
-            <button onclick="switchPage('home')" id="nav-home" class="nav-btn w-1/3 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400 nav-active">
+            <button onclick="switchPage('home')" id="nav-home" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400 nav-active">
                 <i class="fas fa-layer-group text-xl mb-0.5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-widest">Home</span>
             </button>
-            <button onclick="switchPage('history')" id="nav-history" class="nav-btn w-1/3 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
+            <button onclick="switchPage('subscriptions')" id="nav-subscriptions" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
+                <i class="fas fa-sync-alt text-xl mb-0.5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Subs</span>
+            </button>
+            <button onclick="switchPage('history')" id="nav-history" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
                 <i class="fas fa-receipt text-xl mb-0.5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-widest">History</span>
             </button>
-            <button onclick="switchPage('analytics')" id="nav-analytics" class="nav-btn w-1/3 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
+            <button onclick="switchPage('analytics')" id="nav-analytics" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
                 <i class="fas fa-chart-pie text-xl mb-0.5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-widest">Stats</span>
             </button>
@@ -587,14 +692,24 @@
         let currentHistoryLimit = 20;
 
         const globalColorsMap = { 
-            'Food': '#ec4899', 'Transport': '#3b82f6', 'Gasoline': '#eab308', 
-            'Shopping': '#8b5cf6', 'Bills': '#f97316', 'Housing': '#6366f1',
-            'Health': '#d946ef', 'Entertainment': '#0ea5e9', 'Other': '#64748b', 
-            'Salary': '#10b981', 'Extra Income': '#34d399', 'Other Income': '#6ee7b7',
-            'Invest': '#0284c7', 'Invest_Other': '#38bdf8'
+            'Food': '#ec4899', 
+            'Transport': '#3b82f6', 
+            'Gasoline': '#eab308', 
+            'Shopping': '#8b5cf6', 
+            'Bills': '#f97316', 
+            'Subscription': '#6366f1',
+            'Housing': '#6366f1', 
+            'Health': '#d946ef', 
+            'Entertainment': '#0ea5e9', 
+            'Other': '#64748b', 
+            'Salary': '#10b981', 
+            'Extra Income': '#34d399', 
+            'Other Income': '#6ee7b7',
+            'Invest': '#0284c7', 
+            'Invest_Other': '#38bdf8'
         };
 
-        // 🛑 ฟังก์ชันเปิด-ปิดการแสดงผลรหัสผ่าน (สลับไอคอนรูปดวงตา)
+        // ฟังก์ชันเปิด-ปิดการแสดงผลรหัสผ่าน (สลับไอคอนรูปดวงตา)
         function togglePasswordVisibility(inputId, iconId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
@@ -609,9 +724,11 @@
             }
         }
 
+        // ฟังก์ชันอัปเดตข้อความวันที่ล่าสุดให้เป็นรูปแบบ: 18 September 2026 : 13:58:01 PM
         function updateTimestampDisplay() {
             const now = new Date();
             const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            
             const day = now.getDate().toString().padStart(2, '0');
             const month = months[now.getMonth()];
             const year = now.getFullYear();
@@ -626,6 +743,10 @@
             const strHours = hours.toString().padStart(2, '0');
             
             const timeString = `Updated : ${day} ${month} ${year} : ${strHours}:${minutes}:${seconds} ${ampm}`;
+            
+            const updateElCard = document.getElementById('last-updated-text-card');
+            if(updateElCard) updateElCard.innerText = timeString;
+            
             const updateEl = document.getElementById('last-updated-text');
             if(updateEl) updateEl.innerText = timeString;
         }
@@ -660,11 +781,13 @@
                 
                 const profileImg = localStorage.getItem('userProfileImg');
                 const displayName = localStorage.getItem('userDisplayName');
+                
                 if(profileImg) { 
                     document.getElementById('user-profile-img').src = profileImg; 
                     document.getElementById('user-profile-img').classList.remove('hidden'); 
                     document.getElementById('user-profile-icon').classList.add('hidden'); 
                 }
+                
                 if(displayName) { 
                     document.getElementById('nav-display-name').innerText = displayName; 
                 }
@@ -710,6 +833,7 @@
             loginError.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking account status...';
 
             const res = await callApi("checkUser", { email: userEmail });
+            
             if(res.status === "Success") {
                 if(res.userStatus === "Approved") {
                     localStorage.setItem('loginTimestamp', Date.now().toString()); 
@@ -717,6 +841,7 @@
                     
                     const finalPic = res.profilePic || responsePayload.picture; 
                     const finalName = res.displayName || responsePayload.name || userEmail.split('@')[0];
+                    
                     localStorage.setItem('userProfileImg', finalPic); 
                     localStorage.setItem('userDisplayName', finalName);
                     
@@ -765,6 +890,7 @@
             loginError.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking credentials...';
             
             const res = await callApi("loginWithPassword", { username: user, password: pass });
+            
             if (res.status === "Success") {
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
                 localStorage.setItem('userEmail', user); 
@@ -868,7 +994,7 @@
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
             } 
             
-            ['home', 'history', 'analytics', 'dashboard', 'profile'].forEach(id => { 
+            ['home', 'subscriptions', 'history', 'analytics', 'dashboard', 'profile'].forEach(id => { 
                 const pageEl = document.getElementById('page-' + id); 
                 if(pageEl) pageEl.classList.remove('page-active'); 
                 
@@ -877,12 +1003,13 @@
             }); 
             
             document.getElementById('page-' + pageId).classList.add('page-active'); 
+            
             const targetNav = document.getElementById('nav-' + pageId); 
             if(targetNav) targetNav.classList.add('nav-active'); 
             
             document.getElementById('top-menu').classList.remove('active'); 
             
-            if (pageId === 'history' || pageId === 'analytics' || pageId === 'dashboard') { 
+            if (pageId === 'history' || pageId === 'analytics' || pageId === 'dashboard' || pageId === 'subscriptions') { 
                 loadDataFromSheet(); 
             } else if (pageId === 'profile') {
                 document.getElementById('profile-display-name').value = localStorage.getItem('userDisplayName') || '';
@@ -891,10 +1018,9 @@
                 newProfilePicBase64 = null; 
                 newProfilePicName = null;
                 
-                // คืนค่าปุ่มดวงตาและช่องรหัสผ่านเป็นค่าเริ่มต้นเสมอเมื่อเปิดหน้า Profile
-                document.getElementById('profile-new-password').type = 'password';
-                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash';
-                document.getElementById('profile-confirm-password').type = 'password';
+                document.getElementById('profile-new-password').type = 'password'; 
+                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash'; 
+                document.getElementById('profile-confirm-password').type = 'password'; 
                 document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
             } else { 
                 updateUI(); 
@@ -912,10 +1038,10 @@
                 showToast("Please enter a display name", true); 
                 return; 
             }
-
-            if(newPassword && newPassword !== confirmPassword) {
-                showToast("Passwords do not match!", true);
-                return;
+            
+            if(newPassword && newPassword !== confirmPassword) { 
+                showToast("Passwords do not match!", true); 
+                return; 
             }
             
             const btn = document.getElementById('btn-save-profile'); 
@@ -937,12 +1063,11 @@
                 localStorage.setItem('userDisplayName', displayName); 
                 document.getElementById('nav-display-name').innerText = displayName; 
                 
-                // ล้างช่องรหัสผ่านทั้ง 2 ช่อง
                 document.getElementById('profile-new-password').value = ''; 
                 document.getElementById('profile-confirm-password').value = ''; 
-                document.getElementById('profile-new-password').type = 'password';
-                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash';
-                document.getElementById('profile-confirm-password').type = 'password';
+                document.getElementById('profile-new-password').type = 'password'; 
+                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash'; 
+                document.getElementById('profile-confirm-password').type = 'password'; 
                 document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
                 
                 if(newProfilePicBase64) { 
@@ -965,6 +1090,7 @@
             if(res.status === "Success" && res.data) { 
                 expenses = res.data; 
             }
+            
             updateTimestampDisplay(); 
             updateUI();
         }
@@ -979,33 +1105,32 @@
             if(!item) return;
             
             editingRowId = rowId;
-            document.getElementById('amount').value = item.amount;
-            document.getElementById('date').value = item.date;
-            document.getElementById('payment').value = item.payment;
-            document.getElementById('category').value = item.category;
+            document.getElementById('amount').value = item.amount; 
+            document.getElementById('date').value = item.date; 
+            document.getElementById('payment').value = item.payment; 
+            document.getElementById('category').value = item.category; 
             document.getElementById('details').value = item.details;
             
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Transaction';
-            document.getElementById('submit-btn').innerHTML = 'Update Transaction <i class="fas fa-check text-white/80"></i>';
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Transaction'; 
+            document.getElementById('submit-btn').innerHTML = 'Update Transaction <i class="fas fa-check text-white/80"></i>'; 
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
             
-            switchPage('home');
+            switchPage('home'); 
             setTimeout(() => { document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' }); }, 300);
         }
 
         function cancelEdit() {
-            editingRowId = null;
-            document.getElementById('expense-form').reset();
+            editingRowId = null; 
+            document.getElementById('expense-form').reset(); 
             document.getElementById('date').valueAsDate = new Date();
             
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction';
-            document.getElementById('submit-btn').innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>';
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction'; 
+            document.getElementById('submit-btn').innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
         document.getElementById('expense-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
-            
             const detailsVal = document.getElementById('details').value; 
             const amountVal = document.getElementById('amount').value;
             
@@ -1036,9 +1161,9 @@
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
             }
             
-            const actionType = editingRowId ? "edit" : "save";
+            const actionType = editingRowId ? "edit" : "save"; 
             const rowIdToSend = editingRowId || null;
-
+            
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
@@ -1058,15 +1183,14 @@
 
         async function deleteItem(rowId) { 
             if(confirm('Delete this record permanently?')) { 
-                showToast("Deleting...");
-                const res = await callApi("delete", { rowId: rowId });
-                
+                showToast("Deleting..."); 
+                const res = await callApi("delete", { rowId: rowId }); 
                 if(res.status === "Success") { 
                     showToast("Deleted successfully!"); 
                     loadDataFromSheet(); 
                 } else { 
                     showToast("Error: " + res.message, true); 
-                }
+                } 
             } 
         }
 
@@ -1079,10 +1203,21 @@
         
         function getIcon(cat) { 
             const icons = { 
-                'Food': 'fa-utensils', 'Transport': 'fa-car', 'Gasoline': 'fa-gas-pump', 'Shopping': 'fa-bag-shopping', 
-                'Bills': 'fa-file-invoice-dollar', 'Housing': 'fa-house', 'Health': 'fa-heart', 'Entertainment': 'fa-film', 
-                'Other': 'fa-receipt', 'Salary': 'fa-money-bill-wave', 'Extra Income': 'fa-coins', 'Other Income': 'fa-hand-holding-dollar', 
-                'Invest': 'fa-chart-pie', 'Invest_Other': 'fa-seedling' 
+                'Food': 'fa-utensils', 
+                'Transport': 'fa-car', 
+                'Gasoline': 'fa-gas-pump', 
+                'Shopping': 'fa-bag-shopping', 
+                'Bills': 'fa-file-invoice-dollar', 
+                'Subscription': 'fa-sync-alt', 
+                'Housing': 'fa-house', 
+                'Health': 'fa-heart', 
+                'Entertainment': 'fa-film', 
+                'Other': 'fa-receipt', 
+                'Salary': 'fa-money-bill-wave', 
+                'Extra Income': 'fa-coins', 
+                'Other Income': 'fa-hand-holding-dollar', 
+                'Invest': 'fa-chart-pie', 
+                'Invest_Other': 'fa-seedling' 
             }; 
             return icons[cat] || 'fa-receipt'; 
         }
@@ -1145,6 +1280,7 @@
             } 
             
             const dailyTotal = sortedCat.reduce((sum, item) => sum + item.val, 0);
+            
             sortedCat.forEach(item => { 
                 const percent = dailyTotal > 0 ? ((item.val / dailyTotal) * 100).toFixed(1) : 0; 
                 const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
@@ -1165,16 +1301,18 @@
         }
 
         function updateUI() {
-            const list = document.getElementById('history-list');
-            const stats = document.getElementById('stats-container');
-            const pSum = document.getElementById('payment-summary-container');
+            const list = document.getElementById('history-list'); 
+            const stats = document.getElementById('stats-container'); 
+            const pSum = document.getElementById('payment-summary-container'); 
+            const subsList = document.getElementById('subscriptions-list');
             
             if(!list || !stats) return; 
             list.innerHTML = ''; 
             stats.innerHTML = ''; 
-            pSum.innerHTML = '';
+            pSum.innerHTML = ''; 
+            if (subsList) subsList.innerHTML = '';
 
-            const monthFilterEl = document.getElementById('summary-month-filter');
+            const monthFilterEl = document.getElementById('summary-month-filter'); 
             const summaryMonthVal = monthFilterEl ? monthFilterEl.value : ''; 
 
             if (expenses.length === 0) {
@@ -1193,9 +1331,11 @@
             sortedExpenses.sort((a,b) => {
                 let dateB = new Date(b.date + ' ' + (b.time || '00:00')); 
                 let dateA = new Date(a.date + ' ' + (a.time || '00:00'));
+                
                 let isIncomeA = ["Salary", "Extra Income", "Other Income"].includes(a.category); 
                 let amtA = parseFloat(a.amount) || 0; 
                 let realAmtA = isIncomeA ? amtA : -amtA;
+                
                 let isIncomeB = ["Salary", "Extra Income", "Other Income"].includes(b.category); 
                 let amtB = parseFloat(b.amount) || 0; 
                 let realAmtB = isIncomeB ? amtB : -amtB;
@@ -1260,15 +1400,18 @@
             });
 
             const loadMoreBtn = document.getElementById('load-more-btn');
-            if(loadMoreBtn) {
+            if(loadMoreBtn) { 
                 if(sortedExpenses.length > currentHistoryLimit) { 
                     loadMoreBtn.classList.remove('hidden'); 
                 } else { 
                     loadMoreBtn.classList.add('hidden'); 
-                }
+                } 
             }
 
-            sortedExpenses.forEach((item) => {
+            let activeSubs = {};
+            let expensesForSubs = [...expenses].sort((a,b) => new Date(b.date) - new Date(a.date));
+            
+            expensesForSubs.forEach((item) => {
                 const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
                 const amt = parseFloat(item.amount) || 0;
                 const impact = isIncome ? amt : -amt; 
@@ -1308,7 +1451,41 @@
                     if (!globalDailyCategoryStats[item.date][item.category]) globalDailyCategoryStats[item.date][item.category] = 0; 
                     globalDailyCategoryStats[item.date][item.category] += amt;
                 }
+
+                if (item.category === 'Subscription') {
+                    let subName = (item.details || 'Unknown').trim().toUpperCase();
+                    if (!activeSubs[subName]) { 
+                        activeSubs[subName] = { name: item.details.trim(), amount: amt, date: item.date, payment: item.payment }; 
+                    }
+                }
             });
+
+            // สร้างรายการ Subscription
+            let totalSubsCost = 0;
+            if (Object.keys(activeSubs).length === 0) {
+                if (subsList) subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">Tip: Add a transaction and select category "Subscriptions"</span></div>';
+            } else {
+                Object.values(activeSubs).forEach(sub => {
+                    totalSubsCost += sub.amount;
+                    if (subsList) {
+                        const div = document.createElement('div'); 
+                        div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow";
+                        div.innerHTML = `
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shadow-inner text-lg"><i class="fas fa-sync-alt"></i></div>
+                                <div><p class="font-bold text-slate-800 text-sm">${sub.name}</p><p class="text-[10px] text-slate-400 font-medium">Last paid: ${sub.date} • ${sub.payment}</p></div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-base font-black text-rose-500">-${sub.amount.toLocaleString()}</p>
+                                <span class="text-[8px] font-bold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded uppercase tracking-wider">/ Month</span>
+                            </div>`;
+                        subsList.appendChild(div);
+                    }
+                });
+            }
+            
+            const totalSubsEl = document.getElementById('total-subs-cost'); 
+            if (totalSubsEl) totalSubsEl.innerText = totalSubsCost.toLocaleString();
 
             const dateDropdown = document.getElementById('dashboard-date-filter'); 
             if (dateDropdown) { 
@@ -1398,6 +1575,7 @@
             document.getElementById('cash-remaining').innerText = remainingHome.toLocaleString(); 
             const usedEl = document.getElementById('cash-used-text'); 
             if(usedEl) usedEl.innerText = totalExpenseHome.toLocaleString();
+            
             const baseBudgetEl = document.getElementById('budget-base-text'); 
             if(baseBudgetEl) baseBudgetEl.innerText = totalIncomeHome.toLocaleString();
             
@@ -1407,6 +1585,7 @@
             let netBalanceSummary = totalIncomeSummary - totalExpenseSummary;
             let balanceEl = document.getElementById('total-balance-text'); 
             balanceEl.innerText = netBalanceSummary.toLocaleString();
+            
             if(netBalanceSummary < 0) { 
                 balanceEl.classList.add('text-rose-500'); 
                 balanceEl.classList.remove('text-slate-800'); 
