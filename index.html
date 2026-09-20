@@ -229,6 +229,7 @@
         
         <div class="modern-card p-8 w-full max-w-sm text-center border-none shadow-2xl shadow-purple-500/10 my-8">
             
+            <!-- โลโก้แบบโมเดิร์น -->
             <div class="w-24 h-24 mx-auto mb-6 relative group cursor-default">
                 <div class="absolute inset-1 bg-gradient-to-tr from-fuchsia-500 to-violet-500 rounded-[2rem] blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div class="absolute inset-0 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-[2rem] transform -rotate-3 group-hover:rotate-0 transition-all duration-500 shadow-2xl flex items-center justify-center overflow-hidden border border-white/30 backdrop-blur-xl">
@@ -245,6 +246,7 @@
             <h2 class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tighter mb-1 relative z-10">Expenses</h2>
             <p class="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] mb-8 relative z-10">Smart Wallet</p>
             
+            <!-- Google Sign-In -->
             <div class="flex justify-center mt-4">
                 <div id="g_id_onload" 
                      data-client_id="535120292244-ibdol7mbqv9enkaq2g4r5hd2ldu1jng3.apps.googleusercontent.com" 
@@ -269,6 +271,7 @@
                 <div class="flex-grow border-t border-slate-200"></div>
             </div>
             
+            <!-- Login with Username / Password -->
             <div class="space-y-3 text-left">
                 <div>
                     <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Username (Email)</label>
@@ -405,31 +408,14 @@
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Date</label>
                             <input type="date" id="date" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700" required>
                         </div>
-                        
-                        <!-- Dropdown สำหรับ Payment ฝั่ง Home (หน้าตาปกติ) -->
-                        <div class="space-y-1.5 relative">
+                        <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Payment</label>
-                            <input type="hidden" id="payment" value="Cash">
-                            <button type="button" id="payment-btn" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 flex justify-between items-center bg-white cursor-pointer" onclick="document.getElementById('payment-dropdown').classList.toggle('hidden'); event.stopPropagation();">
-                                <span id="payment-selected" class="flex items-center gap-2">
-                                    <div class="flex items-center gap-3"><span class="text-lg w-6 text-center">💵</span> Cash</div>
-                                </span>
-                                <i class="fas fa-chevron-down text-slate-400"></i>
-                            </button>
-                            <div id="payment-dropdown" class="absolute z-50 w-full mt-1 bg-white border border-slate-100 rounded-xl shadow-xl hidden max-h-56 overflow-y-auto py-1 top-[100%]">
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('payment', 'Cash')">
-                                    <span class="text-lg w-6 text-center">💵</span> Cash
-                                </div>
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('payment', 'Credit Card / E-Wallet')">
-                                    <span class="text-lg w-6 text-center">💳</span> Credit Card / E-Wallet
-                                </div>
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('payment', 'Internet Banking / QR Payment')">
-                                    <span class="text-lg w-6 text-center">🏦</span> Internet Banking
-                                </div>
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('payment', 'Loan etc.')">
-                                    <span class="text-lg w-6 text-center">💸</span> Loan etc.
-                                </div>
-                            </div>
+                            <select id="payment" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer">
+                                <option value="Cash">💵 Cash</option>
+                                <option value="Credit Card / E-Wallet">💳 Credit Card / E-Wallet</option>
+                                <option value="Internet Banking / QR Payment">🏦 Internet Banking</option>
+                                <option value="Loan etc.">💸 Loan etc.</option>
+                            </select>
                         </div>
                     </div>
                     
@@ -485,7 +471,7 @@
             </section>
         </div>
 
-        <!-- 🛑 PAGE: SUBSCRIPTIONS -->
+        <!-- PAGE: SUBSCRIPTIONS -->
         <div id="page-subscriptions" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Subscriptions</h2>
@@ -511,6 +497,7 @@
                         <i class="fas fa-times mr-1"></i>Cancel Edit
                     </button>
                 </div>
+                
                 <form id="subs-form" class="space-y-4">
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Item / Name <span class="text-rose-500">*</span></label>
@@ -529,45 +516,13 @@
                         </div>
                     </div>
                     
-                    <!-- 🛑 Custom Dropdown สำหรับเลือก Payment + โลโก้ และช่องกรอกชื่อบัตร (แก้ไขโลโก้ VISA ให้เป็น SVG ตรงๆ ไม่พังแน่นอน) -->
-                    <div class="grid grid-cols-2 gap-3 mt-2">
-                        <div class="space-y-1.5 relative">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Payment Method</label>
-                            <input type="hidden" id="subs-payment" value="VISA">
-                            <button type="button" id="subs-payment-btn" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 flex justify-between items-center bg-white cursor-pointer" onclick="document.getElementById('subs-payment-dropdown').classList.toggle('hidden'); event.stopPropagation();">
-                                <span id="subs-payment-selected" class="flex items-center gap-2">
-                                    <div class="flex items-center gap-3"><div class="w-6 flex justify-center"><svg viewBox="0 0 320 105" class="h-3.5 inline" xmlns="http://www.w3.org/2000/svg"><path fill="#1a1f71" d="M141.5 3.3l-13.4 83.3h21l13.4-83.3h-21zm146.5 80.5c-.5-2.8-5.3-13.8-5.3-13.8l-15.6-70h-21.9l-26 83.3h22.2l4.4-12.4h27l2.6 12.4h19.6zm-26.6-28.7l6.5-17.8c0-.1 1.1-3.2 1.4-4.5-.2 1.4 1 3.5 1.5 4.8l3.7 17.5h-13.1zm-84-51.8H155l-20.9 83.3h21.4l20.9-83.3h.5zm-59.5 0L96 58.7l-4-20c-1.3-6.2-7.5-12.7-14.8-15.7L57 19.3V3.3h33.8c4 0 7.5 2.5 8.5 6.4l16.1 76.9h22.5l33.3-83.3H117.9zM0 3.3v16l25 6c11.4 2.8 14.8 4.9 14.8 9.3 0 5-6.3 7.3-11.8 7.3-8.8 0-14.7-2.1-19.6-4.5L3.6 52.8c5.4 2.7 15.6 5.1 26 5.1 23 0 38.1-11.1 38.1-28.4 0-21.8-30.8-22.9-30.8-32.6 0-3 2.8-6.1 11-6.1 6.8 0 13.5 1.6 18.2 4l4.3-15.4C63.2.7 54.3-1 45.4-1 23.3-1 0 10.6 0 3.3z"/></svg></div> VISA</div>
-                                </span>
-                                <i class="fas fa-chevron-down text-slate-400"></i>
-                            </button>
-                            <div id="subs-payment-dropdown" class="absolute z-50 w-full mt-1 bg-white border border-slate-100 rounded-xl shadow-xl hidden max-h-56 overflow-y-auto py-1 top-[100%]">
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('subs-payment', 'VISA')">
-                                    <div class="w-6 flex justify-center"><svg viewBox="0 0 320 105" class="h-3.5 inline" xmlns="http://www.w3.org/2000/svg"><path fill="#1a1f71" d="M141.5 3.3l-13.4 83.3h21l13.4-83.3h-21zm146.5 80.5c-.5-2.8-5.3-13.8-5.3-13.8l-15.6-70h-21.9l-26 83.3h22.2l4.4-12.4h27l2.6 12.4h19.6zm-26.6-28.7l6.5-17.8c0-.1 1.1-3.2 1.4-4.5-.2 1.4 1 3.5 1.5 4.8l3.7 17.5h-13.1zm-84-51.8H155l-20.9 83.3h21.4l20.9-83.3h.5zm-59.5 0L96 58.7l-4-20c-1.3-6.2-7.5-12.7-14.8-15.7L57 19.3V3.3h33.8c4 0 7.5 2.5 8.5 6.4l16.1 76.9h22.5l33.3-83.3H117.9zM0 3.3v16l25 6c11.4 2.8 14.8 4.9 14.8 9.3 0 5-6.3 7.3-11.8 7.3-8.8 0-14.7-2.1-19.6-4.5L3.6 52.8c5.4 2.7 15.6 5.1 26 5.1 23 0 38.1-11.1 38.1-28.4 0-21.8-30.8-22.9-30.8-32.6 0-3 2.8-6.1 11-6.1 6.8 0 13.5 1.6 18.2 4l4.3-15.4C63.2.7 54.3-1 45.4-1 23.3-1 0 10.6 0 3.3z"/></svg></div> VISA
-                                </div>
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('subs-payment', 'MasterCard')">
-                                    <div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-4 object-contain"></div> MasterCard
-                                </div>
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('subs-payment', 'JCB')">
-                                    <div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-4 object-contain"></div> JCB
-                                </div>
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('subs-payment', 'UnionPay')">
-                                    <div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-4 object-contain"></div> UnionPay
-                                </div>
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('subs-payment', 'E-Wallet')">
-                                    <span class="text-lg w-6 text-center">📱</span> E-Wallet
-                                </div>
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('subs-payment', 'Bank Transfer')">
-                                    <span class="text-lg w-6 text-center">🏦</span> Bank Transfer
-                                </div>
-                                <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('subs-payment', 'Cash')">
-                                    <span class="text-lg w-6 text-center">💵</span> Cash
-                                </div>
-                            </div>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Card Name <span class="text-[8px] opacity-70">(Optional)</span></label>
-                            <input type="text" id="subs-card-name" placeholder="e.g. KBank, Citi" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700">
-                        </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Payment Method</label>
+                        <select id="subs-payment" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer">
+                            <option value="Credit Card">💳 Credit Card</option>
+                            <option value="E-Wallet">📱 E-Wallet</option>
+                            <option value="Bank Transfer">🏦 Bank Transfer</option>
+                        </select>
                     </div>
                     
                     <button type="submit" id="subs-submit-btn" class="w-full bg-violet-100 text-violet-600 py-3.5 rounded-xl text-sm font-bold mt-2 hover:bg-violet-200 transition-colors">
@@ -606,6 +561,7 @@
             
             <div id="history-list" class="space-y-3"></div>
             
+            <!-- ปุ่ม Load More Pagination -->
             <button id="load-more-btn" onclick="loadMoreHistory()" class="hidden w-full py-3.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-200 transition-colors mt-4">
                 Load More
             </button>
@@ -615,6 +571,7 @@
         <div id="page-analytics" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Summary</h2>
+                <!-- สรุปยอดประจำเดือน -->
                 <div class="relative bg-white rounded-xl border border-slate-100 shadow-sm">
                     <input type="month" id="summary-month-filter" onchange="updateUI()" class="bg-transparent text-violet-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer w-[120px]">
                 </div>
@@ -760,7 +717,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDs1Mcb6xffNLjVnxA6AT9j0zy6rgUFz-SIeabsVCUo_4uYLmhaqSQ8ml663lu4kyi/exec'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzaub1jtJ5vsbeKsnX5ANCGAPvi6Q4uFFbfxBpKe1GIKTzQ6J0FpzmFfUOjPEWEvWKi/exec'; 
         
         const FIXED_BUDGET = 0; 
         let expenses = []; 
@@ -796,48 +753,10 @@
             'Invest_Other': '#38bdf8'
         };
 
-        // 🛑 ข้อมูลสำหรับ Custom Dropdown ในหน้า Subs
-        const paymentDisplays = {
-            'VISA': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><svg viewBox="0 0 320 105" class="h-3.5 inline" xmlns="http://www.w3.org/2000/svg"><path fill="#1a1f71" d="M141.5 3.3l-13.4 83.3h21l13.4-83.3h-21zm146.5 80.5c-.5-2.8-5.3-13.8-5.3-13.8l-15.6-70h-21.9l-26 83.3h22.2l4.4-12.4h27l2.6 12.4h19.6zm-26.6-28.7l6.5-17.8c0-.1 1.1-3.2 1.4-4.5-.2 1.4 1 3.5 1.5 4.8l3.7 17.5h-13.1zm-84-51.8H155l-20.9 83.3h21.4l20.9-83.3h.5zm-59.5 0L96 58.7l-4-20c-1.3-6.2-7.5-12.7-14.8-15.7L57 19.3V3.3h33.8c4 0 7.5 2.5 8.5 6.4l16.1 76.9h22.5l33.3-83.3H117.9zM0 3.3v16l25 6c11.4 2.8 14.8 4.9 14.8 9.3 0 5-6.3 7.3-11.8 7.3-8.8 0-14.7-2.1-19.6-4.5L3.6 52.8c5.4 2.7 15.6 5.1 26 5.1 23 0 38.1-11.1 38.1-28.4 0-21.8-30.8-22.9-30.8-32.6 0-3 2.8-6.1 11-6.1 6.8 0 13.5 1.6 18.2 4l4.3-15.4C63.2.7 54.3-1 45.4-1 23.3-1 0 10.6 0 3.3z"/></svg></div> VISA</div>',
-            'MasterCard': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-4 object-contain"></div> MasterCard</div>',
-            'JCB': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-4 object-contain"></div> JCB</div>',
-            'UnionPay': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-4 object-contain"></div> UnionPay</div>',
-            'Cash': '<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">💵</span> Cash</div>',
-            'E-Wallet': '<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">📱</span> E-Wallet</div>',
-            'Bank Transfer': '<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">🏦</span> Bank Transfer</div>',
-            
-            // เพิ่มการจับคู่ข้อความสำหรับ Dropdown หน้า Home (แบบที่ไม่มีโลโก้ภาพ)
-            'Credit Card / E-Wallet': '<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">💳</span> Credit Card / E-Wallet</div>',
-            'Internet Banking / QR Payment': '<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">🏦</span> Internet Banking</div>',
-            'Loan etc.': '<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">💸</span> Loan etc.</div>'
-        };
-
-        function updatePaymentDisplay(type, value) {
-            const displayHtml = paymentDisplays[value] || `<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">💳</span> ${value}</div>`;
-            if (type === 'subs-payment') {
-                const el = document.getElementById('subs-payment-selected');
-                if (el) el.innerHTML = displayHtml;
-            } else if (type === 'payment') {
-                const el = document.getElementById('payment-selected');
-                if (el) el.innerHTML = displayHtml;
-            }
-        }
-
-        function selectPaymentOption(type, value) {
-            if (type === 'subs-payment') {
-                document.getElementById('subs-payment').value = value;
-                updatePaymentDisplay('subs-payment', value);
-                document.getElementById('subs-payment-dropdown').classList.add('hidden');
-            } else if (type === 'payment') {
-                document.getElementById('payment').value = value;
-                updatePaymentDisplay('payment', value);
-                document.getElementById('payment-dropdown').classList.add('hidden');
-            }
-        }
-
         function togglePasswordVisibility(inputId, iconId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
+            
             if (input.type === "password") {
                 input.type = "text";
                 icon.classList.remove("fa-eye-slash");
@@ -869,10 +788,14 @@
             const timeString = `Updated : ${day} ${month} ${year} : ${strHours}:${minutes}:${seconds} ${ampm}`;
             
             const updateElCard = document.getElementById('last-updated-text-card');
-            if(updateElCard) updateElCard.innerText = timeString;
+            if(updateElCard) {
+                updateElCard.innerText = timeString;
+            }
             
             const updateEl = document.getElementById('last-updated-text');
-            if(updateEl) updateEl.innerText = timeString;
+            if(updateEl) {
+                updateEl.innerText = timeString;
+            }
         }
 
         async function callApi(action, payload = {}) {
@@ -1056,23 +979,12 @@
         document.addEventListener('click', function(event) { 
             const menu = document.getElementById('top-menu'); 
             const menuBtn = document.getElementById('menu-btn'); 
+            
             if (menu && menuBtn) { 
                 if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) { 
                     menu.classList.remove('active'); 
                 } 
             } 
-            
-            const payDrop = document.getElementById('payment-dropdown');
-            const payBtn = document.getElementById('payment-btn');
-            if (payDrop && payBtn && !payDrop.contains(event.target) && !payBtn.contains(event.target)) {
-                payDrop.classList.add('hidden');
-            }
-            
-            const subsPayDrop = document.getElementById('subs-payment-dropdown');
-            const subsPayBtn = document.getElementById('subs-payment-btn');
-            if (subsPayDrop && subsPayBtn && !subsPayDrop.contains(event.target) && !subsPayBtn.contains(event.target)) {
-                subsPayDrop.classList.add('hidden');
-            }
         });
 
         function logout() { 
@@ -1109,6 +1021,7 @@
             const toastIcon = document.getElementById('toast-icon'); 
             
             toastMsg.innerText = message; 
+            
             if (isError) { 
                 toastIcon.className = "fas fa-exclamation-circle text-rose-500 text-xl"; 
             } else { 
@@ -1125,7 +1038,9 @@
         }
 
         function toggleMenu(e) { 
-            if(e) e.stopPropagation(); 
+            if(e) {
+                e.stopPropagation(); 
+            }
             document.getElementById('top-menu').classList.toggle('active'); 
         }
 
@@ -1134,18 +1049,26 @@
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
             } 
             
-            ['home', 'subscriptions', 'history', 'analytics', 'dashboard', 'profile'].forEach(id => { 
+            const pages = ['home', 'subscriptions', 'history', 'analytics', 'dashboard', 'profile'];
+            
+            pages.forEach(id => { 
                 const pageEl = document.getElementById('page-' + id); 
-                if(pageEl) pageEl.classList.remove('page-active'); 
+                if(pageEl) {
+                    pageEl.classList.remove('page-active'); 
+                }
                 
                 const navEl = document.getElementById('nav-' + id); 
-                if(navEl) navEl.classList.remove('nav-active'); 
+                if(navEl) {
+                    navEl.classList.remove('nav-active'); 
+                }
             }); 
             
             document.getElementById('page-' + pageId).classList.add('page-active'); 
             
             const targetNav = document.getElementById('nav-' + pageId); 
-            if(targetNav) targetNav.classList.add('nav-active'); 
+            if(targetNav) {
+                targetNav.classList.add('nav-active'); 
+            }
             
             document.getElementById('top-menu').classList.remove('active'); 
             
@@ -1165,6 +1088,7 @@
             } else { 
                 updateUI(); 
             }
+            
             window.scrollTo(0,0); 
         }
 
@@ -1226,8 +1150,13 @@
             const list = document.getElementById('history-list'); 
             const subsList = document.getElementById('subscriptions-list');
             
-            if(list) list.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
-            if(subsList) subsList.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
+            if(list) {
+                list.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
+            }
+            
+            if(subsList) {
+                subsList.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
+            }
             
             const res = await callApi("get");
             
@@ -1244,17 +1173,17 @@
             updateUI(); 
         }
 
-        // ฟังก์ชันแก้ไขสำหรับ รายจ่ายหลัก (หน้า Home)
         function openEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
-            if(!item) return;
+            
+            if(!item) {
+                return;
+            }
             
             editingRowId = rowId;
             document.getElementById('amount').value = item.amount;
             document.getElementById('date').value = item.date;
-            
             document.getElementById('payment').value = item.payment;
-            updatePaymentDisplay('payment', item.payment);
             
             let catSelect = document.getElementById('category');
             let optionExists = Array.from(catSelect.options).some(opt => opt.value === item.category);
@@ -1274,7 +1203,9 @@
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
             
             switchPage('home');
-            setTimeout(() => { document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' }); }, 300);
+            setTimeout(() => { 
+                document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' }); 
+            }, 300);
         }
 
         function cancelEdit() {
@@ -1282,47 +1213,22 @@
             document.getElementById('expense-form').reset();
             document.getElementById('date').valueAsDate = new Date();
             
-            document.getElementById('payment').value = 'Cash';
-            updatePaymentDisplay('payment', 'Cash');
-            
             document.getElementById('form-title').innerHTML = '<i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction';
             document.getElementById('submit-btn').innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // ฟังก์ชันแก้ไขสำหรับ Subscriptions ที่รองรับ Card Name
         function openSubsEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
-            if(!item) return;
+            
+            if(!item) {
+                return;
+            }
             
             editingSubsRowId = rowId;
             document.getElementById('subs-amount').value = item.amount;
             document.getElementById('subs-date').value = item.date;
-            
-            let paymentStr = item.payment || '';
-            let basePay = 'VISA';
-            let cardName = '';
-            
-            if(paymentStr.includes(' - ')) {
-                let parts = paymentStr.split(' - ');
-                basePay = parts[0];
-                cardName = parts[1];
-            } else {
-                const knownTypes = ['VISA', 'MasterCard', 'JCB', 'UnionPay', 'Cash', 'E-Wallet', 'Bank Transfer'];
-                let found = knownTypes.find(t => paymentStr.startsWith(t));
-                if(found) {
-                    basePay = found;
-                    cardName = paymentStr.substring(found.length).trim();
-                } else {
-                    basePay = 'VISA';
-                    cardName = paymentStr;
-                }
-            }
-            
-            document.getElementById('subs-payment').value = basePay;
-            updatePaymentDisplay('subs-payment', basePay);
-            document.getElementById('subs-card-name').value = cardName;
-            
+            document.getElementById('subs-payment').value = item.payment;
             document.getElementById('subs-details').value = item.details;
             
             document.getElementById('subs-form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Subscription';
@@ -1330,17 +1236,15 @@
             document.getElementById('cancel-subs-edit-btn').classList.remove('hidden');
             
             switchPage('subscriptions');
-            setTimeout(() => { document.getElementById('subs-form-section').scrollIntoView({ behavior: 'smooth' }); }, 300);
+            setTimeout(() => { 
+                document.getElementById('subs-form-section').scrollIntoView({ behavior: 'smooth' }); 
+            }, 300);
         }
 
         function cancelSubsEdit() {
             editingSubsRowId = null;
             document.getElementById('subs-form').reset();
             document.getElementById('subs-date').valueAsDate = new Date();
-            
-            document.getElementById('subs-payment').value = 'VISA';
-            updatePaymentDisplay('subs-payment', 'VISA');
-            document.getElementById('subs-card-name').value = '';
             
             document.getElementById('subs-form-title').innerHTML = '<i class="fas fa-plus-circle text-violet-500"></i> Add Subscription';
             document.getElementById('subs-submit-btn').innerHTML = 'Save Subscription';
@@ -1353,8 +1257,15 @@
             const detailsVal = document.getElementById('details').value; 
             const amountVal = document.getElementById('amount').value;
             
-            if (!detailsVal || !detailsVal.trim()) { showToast("Please enter a Note!", true); return; }
-            if (!amountVal || parseFloat(amountVal) <= 0) { showToast("Please enter a valid amount!", true); return; }
+            if (!detailsVal || !detailsVal.trim()) { 
+                showToast("Please enter a Note!", true); 
+                return; 
+            }
+            
+            if (!amountVal || parseFloat(amountVal) <= 0) { 
+                showToast("Please enter a valid amount!", true); 
+                return; 
+            }
             
             const btn = document.getElementById('submit-btn'); 
             btn.disabled = true; 
@@ -1386,7 +1297,12 @@
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
-                showToast(editingRowId ? "Updated successfully!" : "Record saved successfully!"); 
+                if(editingRowId) {
+                    showToast("Updated successfully!");
+                } else {
+                    showToast("Record saved successfully!");
+                }
+                
                 cancelEdit();
                 receiptBase64 = null; 
                 receiptName = null; 
@@ -1405,13 +1321,16 @@
             
             const detailsVal = document.getElementById('subs-details').value; 
             const amountVal = document.getElementById('subs-amount').value;
-            const basePay = document.getElementById('subs-payment').value;
-            const cardName = document.getElementById('subs-card-name').value.trim();
             
-            const finalPayment = cardName ? `${basePay} - ${cardName}` : basePay;
+            if (!detailsVal || !detailsVal.trim()) { 
+                showToast("Please enter a Name!", true); 
+                return; 
+            }
             
-            if (!detailsVal || !detailsVal.trim()) { showToast("Please enter a Name!", true); return; }
-            if (!amountVal || parseFloat(amountVal) <= 0) { showToast("Please enter a valid amount!", true); return; }
+            if (!amountVal || parseFloat(amountVal) <= 0) { 
+                showToast("Please enter a valid amount!", true); 
+                return; 
+            }
             
             const btn = document.getElementById('subs-submit-btn'); 
             btn.disabled = true; 
@@ -1422,7 +1341,7 @@
             const payload = { 
                 date: document.getElementById('subs-date').value, 
                 time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }), 
-                payment: finalPayment,
+                payment: document.getElementById('subs-payment').value, 
                 category: "Subscription_List", 
                 details: detailsVal.trim(), 
                 amount: amountVal, 
@@ -1442,7 +1361,12 @@
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
-                showToast(editingSubsRowId ? "Subscription updated!" : "Subscription saved successfully!"); 
+                if(editingSubsRowId) {
+                    showToast("Subscription updated!");
+                } else {
+                    showToast("Subscription saved successfully!");
+                }
+                 
                 cancelSubsEdit();
                 loadDataFromSheet(); 
             } else { 
@@ -1456,6 +1380,7 @@
         async function deleteItem(rowId) { 
             if(confirm('Delete this record permanently?')) { 
                 showToast("Deleting...");
+                
                 const res = await callApi("delete", { rowId: rowId });
                 
                 if(res.status === "Success") { 
@@ -1470,8 +1395,14 @@
         function toggleDay(date) { 
             const el = document.getElementById('details-' + date); 
             const icon = document.getElementById('icon-' + date); 
-            if(el) el.classList.toggle('active'); 
-            if(icon) icon.classList.toggle('rotated'); 
+            
+            if(el) {
+                el.classList.toggle('active'); 
+            }
+            
+            if(icon) {
+                icon.classList.toggle('rotated'); 
+            }
         }
         
         function getIcon(cat) { 
@@ -1497,13 +1428,19 @@
 
         function renderDoughnutChart(ctxId, chartVar, dataObj) { 
             const ctx = document.getElementById(ctxId); 
-            if(!ctx) return chartVar; 
+            
+            if(!ctx) {
+                return chartVar; 
+            }
             
             const labels = Object.keys(dataObj); 
             const dataValues = Object.values(dataObj); 
             const bgColors = labels.map(cat => globalColorsMap[cat] || '#cbd5e1'); 
             
-            if(chartVar) chartVar.destroy(); 
+            if(chartVar) {
+                chartVar.destroy(); 
+            }
+            
             Chart.defaults.font.family = "'Plus Jakarta Sans', 'Kanit', sans-serif";
             
             return new Chart(ctx, { 
@@ -1522,7 +1459,9 @@
                     responsive: true, 
                     cutout: '75%', 
                     plugins: { 
-                        legend: { display: false }, 
+                        legend: { 
+                            display: false 
+                        }, 
                         tooltip: { 
                             backgroundColor: 'rgba(15, 23, 42, 0.9)', 
                             padding: 12, 
@@ -1569,7 +1508,8 @@
                             <span class="text-[10px] text-slate-400 font-medium bg-slate-100 px-1.5 py-0.5 rounded-md">${displayPercent}%)</span>
                         </div>
                     </div>
-                    <span class="font-black text-slate-800">${item.val.toLocaleString()} THB</span>`; 
+                    <span class="font-black text-slate-800">${item.val.toLocaleString()} THB</span>
+                `; 
                 listContainer.appendChild(div); 
             }); 
         }
@@ -1580,11 +1520,17 @@
             const pSum = document.getElementById('payment-summary-container');
             const subsList = document.getElementById('subscriptions-list');
             
-            if(!list || !stats) return; 
+            if(!list || !stats) {
+                return; 
+            }
+            
             list.innerHTML = ''; 
             stats.innerHTML = ''; 
             pSum.innerHTML = '';
-            if (subsList) subsList.innerHTML = '';
+            
+            if (subsList) {
+                subsList.innerHTML = '';
+            }
 
             const monthFilterEl = document.getElementById('summary-month-filter');
             const summaryMonthVal = monthFilterEl ? monthFilterEl.value : ''; 
@@ -1594,10 +1540,18 @@
                 stats.innerHTML = '<div class="text-center p-12 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm"><i class="fas fa-box-open text-4xl mb-4 text-slate-200"></i><br>No Records Found</div>';
             }
             
-            let totalExpenseHome = 0, totalIncomeHome = 0; 
-            let totalExpenseSummary = 0, totalIncomeSummary = 0;
+            let totalExpenseHome = 0;
+            let totalIncomeHome = 0; 
+            let totalExpenseSummary = 0;
+            let totalIncomeSummary = 0;
+            
             const daily = {}; 
-            const payStats = { 'Cash': 0, 'Internet Banking': 0, 'E-Wallet': 0, 'VISA': 0, 'MasterCard': 0, 'JCB': 0, 'UnionPay': 0 };
+            const payStats = { 
+                'Cash': 0, 
+                'Credit Card / E-Wallet': 0, 
+                'Internet Banking / QR Payment': 0, 
+                'Loan etc.': 0 
+            };
             
             let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
             let sortedExpenses = [...expenses];
@@ -1681,11 +1635,13 @@
                             <button onclick="openEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors ml-1"><i class="fas fa-edit"></i></button>
                             <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>
                         </div>
-                    </div>`; 
+                    </div>
+                `; 
                 list.appendChild(div);
             });
 
             const loadMoreBtn = document.getElementById('load-more-btn');
+            
             if(loadMoreBtn) {
                 if(regularExpenses.length > currentHistoryLimit) { 
                     loadMoreBtn.classList.remove('hidden'); 
@@ -1713,78 +1669,98 @@
                         totalIncomeSummary += amt; 
                     } else { 
                         totalExpenseSummary += amt; 
-                        if (!categoryStats[item.category]) categoryStats[item.category] = 0; 
+                        
+                        if (!categoryStats[item.category]) {
+                            categoryStats[item.category] = 0; 
+                        }
+                        
                         categoryStats[item.category] += amt; 
                     }
                     
                     let pKey = item.payment; 
-                    if (!payStats.hasOwnProperty(pKey)) payStats[pKey] = 0; 
+                    
+                    if (!payStats.hasOwnProperty(pKey)) {
+                        payStats[pKey] = 0; 
+                    }
+                    
                     payStats[pKey] += impact;
                     
-                    if (!daily[item.date]) daily[item.date] = { total: 0, categories: {} }; 
+                    if (!daily[item.date]) {
+                        daily[item.date] = { total: 0, categories: {} }; 
+                    }
+                    
                     daily[item.date].total += impact; 
                     
                     if (!daily[item.date].categories[item.category]) { 
                         daily[item.date].categories[item.category] = { amt: 0, isIncome: isIncome }; 
                     }
+                    
                     daily[item.date].categories[item.category].amt += amt;
                 }
 
                 if (!isIncome) {
-                    if (!globalDailyCategoryStats[item.date]) globalDailyCategoryStats[item.date] = {}; 
-                    if (!globalDailyCategoryStats[item.date][item.category]) globalDailyCategoryStats[item.date][item.category] = 0; 
+                    if (!globalDailyCategoryStats[item.date]) {
+                        globalDailyCategoryStats[item.date] = {}; 
+                    }
+                    
+                    if (!globalDailyCategoryStats[item.date][item.category]) {
+                        globalDailyCategoryStats[item.date][item.category] = 0; 
+                    }
+                    
                     globalDailyCategoryStats[item.date][item.category] += amt;
                 }
             });
 
             // 3. เรนเดอร์หน้า Subscriptions (ดึงเฉพาะ Subscription_List)
             let totalSubsCost = 0;
+            
             if (subsExpenses.length === 0) {
-                if (subsList) subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">There are no recent subscription records in your history.</span></div>';
+                if (subsList) {
+                    subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">There are no recent subscription records in your history.</span></div>';
+                }
             } else {
                 subsExpenses.forEach(item => {
                     const amt = parseFloat(item.amount) || 0;
                     totalSubsCost += amt;
                     
-                    let payText = item.payment || '';
-                    let payIcon = '<i class="fas fa-credit-card text-slate-400"></i>';
-                    
-                    if(payText.includes('VISA')) payIcon = '<svg viewBox="0 0 320 105" class="h-2.5 inline" xmlns="http://www.w3.org/2000/svg"><path fill="#1a1f71" d="M141.5 3.3l-13.4 83.3h21l13.4-83.3h-21zm146.5 80.5c-.5-2.8-5.3-13.8-5.3-13.8l-15.6-70h-21.9l-26 83.3h22.2l4.4-12.4h27l2.6 12.4h19.6zm-26.6-28.7l6.5-17.8c0-.1 1.1-3.2 1.4-4.5-.2 1.4 1 3.5 1.5 4.8l3.7 17.5h-13.1zm-84-51.8H155l-20.9 83.3h21.4l20.9-83.3h.5zm-59.5 0L96 58.7l-4-20c-1.3-6.2-7.5-12.7-14.8-15.7L57 19.3V3.3h33.8c4 0 7.5 2.5 8.5 6.4l16.1 76.9h22.5l33.3-83.3H117.9zM0 3.3v16l25 6c11.4 2.8 14.8 4.9 14.8 9.3 0 5-6.3 7.3-11.8 7.3-8.8 0-14.7-2.1-19.6-4.5L3.6 52.8c5.4 2.7 15.6 5.1 26 5.1 23 0 38.1-11.1 38.1-28.4 0-21.8-30.8-22.9-30.8-32.6 0-3 2.8-6.1 11-6.1 6.8 0 13.5 1.6 18.2 4l4.3-15.4C63.2.7 54.3-1 45.4-1 23.3-1 0 10.6 0 3.3z"/></svg>';
-                    else if(payText.includes('MasterCard')) payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-3 inline">';
-                    else if(payText.includes('JCB')) payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-3 inline">';
-                    else if(payText.includes('UnionPay')) payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-3 inline">';
-
                     if (subsList) {
                         const div = document.createElement('div'); 
                         div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow";
                         div.innerHTML = `
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shadow-inner text-lg"><i class="fas fa-sync-alt"></i></div>
+                                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shadow-inner text-lg">
+                                    <i class="fas fa-sync-alt"></i>
+                                </div>
                                 <div>
                                     <p class="font-bold text-slate-800 text-sm">${item.details}</p>
-                                    <p class="text-[10px] text-slate-400 font-medium flex items-center gap-1.5 mt-0.5">
-                                        <i class="far fa-calendar-alt"></i> ${item.date} 
-                                        <span class="mx-1 opacity-50">•</span> 
-                                        <span class="flex items-center gap-1">${payIcon} ${payText}</span>
-                                    </p>
+                                    <p class="text-[10px] text-slate-400 font-medium">Due: ${item.date} • ${item.payment}</p>
                                 </div>
                             </div>
                             <div class="text-right flex flex-col items-end">
                                 <p class="text-base font-black text-rose-500">-${amt.toLocaleString()} THB</p>
                                 <div class="flex gap-3 mt-1 items-center">
-                                    <button onclick="openSubsEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors"><i class="fas fa-edit"></i></button>
-                                    <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>
+                                    <button onclick="openSubsEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </div>
-                            </div>`;
+                            </div>
+                        `;
                         subsList.appendChild(div);
                     }
                 });
             }
             
             const totalSubsEl = document.getElementById('total-subs-cost'); 
-            if (totalSubsEl) totalSubsEl.innerText = totalSubsCost.toLocaleString();
+            
+            if (totalSubsEl) {
+                totalSubsEl.innerText = totalSubsCost.toLocaleString();
+            }
 
             const dateDropdown = document.getElementById('dashboard-date-filter'); 
+            
             if (dateDropdown) { 
                 const currentSelectedDate = dateDropdown.value; 
                 dateDropdown.innerHTML = ''; 
@@ -1797,9 +1773,14 @@
                         const opt = document.createElement('option'); 
                         opt.value = date; 
                         opt.text = date; 
-                        if(date === currentSelectedDate) opt.selected = true; 
+                        
+                        if(date === currentSelectedDate) {
+                            opt.selected = true; 
+                        }
+                        
                         dateDropdown.appendChild(opt); 
                     }); 
+                    
                     if(!currentSelectedDate || !globalDailyCategoryStats[currentSelectedDate]) { 
                         dateDropdown.value = sortedDates[0]; 
                     } 
@@ -1810,12 +1791,15 @@
                 if (total !== 0 || ['Cash', 'Credit Card / E-Wallet', 'Internet Banking / QR Payment', 'Loan etc.'].includes(method)) { 
                     const payDiv = document.createElement('div'); 
                     payDiv.className = "modern-card p-4 text-left border border-slate-100 shadow-sm bg-white hover:shadow-md transition-shadow"; 
+                    
                     let textColor = total < 0 ? "text-rose-500" : (total > 0 ? "text-emerald-500" : "text-slate-800"); 
                     let prefix = total > 0 ? "+" : "";
                     
                     payDiv.innerHTML = `
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${method}</span>
-                        <p class="text-xl font-black ${textColor} mt-1 leading-none">${prefix}${total.toLocaleString()}</p>`; 
+                        <p class="text-xl font-black ${textColor} mt-1 leading-none">${prefix}${total.toLocaleString()}</p>
+                    `; 
+                    
                     pSum.appendChild(payDiv); 
                 } 
             });
@@ -1823,6 +1807,7 @@
             Object.keys(daily).sort((a,b) => new Date(b) - new Date(a)).forEach(date => { 
                 const data = daily[date]; 
                 const mainDiv = document.createElement('div'); 
+                
                 let totalColor = data.total >= 0 ? "text-emerald-500" : "text-slate-800"; 
                 let totalPrefix = data.total > 0 ? "+" : "";
                 
@@ -1851,10 +1836,12 @@
                                         <span class="font-bold text-slate-700">${cat}</span>
                                     </div>
                                     <span class="font-black ${catInfo.isIncome ? 'text-emerald-500' : 'text-slate-800'}">${catInfo.isIncome ? '+' : '-'}${catInfo.amt.toLocaleString()}</span>
-                                </div>`; 
+                                </div>
+                            `; 
                         }).join('')}
                         </div>
-                    </div>`; 
+                    </div>
+                `; 
                 stats.appendChild(mainDiv); 
             });
 
@@ -1863,18 +1850,31 @@
             percentHome = Math.max(0, Math.min(1, percentHome)); 
             
             const bar = document.getElementById('budget-progress-bar');
+            
             if(bar) { 
-                setTimeout(() => { bar.style.width = (percentHome * 100) + '%'; }, 100); 
-                if (percentHome >= 1) bar.style.backgroundColor = "#fda4af"; 
-                else bar.style.backgroundColor = "#ffffff"; 
+                setTimeout(() => { 
+                    bar.style.width = (percentHome * 100) + '%'; 
+                }, 100); 
+                
+                if (percentHome >= 1) {
+                    bar.style.backgroundColor = "#fda4af"; 
+                } else {
+                    bar.style.backgroundColor = "#ffffff"; 
+                }
             }
             
             document.getElementById('cash-remaining').innerText = remainingHome.toLocaleString(); 
             const usedEl = document.getElementById('cash-used-text'); 
-            if(usedEl) usedEl.innerText = totalExpenseHome.toLocaleString();
+            
+            if(usedEl) {
+                usedEl.innerText = totalExpenseHome.toLocaleString();
+            }
             
             const baseBudgetEl = document.getElementById('budget-base-text'); 
-            if(baseBudgetEl) baseBudgetEl.innerText = totalIncomeHome.toLocaleString();
+            
+            if(baseBudgetEl) {
+                baseBudgetEl.innerText = totalIncomeHome.toLocaleString();
+            }
             
             document.getElementById('total-expenses-text').innerText = totalExpenseSummary.toLocaleString() + " THB"; 
             document.getElementById('total-income-text').innerText = totalIncomeSummary.toLocaleString() + " THB"; 
@@ -1913,16 +1913,21 @@
                                 <span class="text-[10px] text-slate-400 font-medium bg-slate-100 px-1.5 py-0.5 rounded-md">${displayPercent}%)</span>
                             </div>
                         </div>
-                        <span class="font-black text-slate-800">${item.val.toLocaleString()} THB</span>`; 
+                        <span class="font-black text-slate-800">${item.val.toLocaleString()} THB</span>
+                    `; 
                     overallListContainer.appendChild(div); 
                 }); 
             }
+            
             updateDailyCategoryChart();
         }
 
         async function getCurrentLocation() { 
             return new Promise(res => { 
-                if(!navigator.geolocation) return res(""); 
+                if(!navigator.geolocation) {
+                    return res(""); 
+                }
+                
                 navigator.geolocation.getCurrentPosition( 
                     p => res(`https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`), 
                     () => res(""), 
@@ -1936,8 +1941,10 @@
                 showToast("No data to export", true); 
                 return; 
             } 
+            
             const ws = XLSX.utils.json_to_sheet(expenses); 
             const wb = XLSX.utils.book_new(); 
+            
             XLSX.utils.book_append_sheet(wb, ws, "Expenses"); 
             XLSX.writeFile(wb, `Wallet_${new Date().toISOString().slice(0,10)}.xlsx`); 
         }
