@@ -316,9 +316,15 @@
                 <i class="fas fa-ellipsis-v"></i>
             </button>
 
-            <!-- Dropdown Menu -->
+            <!-- Dropdown Menu (ย้าย Stats เข้ามาอยู่ในนี้) -->
             <div id="top-menu" class="menu-dropdown absolute top-16 right-6 w-64 max-h-[75vh] overflow-y-auto modern-card p-2 z-50 shadow-2xl border-none">
                 <ul class="flex flex-col space-y-1">
+                    <li>
+                        <button onclick="switchPage('analytics'); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
+                            <i class="fas fa-chart-bar w-4 text-violet-500"></i> Stats
+                        </button>
+                    </li>
+                    <div class="border-t border-slate-100 my-1"></div>
                     <li>
                         <button onclick="switchPage('dashboard'); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
                             <i class="fas fa-chart-pie w-4 text-violet-500"></i> Analytics
@@ -352,7 +358,6 @@
                     <div class="flex flex-col mt-1.5">
                         <p class="text-xs font-bold uppercase tracking-wider text-white/90">All Time Balance</p>
                     </div>
-                    <!-- เวลาอัปเดตมุมขวาบน ภายในกล่องสีชมพู -->
                     <div class="flex flex-col items-end gap-2">
                         <span id="last-updated-text-card" class="text-[9px] font-medium text-white/90 bg-white/20 px-2.5 py-1 rounded-md backdrop-blur-md border border-white/30 shadow-sm whitespace-nowrap">
                             <i class="fas fa-clock mr-1"></i> Updated : -
@@ -390,6 +395,7 @@
                 </div>
                 
                 <form id="expense-form" class="space-y-4">
+                    
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Amount <span class="text-rose-500">*</span></label>
                         <div class="relative">
@@ -417,13 +423,13 @@
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Category</label>
                         <select id="category" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer" required>
+                            <!-- ถอด Subscriptions ออกจากตัวเลือก Category ตรงนี้ครับ -->
                             <optgroup label="EXPENSES">
                                 <option value="Food">🍱 Food & Dining</option>
                                 <option value="Transport">🚆 Transport</option>
                                 <option value="Gasoline">⛽ Gasoline</option>
                                 <option value="Shopping">🛍️ Shopping</option>
                                 <option value="Bills">🧾 Bills & Utilities</option>
-                                <option value="Subscription">🔄 Subscriptions</option>
                                 <option value="Housing">🏠 Housing</option>
                                 <option value="Health">💆 Health & Beauty</option>
                                 <option value="Entertainment">🎬 Entertainment</option>
@@ -487,7 +493,7 @@
             <h3 class="text-xs font-bold text-violet-500 uppercase tracking-widest pt-2 flex items-center gap-2">
                 <i class="fas fa-list-ul"></i> Active Subscriptions
             </h3>
-            <p class="text-[10px] text-slate-400 leading-tight">ระบบจะสรุปยอดค่าใช้จ่ายที่ถูกบันทึกในหมวดหมู่ <b>Subscriptions</b> โดยอัตโนมัติ (ดึงยอดล่าสุดของแต่ละชื่อที่บันทึก)</p>
+            <p class="text-[10px] text-slate-400 leading-tight">ระบบจะสรุปยอดค่าใช้จ่ายที่ถูกบันทึกในหมวดหมู่ <b>Subscriptions</b> ในอดีตโดยอัตโนมัติ (ดึงยอดล่าสุดของแต่ละชื่อที่บันทึก)</p>
             
             <div id="subscriptions-list" class="space-y-3"></div>
         </div>
@@ -520,11 +526,10 @@
             </button>
         </div>
         
-        <!-- PAGE: SUMMARY -->
+        <!-- PAGE: SUMMARY (STATS) -->
         <div id="page-analytics" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Summary</h2>
-                <!-- สรุปยอดประจำเดือน -->
                 <div class="relative bg-white rounded-xl border border-slate-100 shadow-sm">
                     <input type="month" id="summary-month-filter" onchange="updateUI()" class="bg-transparent text-violet-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer w-[120px]">
                 </div>
@@ -654,21 +659,18 @@
 
         <!-- Floating Bottom Navigation -->
         <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[400px] bg-white/85 backdrop-blur-xl border border-slate-100 shadow-[0_10px_40px_rgba(139,92,246,0.15)] rounded-[2rem] p-2 flex justify-between items-center">
-            <button onclick="switchPage('home')" id="nav-home" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400 nav-active">
+            <!-- ปรับขนาดจาก w-1/4 เป็น w-1/3 สำหรับ 3 ปุ่ม -->
+            <button onclick="switchPage('home')" id="nav-home" class="nav-btn w-1/3 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400 nav-active">
                 <i class="fas fa-layer-group text-xl mb-0.5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-widest">Home</span>
             </button>
-            <button onclick="switchPage('subscriptions')" id="nav-subscriptions" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
+            <button onclick="switchPage('subscriptions')" id="nav-subscriptions" class="nav-btn w-1/3 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
                 <i class="fas fa-sync-alt text-xl mb-0.5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-widest">Subs</span>
             </button>
-            <button onclick="switchPage('history')" id="nav-history" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
+            <button onclick="switchPage('history')" id="nav-history" class="nav-btn w-1/3 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
                 <i class="fas fa-receipt text-xl mb-0.5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-widest">History</span>
-            </button>
-            <button onclick="switchPage('analytics')" id="nav-analytics" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
-                <i class="fas fa-chart-pie text-xl mb-0.5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Stats</span>
             </button>
         </div>
     </div>
@@ -709,7 +711,6 @@
             'Invest_Other': '#38bdf8'
         };
 
-        // ฟังก์ชันเปิด-ปิดการแสดงผลรหัสผ่าน (สลับไอคอนรูปดวงตา)
         function togglePasswordVisibility(inputId, iconId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
@@ -724,7 +725,6 @@
             }
         }
 
-        // ฟังก์ชันอัปเดตข้อความวันที่ล่าสุดให้เป็นรูปแบบ: 18 September 2026 : 13:58:01 PM
         function updateTimestampDisplay() {
             const now = new Date();
             const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -1038,10 +1038,10 @@
                 showToast("Please enter a display name", true); 
                 return; 
             }
-            
-            if(newPassword && newPassword !== confirmPassword) { 
-                showToast("Passwords do not match!", true); 
-                return; 
+
+            if(newPassword && newPassword !== confirmPassword) {
+                showToast("Passwords do not match!", true);
+                return;
             }
             
             const btn = document.getElementById('btn-save-profile'); 
@@ -1065,9 +1065,9 @@
                 
                 document.getElementById('profile-new-password').value = ''; 
                 document.getElementById('profile-confirm-password').value = ''; 
-                document.getElementById('profile-new-password').type = 'password'; 
-                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash'; 
-                document.getElementById('profile-confirm-password').type = 'password'; 
+                document.getElementById('profile-new-password').type = 'password';
+                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash';
+                document.getElementById('profile-confirm-password').type = 'password';
                 document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
                 
                 if(newProfilePicBase64) { 
@@ -1090,7 +1090,6 @@
             if(res.status === "Success" && res.data) { 
                 expenses = res.data; 
             }
-            
             updateTimestampDisplay(); 
             updateUI();
         }
@@ -1105,32 +1104,44 @@
             if(!item) return;
             
             editingRowId = rowId;
-            document.getElementById('amount').value = item.amount; 
-            document.getElementById('date').value = item.date; 
-            document.getElementById('payment').value = item.payment; 
-            document.getElementById('category').value = item.category; 
+            document.getElementById('amount').value = item.amount;
+            document.getElementById('date').value = item.date;
+            document.getElementById('payment').value = item.payment;
+            
+            // กรณีหมวดหมู่ถูกถอดออกไปแล้ว แต่รายการเก่ามี ให้เพิ่ม option กลับมาเฉพาะกิจเพื่อไม่ให้ error
+            let catSelect = document.getElementById('category');
+            let optionExists = Array.from(catSelect.options).some(opt => opt.value === item.category);
+            if (!optionExists) {
+                let tempOpt = document.createElement("option");
+                tempOpt.value = item.category;
+                tempOpt.text = "🔄 " + item.category;
+                catSelect.appendChild(tempOpt);
+            }
+            
+            document.getElementById('category').value = item.category;
             document.getElementById('details').value = item.details;
             
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Transaction'; 
-            document.getElementById('submit-btn').innerHTML = 'Update Transaction <i class="fas fa-check text-white/80"></i>'; 
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Transaction';
+            document.getElementById('submit-btn').innerHTML = 'Update Transaction <i class="fas fa-check text-white/80"></i>';
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
             
-            switchPage('home'); 
+            switchPage('home');
             setTimeout(() => { document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' }); }, 300);
         }
 
         function cancelEdit() {
-            editingRowId = null; 
-            document.getElementById('expense-form').reset(); 
+            editingRowId = null;
+            document.getElementById('expense-form').reset();
             document.getElementById('date').valueAsDate = new Date();
             
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction'; 
-            document.getElementById('submit-btn').innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction';
+            document.getElementById('submit-btn').innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
         document.getElementById('expense-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
+            
             const detailsVal = document.getElementById('details').value; 
             const amountVal = document.getElementById('amount').value;
             
@@ -1161,9 +1172,9 @@
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
             }
             
-            const actionType = editingRowId ? "edit" : "save"; 
+            const actionType = editingRowId ? "edit" : "save";
             const rowIdToSend = editingRowId || null;
-            
+
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
@@ -1183,14 +1194,15 @@
 
         async function deleteItem(rowId) { 
             if(confirm('Delete this record permanently?')) { 
-                showToast("Deleting..."); 
-                const res = await callApi("delete", { rowId: rowId }); 
+                showToast("Deleting...");
+                const res = await callApi("delete", { rowId: rowId });
+                
                 if(res.status === "Success") { 
                     showToast("Deleted successfully!"); 
                     loadDataFromSheet(); 
                 } else { 
                     showToast("Error: " + res.message, true); 
-                } 
+                }
             } 
         }
 
@@ -1280,7 +1292,6 @@
             } 
             
             const dailyTotal = sortedCat.reduce((sum, item) => sum + item.val, 0);
-            
             sortedCat.forEach(item => { 
                 const percent = dailyTotal > 0 ? ((item.val / dailyTotal) * 100).toFixed(1) : 0; 
                 const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
@@ -1301,18 +1312,18 @@
         }
 
         function updateUI() {
-            const list = document.getElementById('history-list'); 
-            const stats = document.getElementById('stats-container'); 
-            const pSum = document.getElementById('payment-summary-container'); 
+            const list = document.getElementById('history-list');
+            const stats = document.getElementById('stats-container');
+            const pSum = document.getElementById('payment-summary-container');
             const subsList = document.getElementById('subscriptions-list');
             
             if(!list || !stats) return; 
             list.innerHTML = ''; 
             stats.innerHTML = ''; 
-            pSum.innerHTML = ''; 
+            pSum.innerHTML = '';
             if (subsList) subsList.innerHTML = '';
 
-            const monthFilterEl = document.getElementById('summary-month-filter'); 
+            const monthFilterEl = document.getElementById('summary-month-filter');
             const summaryMonthVal = monthFilterEl ? monthFilterEl.value : ''; 
 
             if (expenses.length === 0) {
@@ -1400,12 +1411,12 @@
             });
 
             const loadMoreBtn = document.getElementById('load-more-btn');
-            if(loadMoreBtn) { 
+            if(loadMoreBtn) {
                 if(sortedExpenses.length > currentHistoryLimit) { 
                     loadMoreBtn.classList.remove('hidden'); 
                 } else { 
                     loadMoreBtn.classList.add('hidden'); 
-                } 
+                }
             }
 
             let activeSubs = {};
@@ -1460,10 +1471,9 @@
                 }
             });
 
-            // สร้างรายการ Subscription
             let totalSubsCost = 0;
             if (Object.keys(activeSubs).length === 0) {
-                if (subsList) subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">Tip: Add a transaction and select category "Subscriptions"</span></div>';
+                if (subsList) subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">There are no recent subscription records in your history.</span></div>';
             } else {
                 Object.values(activeSubs).forEach(sub => {
                     totalSubsCost += sub.amount;
@@ -1473,7 +1483,10 @@
                         div.innerHTML = `
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shadow-inner text-lg"><i class="fas fa-sync-alt"></i></div>
-                                <div><p class="font-bold text-slate-800 text-sm">${sub.name}</p><p class="text-[10px] text-slate-400 font-medium">Last paid: ${sub.date} • ${sub.payment}</p></div>
+                                <div>
+                                    <p class="font-bold text-slate-800 text-sm">${sub.name}</p>
+                                    <p class="text-[10px] text-slate-400 font-medium">Last paid: ${sub.date} • ${sub.payment}</p>
+                                </div>
                             </div>
                             <div class="text-right">
                                 <p class="text-base font-black text-rose-500">-${sub.amount.toLocaleString()}</p>
