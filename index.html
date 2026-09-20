@@ -511,7 +511,6 @@
                         
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Cycle</label>
-                            <!-- 🛑 ถอดรายสัปดาห์ออก เหลือแค่ Monthly กับ Yearly -->
                             <select id="subs-cycle" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer" required>
                                 <option value="Monthly" selected>รายเดือน (Monthly)</option>
                                 <option value="Yearly">รายปี (Yearly)</option>
@@ -519,15 +518,12 @@
                         </div>
                     </div>
                     
-                    <!-- 🛑 แยก Due Date ให้สัมพันธ์กับ Cycle -->
                     <div class="grid grid-cols-2 gap-3 mt-2">
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Due Date</label>
-                            
-                            <!-- ถ้าเป็นรายเดือน: ให้กรอกแค่วันที่ (ตัวเลข) -->
+                            <!-- ช่องสำหรับรายเดือน (ตัวเลข 1-31) -->
                             <input type="number" id="subs-date-monthly" min="1" max="31" placeholder="วันที่ (1-31)" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700" required>
-                            
-                            <!-- ถ้าเป็นรายปี: ให้กรอกเป็น วันที่และเดือน (แต่ใช้ Calendar เลือกได้เลย แล้วระบบตัดปีออกตอน Save) -->
+                            <!-- ช่องสำหรับรายปี (ปฏิทินเลือกวันและเดือน) -->
                             <input type="date" id="subs-date-yearly" class="hidden w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700">
                         </div>
                         
@@ -831,7 +827,6 @@
             }
         }
 
-        // 🛑 Event Listener สลับช่องวันที่เมื่อเปลี่ยน Cycle
         document.getElementById('subs-cycle').addEventListener('change', function(e) {
             const val = e.target.value;
             const mInput = document.getElementById('subs-date-monthly');
@@ -923,7 +918,6 @@
                 document.getElementById('main-app').classList.remove('hidden');
                 
                 document.getElementById('date').valueAsDate = new Date(); 
-                
                 document.getElementById('subs-date-monthly').value = new Date().getDate();
                 document.getElementById('subs-date-yearly').valueAsDate = new Date();
                 
@@ -1333,7 +1327,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // 🛑 ฟังก์ชันแก้ไข Subs: ดึงข้อมูลวันที่เข้า Dropdown อัจฉริยะ (รายเดือนเป็นตัวเลข, รายปีเป็นปฏิทินที่ตัดปีออก)
+        // 🛑 ฟังก์ชันแก้ไข Subs: รองรับรูปแบบ Due Date ทั้งแบบรายเดือนและรายปี (วัน/เดือน)
         function openSubsEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
             
@@ -1502,7 +1496,7 @@
             btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
-        // 🛑 Submit Subs: แปลงวันที่ให้เป็นแบบตัวเลข (รายเดือน) หรือ วัน/เดือน (รายปี)
+        // 🛑 Submit Subs: บันทึกรายปีเป็นแค่ วัน/เดือน (DD/MM) ตัดปีออก
         document.getElementById('subs-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
@@ -1528,7 +1522,7 @@
                     return;
                 }
                 const parts = rawDate.split('-');
-                formattedDate = `${parts[2]}/${parts[1]}`; // DD/MM (ตัดปีทิ้ง)
+                formattedDate = `${parts[2]}/${parts[1]}`; // DD/MM (ตัดปีออกเรียบร้อย)
             }
             
             const finalPayment = cardName ? `${basePay} - ${cardName}` : basePay;
@@ -1925,7 +1919,7 @@
                 }
             });
 
-            // 🛑 3. เรนเดอร์หน้า Subscriptions 
+            // 3. เรนเดอร์หน้า Subscriptions 
             let totalSubsCost = 0;
             
             if (subsExpenses.length === 0) {
@@ -1956,9 +1950,11 @@
                         payIcon = '<span class="text-[10px]">🏦</span>';
                     }
 
-                    // 🛑 แสดงผลวันที่แบบอัจฉริยะในรายการ
+                    // 🛑 ตรวจสอบรูปแบบวันที่เพื่อแสดงผล
                     let cycleDisplay = item.date;
                     if (cycleDisplay && !cycleDisplay.includes('/')) {
+                        cycleDisplay = 'วันที่ ' + cycleDisplay;
+                    } else if (cycleDisplay && cycleDisplay.includes('/')) {
                         cycleDisplay = 'วันที่ ' + cycleDisplay;
                     }
 
@@ -1973,7 +1969,7 @@
                                 <div>
                                     <p class="font-bold text-slate-800 text-sm">${item.details}</p>
                                     <p class="text-[10px] text-slate-400 font-medium flex items-center gap-1.5 mt-0.5">
-                                        <i class="far fa-calendar-alt"></i> ${cycleDisplay} 
+                                        <i class="far fa-calendar-alt"></i> Due: ${cycleDisplay} 
                                         <span class="mx-1 opacity-50">•</span> 
                                         <span class="flex items-center gap-1">${payIcon} ${payText}</span>
                                     </p>
