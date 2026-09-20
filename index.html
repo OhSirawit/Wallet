@@ -509,7 +509,6 @@
                             </div>
                         </div>
                         
-                        <!-- 🛑 เปลี่ยน Due Date เป็น Dropdown เลือกรอบบิล -->
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Due Date / Cycle</label>
                             <select id="subs-date" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer" required>
@@ -520,7 +519,7 @@
                         </div>
                     </div>
                     
-                    <!-- 🛑 Custom Dropdown สำหรับเลือก Payment + โลโก้แบบรูปภาพ PNG/SVG ที่คมชัด และช่องกรอกชื่อบัตร -->
+                    <!-- 🛑 Custom Dropdown สำหรับเลือก Payment + โลโก้ และช่องกรอกชื่อบัตร (อัปเดตโลโก้ VISA แล้ว) -->
                     <div class="grid grid-cols-2 gap-3 mt-2">
                         <div class="space-y-1.5 relative">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Payment Method</label>
@@ -530,7 +529,7 @@
                                 <span id="subs-payment-selected" class="flex items-center gap-2">
                                     <div class="flex items-center gap-3">
                                         <div class="w-6 flex justify-center">
-                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png" class="h-3 object-contain">
+                                            <img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain">
                                         </div> 
                                         VISA
                                     </div>
@@ -540,7 +539,7 @@
                             
                             <div id="subs-payment-dropdown" class="absolute z-50 w-full mt-1 bg-white border border-slate-100 rounded-xl shadow-xl hidden max-h-56 overflow-y-auto py-1 top-[100%]">
                                 <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('subs-payment', 'VISA')">
-                                    <div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png" class="h-3 object-contain"></div> VISA
+                                    <div class="w-6 flex justify-center"><img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain"></div> VISA
                                 </div>
                                 <div class="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-3 text-xs font-bold text-slate-700 transition-colors border-b border-slate-50 last:border-0" onclick="selectPaymentOption('subs-payment', 'MasterCard')">
                                     <div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-4 object-contain"></div> MasterCard
@@ -795,9 +794,9 @@
             'Invest_Other': '#38bdf8'
         };
 
-        // 🛑 ข้อมูลสำหรับ Custom Dropdown ในหน้า Subs (แสดงโลโก้รูปภาพแบบ PNG/SVG)
+        // 🛑 ข้อมูลสำหรับ Custom Dropdown ในหน้า Subs (อัปเดตโลโก้ VISA แล้ว)
         const paymentDisplays = {
-            'VISA': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png" class="h-3 object-contain"></div> VISA</div>',
+            'VISA': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain"></div> VISA</div>',
             'MasterCard': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-4 object-contain"></div> MasterCard</div>',
             'JCB': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-4 object-contain"></div> JCB</div>',
             'UnionPay': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-4 object-contain"></div> UnionPay</div>',
@@ -896,7 +895,6 @@
                 document.getElementById('main-app').classList.remove('hidden');
                 
                 document.getElementById('date').valueAsDate = new Date(); 
-                // 🛑 ในส่วนของ Subs Form เปลี่ยนไปใช้ Dropdown แล้ว จึงไม่ต้อง set Date ตรงนี้
                 
                 const profileImg = localStorage.getItem('userProfileImg');
                 const displayName = localStorage.getItem('userDisplayName');
@@ -910,7 +908,6 @@
                 if(displayName) { 
                     document.getElementById('nav-display-name').innerText = displayName; 
                 }
-                
                 loadDataFromSheet(); 
             } else {
                 localStorage.removeItem('loginTimestamp');
@@ -966,7 +963,6 @@
                     localStorage.setItem('userDisplayName', finalName);
                     
                     document.getElementById('login-page').classList.add('opacity-0'); 
-                    
                     setTimeout(() => { 
                         document.getElementById('login-page').classList.add('hidden'); 
                         document.getElementById('main-app').classList.remove('hidden'); 
@@ -1019,7 +1015,6 @@
                 localStorage.setItem('userProfileImg', res.profilePic || 'https://ui-avatars.com/api/?name=' + user + '&background=8b5cf6&color=fff');
                 
                 document.getElementById('login-page').classList.add('opacity-0'); 
-                
                 setTimeout(() => { 
                     document.getElementById('login-page').classList.add('hidden'); 
                     document.getElementById('main-app').classList.remove('hidden'); 
@@ -1047,6 +1042,7 @@
             return JSON.parse(jsonPayload); 
         }
 
+        // จัดการคลิกเพื่อปิด Dropdown
         document.addEventListener('click', function(event) { 
             const menu = document.getElementById('top-menu'); 
             const menuBtn = document.getElementById('menu-btn'); 
@@ -1254,7 +1250,6 @@
             updateUI(); 
         }
 
-        // 🛑 ฟังก์ชันแก้ไขสำหรับ รายจ่ายหลัก (หน้า Home)
         function openEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
             
@@ -1300,7 +1295,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // 🛑 ฟังก์ชันแก้ไขสำหรับ Subscriptions ที่รองรับ Card Name และ Due Date แบบ Dropdown
+        // 🛑 ฟังก์ชันแก้ไขสำหรับ Subscriptions ที่รองรับ Card Name
         function openSubsEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
             
@@ -1311,7 +1306,7 @@
             editingSubsRowId = rowId;
             document.getElementById('subs-amount').value = item.amount;
             
-            // 🛑 ดึงข้อมูล Due Date มาแสดงผลให้ตรงกัน
+            // 🛑 ดึงข้อมูล Due Date มาแสดงผล
             const itemDate = item.date || 'รายเดือน (Monthly)';
             const dateSelect = document.getElementById('subs-date');
             
@@ -1439,7 +1434,7 @@
             btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
-        // 🛑 Submit สำหรับฟอร์ม Subscriptions (แยก Payment และ Date อย่างถูกต้อง)
+        // 🛑 Submit สำหรับฟอร์ม Subscriptions
         document.getElementById('subs-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
@@ -1845,7 +1840,7 @@
                 }
             });
 
-            // 🛑 3. เรนเดอร์หน้า Subscriptions (ดึงโลโก้ SVG คมชัดมาแสดง)
+            // 🛑 3. เรนเดอร์หน้า Subscriptions (ดึงโลโก้ SVG ของ VISA ล่าสุดมาใช้)
             let totalSubsCost = 0;
             
             if (subsExpenses.length === 0) {
@@ -1857,11 +1852,12 @@
                     const amt = parseFloat(item.amount) || 0;
                     totalSubsCost += amt;
                     
+                    // 🛑 แสดงไอคอนและรายละเอียดโลโก้บัตรเครดิต SVG ให้สมบูรณ์ในหน้ารายการ
                     let payText = item.payment || '';
                     let payIcon = '<i class="fas fa-credit-card text-slate-400"></i>';
                     
                     if(payText.includes('VISA')) {
-                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png" class="h-2.5 inline">';
+                        payIcon = '<img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain inline">';
                     } else if(payText.includes('MasterCard')) {
                         payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-3 inline">';
                     } else if(payText.includes('JCB')) {
