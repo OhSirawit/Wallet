@@ -28,6 +28,7 @@
             padding: 0; 
             background-color: #f8fafc; 
             overflow-x: hidden; 
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .ambient-bg { 
@@ -80,6 +81,7 @@
             border: 1px solid rgba(255, 255, 255, 1); 
             border-radius: 24px; 
             box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); 
+            transition: all 0.3s ease;
         }
         
         .input-style { 
@@ -186,6 +188,104 @@
         ::-webkit-scrollbar-thumb { 
             background: #c4b5fd; 
             border-radius: 4px; 
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* 🌙 Dark Mode Global Styles */
+        body.dark-mode { 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+        }
+        
+        body.dark-mode .modern-card { 
+            background: rgba(30, 41, 59, 0.8) !important; 
+            border-color: rgba(255, 255, 255, 0.05) !important; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
+        }
+        
+        body.dark-mode .input-style { 
+            background: #1e293b !important; 
+            border-color: #334155 !important; 
+            color: #f8fafc !important; 
+        }
+        
+        body.dark-mode .input-style:focus { 
+            background: #0f172a !important; 
+            border-color: #8b5cf6 !important; 
+        }
+        
+        body.dark-mode .bg-white { 
+            background-color: #1e293b !important; 
+        }
+        
+        body.dark-mode .bg-slate-50 { 
+            background-color: #0f172a !important; 
+        }
+        
+        body.dark-mode .bg-slate-100 { 
+            background-color: #334155 !important; 
+        }
+        
+        body.dark-mode .text-slate-800, body.dark-mode .text-slate-700 { 
+            color: #f1f5f9 !important; 
+        }
+        
+        body.dark-mode .text-slate-600 { 
+            color: #cbd5e1 !important; 
+        }
+        
+        body.dark-mode .text-slate-500, body.dark-mode .text-slate-400 { 
+            color: #94a3b8 !important; 
+        }
+        
+        body.dark-mode .border-slate-100, body.dark-mode .border-slate-50, body.dark-mode .border-slate-200 { 
+            border-color: #334155 !important; 
+        }
+        
+        body.dark-mode .hover\:bg-slate-50:hover { 
+            background-color: #334155 !important; 
+        }
+        
+        body.dark-mode .hover\:bg-violet-50:hover { 
+            background-color: rgba(139, 92, 246, 0.15) !important; 
+        }
+        
+        body.dark-mode .nav-active { 
+            background: #334155 !important; 
+            color: #c4b5fd !important; 
+        }
+        
+        body.dark-mode #toast-bg { 
+            background: rgba(30, 41, 59, 0.95) !important; 
+            border-color: #334155 !important; 
+            color: #f8fafc !important; 
+        }
+        
+        body.dark-mode select.input-style option { 
+            background: #1e293b; 
+            color: #f8fafc; 
+        }
+        
+        body.dark-mode #subs-payment-dropdown, body.dark-mode #payment-dropdown { 
+            background: #1e293b !important; 
+            border-color: #334155 !important; 
+        }
+        
+        body.dark-mode .fixed.bottom-6 { 
+            background: rgba(30, 41, 59, 0.85) !important; 
+            border-color: rgba(255, 255, 255, 0.1) !important; 
+        }
+        
+        body.dark-mode .day-details { 
+            background: rgba(15, 23, 42, 0.6) !important; 
+            border-color: #334155 !important; 
         }
     </style>
 </head>
@@ -316,6 +416,13 @@
             <!-- Dropdown Menu -->
             <div id="top-menu" class="menu-dropdown absolute top-16 right-6 w-64 max-h-[75vh] overflow-y-auto modern-card p-2 z-50 shadow-2xl border-none">
                 <ul class="flex flex-col space-y-1">
+                    <!-- 🌙 โหมดกลางคืน (Dark Mode Toggle) -->
+                    <li>
+                        <button onclick="toggleDarkMode(); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
+                            <i class="fas fa-moon w-4 text-violet-500" id="dark-mode-icon"></i> <span id="dark-mode-text">Dark Mode</span>
+                        </button>
+                    </li>
+                    <div class="border-t border-slate-100 my-1"></div>
                     <li>
                         <button onclick="switchPage('analytics'); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
                             <i class="fas fa-chart-bar w-4 text-violet-500"></i> Stats
@@ -352,7 +459,7 @@
                 
                 <div class="flex justify-between items-start mb-2 relative z-10">
                     <div class="flex flex-col mt-1.5">
-                        <p class="text-xs font-bold uppercase tracking-wider text-white/90">All Time Balance</p>
+                        <p class="text-xs font-bold uppercase tracking-wider text-white/90">Remaining</p>
                     </div>
                     <div class="flex flex-col items-end gap-2">
                         <span id="last-updated-text-card" class="text-[9px] font-medium text-white/90 bg-white/20 px-2.5 py-1 rounded-md backdrop-blur-md border border-white/30 shadow-sm whitespace-nowrap">
@@ -375,7 +482,10 @@
 
                 <div class="flex justify-between items-center text-[11px] font-bold relative z-10 opacity-90">
                     <span>Spent: <span id="cash-used-text">0</span></span>
-                    <span>Total Income: <span id="budget-base-text">0</span> THB</span>
+                    <!-- 🎯 Budget Limit Settings -->
+                    <span class="cursor-pointer hover:text-white transition-colors border-b border-white/30 border-dashed pb-0.5" onclick="setMonthlyBudget()" title="Click to set monthly budget">
+                        Budget: <span id="budget-base-text">0</span> <i class="fas fa-edit ml-1 opacity-70"></i>
+                    </span>
                 </div>
             </div>
 
@@ -386,7 +496,23 @@
                         <i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction
                     </h3>
                     <button id="cancel-edit-btn" onclick="cancelEdit()" type="button" class="hidden text-[10px] font-bold bg-rose-50 text-rose-500 px-3 py-1.5 rounded-full hover:bg-rose-100 transition-colors">
-                        <i class="fas fa-times mr-1"></i>Cancel Edit
+                        <i class="fas fa-times mr-1"></i>Cancel
+                    </button>
+                </div>
+
+                <!-- ⭐ Quick Add Favorites -->
+                <div id="quick-add-container" class="flex gap-2.5 overflow-x-auto pb-3 mb-3 scrollbar-hide">
+                    <button type="button" onclick="quickAdd('60', 'Food', 'Coffee')" class="flex-shrink-0 bg-white border border-slate-100 px-4 py-2.5 rounded-xl shadow-sm text-[10px] font-bold text-slate-600 hover:text-violet-600 hover:border-violet-200 hover:bg-violet-50 transition-all flex items-center gap-1.5">
+                        <i class="fas fa-coffee text-amber-500"></i> Coffee
+                    </button>
+                    <button type="button" onclick="quickAdd('45', 'Transport', 'MRT/BTS')" class="flex-shrink-0 bg-white border border-slate-100 px-4 py-2.5 rounded-xl shadow-sm text-[10px] font-bold text-slate-600 hover:text-violet-600 hover:border-violet-200 hover:bg-violet-50 transition-all flex items-center gap-1.5">
+                        <i class="fas fa-train text-blue-500"></i> Transit
+                    </button>
+                    <button type="button" onclick="quickAdd('80', 'Food', 'Lunch')" class="flex-shrink-0 bg-white border border-slate-100 px-4 py-2.5 rounded-xl shadow-sm text-[10px] font-bold text-slate-600 hover:text-violet-600 hover:border-violet-200 hover:bg-violet-50 transition-all flex items-center gap-1.5">
+                        <i class="fas fa-utensils text-rose-500"></i> Lunch
+                    </button>
+                    <button type="button" onclick="quickAdd('800', 'Gasoline', 'Gas Station')" class="flex-shrink-0 bg-white border border-slate-100 px-4 py-2.5 rounded-xl shadow-sm text-[10px] font-bold text-slate-600 hover:text-violet-600 hover:border-violet-200 hover:bg-violet-50 transition-all flex items-center gap-1.5">
+                        <i class="fas fa-gas-pump text-emerald-500"></i> Fuel
                     </button>
                 </div>
                 
@@ -395,7 +521,7 @@
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Amount <span class="text-rose-500">*</span></label>
                         <div class="relative">
-                            <!-- 🛑 เปลี่ยนเป็น type="text" และเพิ่ม oninput สำหรับใส่ Comma อัตโนมัติ -->
+                            <!-- เพิ่ม oninput ใส่ comma -->
                             <input type="text" inputmode="decimal" id="amount" placeholder="0" class="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl p-5 text-4xl font-black text-slate-800 outline-none text-center focus:bg-white focus:border-violet-400 focus:ring-4 focus:ring-violet-400/10 transition-all" required oninput="formatNumberInput(event); this.setCustomValidity('')" oninvalid="this.setCustomValidity('Please complete this form.')">
                             <span class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm bg-white px-2 py-1 rounded-lg border border-slate-100 shadow-sm">THB</span>
                         </div>
@@ -506,7 +632,7 @@
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Amount <span class="text-rose-500">*</span></label>
                             <div class="relative">
-                                <!-- 🛑 เปลี่ยนเป็น type="text" และเพิ่ม oninput สำหรับใส่ Comma อัตโนมัติ -->
+                                <!-- เพิ่ม oninput สำหรับใส่ Comma -->
                                 <input type="text" inputmode="decimal" id="subs-amount" placeholder="0" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700" required oninput="formatNumberInput(event)">
                             </div>
                         </div>
@@ -523,7 +649,9 @@
                     <div class="grid grid-cols-2 gap-3 mt-2">
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Due Date</label>
+                            <!-- ช่องสำหรับรายเดือน -->
                             <input type="number" id="subs-date-monthly" min="1" max="31" placeholder="Day (1-31)" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700" required>
+                            <!-- ช่องสำหรับรายปี -->
                             <input type="date" id="subs-date-yearly" class="hidden w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700">
                         </div>
                         
@@ -606,6 +734,14 @@
                         <i class="fas fa-chevron-down text-[8px]"></i>
                     </div>
                 </div>
+            </div>
+
+            <!-- 🔍 Smart Search Bar -->
+            <div class="relative w-full mb-4">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-slate-400 text-sm"></i>
+                </div>
+                <input type="text" id="search-history" oninput="updateUI()" placeholder="Search details, category, or amount..." class="w-full input-style rounded-xl pl-10 pr-4 py-3.5 text-xs font-bold outline-none text-slate-700 shadow-sm">
             </div>
             
             <div id="history-list" class="space-y-3"></div>
@@ -800,7 +936,7 @@
             'Invest_Other': '#38bdf8'
         };
 
-        // 🛑 ฟังก์ชันใส่ Comma อัตโนมัติในช่องกรอกเงิน
+        // 🌟 1. ฟังก์ชันใส่ลูกน้ำอัตโนมัติ (Auto Comma)
         function formatNumberInput(e) {
             let val = e.target.value.replace(/,/g, '');
             if (!isNaN(val) && val !== '') {
@@ -808,6 +944,74 @@
                 parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 e.target.value = parts.join('.');
             }
+        }
+
+        // 🌟 2. โหมดมืด (Dark Mode)
+        function toggleDarkMode() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            updateDarkModeUI(isDark);
+        }
+
+        function updateDarkModeUI(isDark) {
+            const icon = document.getElementById('dark-mode-icon');
+            const text = document.getElementById('dark-mode-text');
+            if (icon && text) {
+                if(isDark) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                    icon.classList.replace('text-violet-500', 'text-amber-400');
+                    text.innerText = "Light Mode";
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                    icon.classList.replace('text-amber-400', 'text-violet-500');
+                    text.innerText = "Dark Mode";
+                }
+            }
+            Chart.defaults.color = isDark ? '#94a3b8' : '#64748b';
+            if(myOverallCategoryChart) myOverallCategoryChart.update();
+            if(myDailyCategoryChart) myDailyCategoryChart.update();
+        }
+
+        // 🌟 3. ระบบ Budget รายเดือน
+        function setMonthlyBudget() {
+            let current = localStorage.getItem('monthlyBudget') || '';
+            let val = prompt("Set your monthly budget limit (THB) \n(Leave blank to use Total Income instead):", current);
+            
+            if (val !== null) {
+                if (val.trim() === "" || isNaN(val.replace(/,/g, ''))) {
+                    localStorage.removeItem('monthlyBudget');
+                    showToast("Budget cleared. Using Total Income.");
+                } else {
+                    localStorage.setItem('monthlyBudget', val.replace(/,/g, ''));
+                    showToast("Budget updated!");
+                }
+                updateUI();
+            }
+        }
+
+        // 🌟 4. ระบบ Quick Add (เพิ่มรายการโปรดอย่างรวดเร็ว)
+        function quickAdd(amount, category, details) {
+            document.getElementById('amount').value = amount;
+            formatNumberInput({target: document.getElementById('amount')}); 
+            
+            let catSelect = document.getElementById('category');
+            let optionExists = Array.from(catSelect.options).some(opt => opt.value === category);
+            
+            if (!optionExists) {
+                let tempOpt = document.createElement("option");
+                tempOpt.value = category;
+                tempOpt.text = "🔄 " + category;
+                catSelect.appendChild(tempOpt);
+            }
+            catSelect.value = category;
+            
+            document.getElementById('details').value = details;
+            
+            document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
         }
 
         const paymentDisplays = {
@@ -822,7 +1026,6 @@
 
         function updatePaymentDisplay(type, value) {
             const displayHtml = paymentDisplays[value] || `<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">💳</span> ${value}</div>`;
-            
             if (type === 'subs-payment') {
                 const el = document.getElementById('subs-payment-selected');
                 if (el) el.innerHTML = displayHtml;
@@ -873,7 +1076,6 @@
         function updateTimestampDisplay() {
             const now = new Date();
             const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            
             const day = now.getDate().toString().padStart(2, '0');
             const month = months[now.getMonth()];
             const year = now.getFullYear();
@@ -890,14 +1092,10 @@
             const timeString = `Updated : ${day} ${month} ${year} : ${strHours}:${minutes}:${seconds} ${ampm}`;
             
             const updateElCard = document.getElementById('last-updated-text-card');
-            if(updateElCard) {
-                updateElCard.innerText = timeString;
-            }
+            if(updateElCard) updateElCard.innerText = timeString;
             
             const updateEl = document.getElementById('last-updated-text');
-            if(updateEl) {
-                updateEl.innerText = timeString;
-            }
+            if(updateEl) updateEl.innerText = timeString;
         }
 
         async function callApi(action, payload = {}) {
@@ -922,6 +1120,11 @@
             const currentMonthStr = new Date().toISOString().slice(0, 7);
             document.getElementById('summary-month-filter').value = currentMonthStr;
 
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                updateDarkModeUI(true);
+            }
+
             if (loginTimestamp && (now - parseInt(loginTimestamp)) < SEVEN_DAYS) {
                 localStorage.setItem('loginTimestamp', now.toString());
                 document.getElementById('login-page').classList.add('hidden');
@@ -940,7 +1143,7 @@
                     document.getElementById('user-profile-icon').classList.add('hidden'); 
                 }
                 
-                if(displayName) { 
+                if(displayName) {
                     document.getElementById('nav-display-name').innerText = displayName; 
                 }
                 
@@ -955,6 +1158,7 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 document.getElementById('receipt-text').innerText = file.name;
+                
                 const reader = new FileReader();
                 reader.onload = function(event) { 
                     receiptBase64 = event.target.result; 
@@ -966,6 +1170,7 @@
             document.getElementById('profile-pic-upload').addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
+                
                 const reader = new FileReader();
                 reader.onload = function(event) { 
                     newProfilePicBase64 = event.target.result; 
@@ -1002,15 +1207,16 @@
                     setTimeout(() => { 
                         document.getElementById('login-page').classList.add('hidden'); 
                         document.getElementById('main-app').classList.remove('hidden'); 
-                        document.getElementById('date').valueAsDate = new Date(); 
                         
-                        document.getElementById('subs-date-monthly').value = new Date().getDate();
+                        document.getElementById('date').valueAsDate = new Date(); 
+                        document.getElementById('subs-date-monthly').value = new Date().getDate(); 
                         document.getElementById('subs-date-yearly').valueAsDate = new Date();
                         
                         document.getElementById('user-profile-img').src = finalPic; 
                         document.getElementById('user-profile-img').classList.remove('hidden'); 
                         document.getElementById('user-profile-icon').classList.add('hidden');
                         document.getElementById('nav-display-name').innerText = finalName; 
+                        
                         loadDataFromSheet(); 
                     }, 500); 
                 } else if (res.userStatus === "Pending") { 
@@ -1054,19 +1260,19 @@
                 localStorage.setItem('userProfileImg', res.profilePic || 'https://ui-avatars.com/api/?name=' + user + '&background=8b5cf6&color=fff');
                 
                 document.getElementById('login-page').classList.add('opacity-0'); 
-                
                 setTimeout(() => { 
                     document.getElementById('login-page').classList.add('hidden'); 
                     document.getElementById('main-app').classList.remove('hidden'); 
-                    document.getElementById('date').valueAsDate = new Date(); 
                     
-                    document.getElementById('subs-date-monthly').value = new Date().getDate();
+                    document.getElementById('date').valueAsDate = new Date(); 
+                    document.getElementById('subs-date-monthly').value = new Date().getDate(); 
                     document.getElementById('subs-date-yearly').valueAsDate = new Date();
                     
                     document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg'); 
                     document.getElementById('user-profile-img').classList.remove('hidden'); 
                     document.getElementById('user-profile-icon').classList.add('hidden'); 
                     document.getElementById('nav-display-name').innerText = res.displayName; 
+                    
                     loadDataFromSheet(); 
                 }, 500);
             } else { 
@@ -1085,7 +1291,6 @@
             return JSON.parse(jsonPayload); 
         }
 
-        // จัดการคลิกเพื่อปิด Dropdown
         document.addEventListener('click', function(event) { 
             const menu = document.getElementById('top-menu'); 
             const menuBtn = document.getElementById('menu-btn'); 
@@ -1338,7 +1543,6 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // 🛑 ฟังก์ชันแก้ไข Subs
         function openSubsEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
             
@@ -1516,11 +1720,11 @@
             btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
-        // 🛑 เพิ่มฟังก์ชัน One Click Pay (ปุ่ม Pay)
+        // 🌟 5. ฟังก์ชันกดจ่ายบิลจากหน้า Subs เข้าหน้า Home
         async function paySubscription(rowId) {
-            if(!confirm("บันทึกรายการนี้เป็น 'จ่ายแล้ว' ลงในหน้า Home ใช่หรือไม่?")) return;
+            if(!confirm("Are you sure you want to log this as 'Paid' to the Home expenses?")) return;
             
-            const item = expenses.find(x => x.rowId == rowId);
+            const item = expenses.find(x => x.rowId == rowId); 
             if(!item) return;
 
             showToast("Processing payment...");
@@ -1530,15 +1734,17 @@
             const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
             const timeStr = today.toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' });
             
-            let paymentStr = item.payment || '';
+            let paymentStr = item.payment || ''; 
             let basePay = 'Credit Card / E-Wallet'; 
-            if(paymentStr.includes('Cash')) basePay = 'Cash';
-            else if(paymentStr.includes('Bank Transfer')) basePay = 'Internet Banking / QR Payment';
-            else if(paymentStr.includes('E-Wallet')) basePay = 'Credit Card / E-Wallet';
-            else if(paymentStr.includes('VISA') || paymentStr.includes('MasterCard') || paymentStr.includes('JCB') || paymentStr.includes('UnionPay')) {
+            
+            if(paymentStr.includes('Cash')) {
+                basePay = 'Cash'; 
+            } else if(paymentStr.includes('Bank Transfer')) {
+                basePay = 'Internet Banking / QR Payment'; 
+            } else if(paymentStr.includes('E-Wallet')) {
                 basePay = 'Credit Card / E-Wallet';
             }
-
+            
             const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
 
             const payload = { 
@@ -1555,8 +1761,9 @@
             };
             
             const res = await callApi("save", payload);
+            
             if(res.status === "Success") { 
-                showToast("Paid & Saved to Home!");
+                showToast("Paid & Saved to Home!"); 
                 loadDataFromSheet(); 
             } else { 
                 showToast("Error: " + res.message, true); 
@@ -1567,7 +1774,7 @@
             e.preventDefault(); 
             
             const detailsVal = document.getElementById('subs-details').value; 
-            const amountVal = document.getElementById('subs-amount').value.replace(/,/g, '');
+            const amountVal = document.getElementById('subs-amount').value.replace(/,/g, ''); 
             const basePay = document.getElementById('subs-payment').value;
             const cardName = document.getElementById('subs-card-name').value.trim();
             const cycleVal = document.getElementById('subs-cycle').value;
@@ -1576,21 +1783,21 @@
             
             if (cycleVal === 'Monthly') {
                 const dayVal = document.getElementById('subs-date-monthly').value;
-                if(!dayVal || dayVal < 1 || dayVal > 31) {
-                    showToast("Please enter a valid day (1-31)!", true);
-                    return;
+                if(!dayVal || dayVal < 1 || dayVal > 31) { 
+                    showToast("Please enter a valid day (1-31)!", true); 
+                    return; 
                 }
                 formattedDate = dayVal; 
             } else {
                 const rawDate = document.getElementById('subs-date-yearly').value;
-                if(!rawDate) {
-                    showToast("Please select a date!", true);
-                    return;
+                if(!rawDate) { 
+                    showToast("Please select a date!", true); 
+                    return; 
                 }
                 const parts = rawDate.split('-');
                 if (parts.length === 3) {
                     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                    const monthIndex = parseInt(parts[1]) - 1;
+                    const monthIndex = parseInt(parts[1]) - 1; 
                     const monthName = monthNames[monthIndex];
                     formattedDate = `${parts[2]}-${monthName}`; 
                 }
@@ -1631,19 +1838,19 @@
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
             }
             
-            const actionType = editingSubsRowId ? "edit" : "save";
+            const actionType = editingSubsRowId ? "edit" : "save"; 
             const rowIdToSend = editingSubsRowId || null;
 
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
-                if(editingSubsRowId) {
-                    showToast("Subscription updated!");
-                } else {
-                    showToast("Subscription saved successfully!");
+                if(editingSubsRowId) { 
+                    showToast("Subscription updated!"); 
+                } else { 
+                    showToast("Subscription saved successfully!"); 
                 }
                  
-                cancelSubsEdit();
+                cancelSubsEdit(); 
                 loadDataFromSheet(); 
             } else { 
                 showToast("Error: " + res.message, true); 
@@ -1810,24 +2017,23 @@
 
             const monthFilterEl = document.getElementById('summary-month-filter');
             const summaryMonthVal = monthFilterEl ? monthFilterEl.value : ''; 
+            
+            // 🌟 Smart Search Logic
+            const searchInput = document.getElementById('search-history');
+            const searchKeyword = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
             if (expenses.length === 0) {
                 list.innerHTML = '<div class="text-center p-12 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm"><i class="fas fa-box-open text-4xl mb-4 text-slate-200"></i><br>No Records Found</div>';
                 stats.innerHTML = '<div class="text-center p-12 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm"><i class="fas fa-box-open text-4xl mb-4 text-slate-200"></i><br>No Records Found</div>';
             }
             
-            let totalExpenseHome = 0;
+            let totalExpenseHome = 0; 
             let totalIncomeHome = 0; 
-            let totalExpenseSummary = 0;
+            let totalExpenseSummary = 0; 
             let totalIncomeSummary = 0;
             
             const daily = {}; 
-            const payStats = { 
-                'Cash': 0, 
-                'Credit Card / E-Wallet': 0, 
-                'Internet Banking / QR Payment': 0, 
-                'Loan etc.': 0 
-            };
+            const payStats = { 'Cash': 0, 'Credit Card / E-Wallet': 0, 'Internet Banking / QR Payment': 0, 'Loan etc.': 0 };
             
             let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
             let sortedExpenses = [...expenses];
@@ -1836,7 +2042,7 @@
                 let rawDateB = new Date(b.date + ' ' + (b.time || '00:00')); 
                 let rawDateA = new Date(a.date + ' ' + (a.time || '00:00'));
                 
-                let dateB = isNaN(rawDateB) ? new Date(0) : rawDateB;
+                let dateB = isNaN(rawDateB) ? new Date(0) : rawDateB; 
                 let dateA = isNaN(rawDateA) ? new Date(0) : rawDateA;
                 
                 let isIncomeA = ["Salary", "Extra Income", "Other Income"].includes(a.category); 
@@ -1864,27 +2070,38 @@
             const categoryStats = {}; 
             globalDailyCategoryStats = {};
 
-            let regularExpenses = [];
+            let regularExpenses = []; 
             let subsExpenses = [];
             
-            sortedExpenses.forEach(item => {
-                if (item.category === "Subscription_List") {
-                    subsExpenses.push(item);
-                } else {
-                    regularExpenses.push(item);
-                }
+            sortedExpenses.forEach(item => { 
+                if (item.category === "Subscription_List") { 
+                    subsExpenses.push(item); 
+                } else { 
+                    regularExpenses.push(item); 
+                } 
             });
 
-            // 1. เรนเดอร์ History Timeline (เฉพาะรายจ่ายหลัก)
-            const expensesToRender = regularExpenses.slice(0, currentHistoryLimit);
+            // กรองข้อมูลด้วยคำค้นหา (Smart Search)
+            let expensesToRender = regularExpenses;
+            
+            if (searchKeyword !== "") {
+                expensesToRender = expensesToRender.filter(item => 
+                    (item.details && item.details.toLowerCase().includes(searchKeyword)) ||
+                    (item.category && item.category.toLowerCase().includes(searchKeyword)) ||
+                    (item.amount && item.amount.toString().includes(searchKeyword)) ||
+                    (item.payment && item.payment.toLowerCase().includes(searchKeyword))
+                );
+            }
+            
+            expensesToRender = expensesToRender.slice(0, currentHistoryLimit);
             
             expensesToRender.forEach((item) => {
                 const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
-                const amt = parseFloat(item.amount) || 0;
+                const amt = parseFloat(item.amount) || 0; 
                 let recordedByText = "";
                 
-                if (item.recordedBy && item.recordedBy !== '-' && item.recordedBy !== 'undefined' && item.recordedBy.trim() !== '') {
-                    recordedByText = `<span class="text-[8.5px] font-bold bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fas fa-user-circle text-violet-400 mr-1"></i>${item.recordedBy}</span>`;
+                if (item.recordedBy && item.recordedBy !== '-' && item.recordedBy !== 'undefined' && item.recordedBy.trim() !== '') { 
+                    recordedByText = `<span class="text-[8.5px] font-bold bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fas fa-user-circle text-violet-400 mr-1"></i>${item.recordedBy}</span>`; 
                 }
 
                 const div = document.createElement('div'); 
@@ -1919,10 +2136,13 @@
                 list.appendChild(div);
             });
 
+            if(searchKeyword !== "" && expensesToRender.length === 0) {
+                list.innerHTML = `<div class="text-center p-8 text-slate-400 font-bold text-xs">No results found for "${searchKeyword}"</div>`;
+            }
+
             const loadMoreBtn = document.getElementById('load-more-btn');
-            
             if(loadMoreBtn) {
-                if(regularExpenses.length > currentHistoryLimit) { 
+                if(searchKeyword === "" && regularExpenses.length > currentHistoryLimit) { 
                     loadMoreBtn.classList.remove('hidden'); 
                 } else { 
                     loadMoreBtn.classList.add('hidden'); 
@@ -1931,7 +2151,7 @@
 
             regularExpenses.forEach((item) => {
                 const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
-                const amt = parseFloat(item.amount) || 0;
+                const amt = parseFloat(item.amount) || 0; 
                 const impact = isIncome ? amt : -amt; 
                 
                 if (isIncome) { 
@@ -1948,22 +2168,22 @@
                     } else { 
                         totalExpenseSummary += amt; 
                         
-                        if (!categoryStats[item.category]) {
+                        if (!categoryStats[item.category]) { 
                             categoryStats[item.category] = 0; 
-                        }
+                        } 
                         
                         categoryStats[item.category] += amt; 
                     }
                     
                     let pKey = item.payment; 
                     
-                    if (!payStats.hasOwnProperty(pKey)) {
+                    if (!payStats.hasOwnProperty(pKey)) { 
                         payStats[pKey] = 0; 
-                    }
+                    } 
                     
                     payStats[pKey] += impact;
                     
-                    if (!daily[item.date]) {
+                    if (!daily[item.date]) { 
                         daily[item.date] = { total: 0, categories: {} }; 
                     }
                     
@@ -1977,11 +2197,11 @@
                 }
 
                 if (!isIncome) {
-                    if (!globalDailyCategoryStats[item.date]) {
+                    if (!globalDailyCategoryStats[item.date]) { 
                         globalDailyCategoryStats[item.date] = {}; 
                     }
                     
-                    if (!globalDailyCategoryStats[item.date][item.category]) {
+                    if (!globalDailyCategoryStats[item.date][item.category]) { 
                         globalDailyCategoryStats[item.date][item.category] = 0; 
                     }
                     
@@ -1989,84 +2209,92 @@
                 }
             });
 
-            // 🛑 3. เรนเดอร์หน้า Subscriptions 
+            // 🛑 3. เรนเดอร์หน้า Subscriptions (Smart Alerts & Pay Now)
             let totalSubsCost = 0;
-            const today = new Date();
-            const currentDay = today.getDate();
-            const currentMonth = today.getMonth() + 1; // 1-12
+            const today = new Date(); 
+            const currentDay = today.getDate(); 
+            const currentMonth = today.getMonth() + 1; 
             
             if (subsExpenses.length === 0) {
-                if (subsList) {
-                    subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">There are no recent subscription records in your history.</span></div>';
+                if (subsList) { 
+                    subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">There are no recent subscription records in your history.</span></div>'; 
                 }
             } else {
                 subsExpenses.forEach(item => {
                     const amt = parseFloat(item.amount) || 0;
                     
-                    let payText = item.payment || '';
+                    let payText = item.payment || ''; 
                     let payIcon = '<i class="fas fa-credit-card text-slate-400"></i>';
                     
-                    if(payText.includes('VISA')) {
-                        payIcon = '<img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain inline">';
-                    } else if(payText.includes('MasterCard')) {
-                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-3 inline">';
-                    } else if(payText.includes('JCB')) {
-                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-3 inline">';
-                    } else if(payText.includes('UnionPay')) {
-                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-3 inline">';
-                    } else if(payText.includes('Cash')) {
-                        payIcon = '<span class="text-[10px]">💵</span>';
-                    } else if(payText.includes('E-Wallet')) {
-                        payIcon = '<span class="text-[10px]">📱</span>';
-                    } else if(payText.includes('Bank Transfer')) {
-                        payIcon = '<span class="text-[10px]">🏦</span>';
+                    if(payText.includes('VISA')) { 
+                        payIcon = '<img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain inline">'; 
+                    } else if(payText.includes('MasterCard')) { 
+                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-3 inline">'; 
+                    } else if(payText.includes('JCB')) { 
+                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-3 inline">'; 
+                    } else if(payText.includes('UnionPay')) { 
+                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-3 inline">'; 
+                    } else if(payText.includes('Cash')) { 
+                        payIcon = '<span class="text-[10px]">💵</span>'; 
+                    } else if(payText.includes('E-Wallet')) { 
+                        payIcon = '<span class="text-[10px]">📱</span>'; 
+                    } else if(payText.includes('Bank Transfer')) { 
+                        payIcon = '<span class="text-[10px]">🏦</span>'; 
                     }
 
-                    // 🛑 คำนวณยอดเงินและระบบแจ้งเตือน
-                    let daysLeft = 999;
-                    let cycleDisplay = item.date;
+                    let daysLeft = 999; 
+                    let cycleDisplay = item.date; 
                     let isYearly = item.date && item.date.includes('-');
                     
+                    // 🌟 คำนวณ Monthly Estimated Cost อย่างถูกต้อง
                     if (isYearly) {
-                        totalSubsCost += (amt / 12); // ถ้าเป็นรายปี หาร 12 ก่อนบวกยอดรวมรายเดือน
-                        
-                        const parts = item.date.split('-');
+                        totalSubsCost += (amt / 12); 
+                        const parts = item.date.split('-'); 
                         const itemDay = parseInt(parts[0]);
                         
                         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                         const itemMonth = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase()) + 1;
                         
                         if (itemMonth === currentMonth) {
-                            if (itemDay === currentDay) daysLeft = 0;
-                            else if (itemDay > currentDay && itemDay <= currentDay + 5) daysLeft = itemDay - currentDay;
-                            else if (itemDay < currentDay && currentDay - itemDay <= 3) daysLeft = itemDay - currentDay;
+                            if (itemDay === currentDay) {
+                                daysLeft = 0;
+                            } else if (itemDay > currentDay && itemDay <= currentDay + 5) {
+                                daysLeft = itemDay - currentDay;
+                            } else if (itemDay < currentDay && currentDay - itemDay <= 3) {
+                                daysLeft = itemDay - currentDay;
+                            }
                         }
                     } else {
-                        totalSubsCost += amt; // ถ้าเป็นรายเดือน บวกเต็ม
-                        
+                        totalSubsCost += amt; 
                         const itemDay = parseInt(item.date);
+                        
                         if (!isNaN(itemDay)) {
                             cycleDisplay = 'Day ' + item.date;
-                            if (itemDay === currentDay) daysLeft = 0;
-                            else if (itemDay > currentDay && itemDay <= currentDay + 5) daysLeft = itemDay - currentDay;
-                            else if (itemDay < currentDay && currentDay - itemDay <= 3) daysLeft = itemDay - currentDay;
+                            if (itemDay === currentDay) {
+                                daysLeft = 0;
+                            } else if (itemDay > currentDay && itemDay <= currentDay + 5) {
+                                daysLeft = itemDay - currentDay;
+                            } else if (itemDay < currentDay && currentDay - itemDay <= 3) {
+                                daysLeft = itemDay - currentDay;
+                            }
                         }
                     }
                     
                     // 🛑 ตกแต่งสีแจ้งเตือน
-                    let dateStyle = "text-slate-400";
+                    let dateStyle = "text-slate-400"; 
                     let dateIconStyle = "text-slate-400";
+                    
                     if (daysLeft === 0) {
-                        dateStyle = "text-rose-500 font-bold";
-                        dateIconStyle = "text-rose-500 animate-pulse";
+                        dateStyle = "text-rose-500 font-bold"; 
+                        dateIconStyle = "text-rose-500 animate-pulse"; 
                         cycleDisplay += " (Today!)";
                     } else if (daysLeft < 0 && daysLeft >= -3) {
-                        dateStyle = "text-rose-500 font-bold";
-                        dateIconStyle = "text-rose-500";
+                        dateStyle = "text-rose-500 font-bold"; 
+                        dateIconStyle = "text-rose-500"; 
                         cycleDisplay += ` (${Math.abs(daysLeft)} days ago)`;
                     } else if (daysLeft > 0 && daysLeft <= 5) {
-                        dateStyle = "text-orange-500 font-bold";
-                        dateIconStyle = "text-orange-500";
+                        dateStyle = "text-amber-500 font-bold"; 
+                        dateIconStyle = "text-amber-500"; 
                         cycleDisplay += ` (In ${daysLeft} days)`;
                     }
 
@@ -2109,13 +2337,11 @@
             }
             
             const totalSubsEl = document.getElementById('total-subs-cost'); 
-            
-            if (totalSubsEl) {
-                totalSubsEl.innerText = totalSubsCost.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2});
+            if (totalSubsEl) { 
+                totalSubsEl.innerText = totalSubsCost.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}); 
             }
 
             const dateDropdown = document.getElementById('dashboard-date-filter'); 
-            
             if (dateDropdown) { 
                 const currentSelectedDate = dateDropdown.value; 
                 dateDropdown.innerHTML = ''; 
@@ -2129,9 +2355,9 @@
                         opt.value = date; 
                         opt.text = date; 
                         
-                        if(date === currentSelectedDate) {
+                        if(date === currentSelectedDate) { 
                             opt.selected = true; 
-                        }
+                        } 
                         
                         dateDropdown.appendChild(opt); 
                     }); 
@@ -2200,35 +2426,39 @@
                 stats.appendChild(mainDiv); 
             });
 
-            const remainingHome = totalIncomeHome - totalExpenseHome; 
-            let percentHome = totalIncomeHome > 0 ? (totalExpenseHome / totalIncomeHome) : 0; 
-            percentHome = Math.max(0, Math.min(1, percentHome)); 
+            // 🌟 Monthly Budget Limit (อัปเดตหลอด Progress Bar)
+            let monthlyBudgetStr = localStorage.getItem('monthlyBudget');
+            let budgetBase = monthlyBudgetStr ? parseFloat(monthlyBudgetStr) : totalIncomeHome;
+            
+            const remainingHome = monthlyBudgetStr ? (budgetBase - totalExpenseHome) : (totalIncomeHome - totalExpenseHome); 
+            let percentHome = budgetBase > 0 ? (totalExpenseHome / budgetBase) : 0; 
             
             const bar = document.getElementById('budget-progress-bar');
             
             if(bar) { 
                 setTimeout(() => { 
-                    bar.style.width = (percentHome * 100) + '%'; 
+                    bar.style.width = (Math.min(1, percentHome) * 100) + '%'; 
                 }, 100); 
                 
-                if (percentHome >= 1) {
-                    bar.style.backgroundColor = "#fda4af"; 
-                } else {
+                if (percentHome >= 1) { 
+                    bar.style.backgroundColor = "#fda4af"; // แดง
+                } else if (percentHome >= 0.8) { 
+                    bar.style.backgroundColor = "#fcd34d"; // เหลืองเตือน
+                } else { 
                     bar.style.backgroundColor = "#ffffff"; 
                 }
             }
             
             document.getElementById('cash-remaining').innerText = remainingHome.toLocaleString(); 
-            const usedEl = document.getElementById('cash-used-text'); 
             
-            if(usedEl) {
-                usedEl.innerText = totalExpenseHome.toLocaleString();
+            const usedEl = document.getElementById('cash-used-text'); 
+            if(usedEl) { 
+                usedEl.innerText = totalExpenseHome.toLocaleString(); 
             }
             
             const baseBudgetEl = document.getElementById('budget-base-text'); 
-            
-            if(baseBudgetEl) {
-                baseBudgetEl.innerText = totalIncomeHome.toLocaleString();
+            if(baseBudgetEl) { 
+                baseBudgetEl.innerText = budgetBase.toLocaleString(); 
             }
             
             document.getElementById('total-expenses-text').innerText = totalExpenseSummary.toLocaleString() + " THB"; 
@@ -2279,9 +2509,9 @@
 
         async function getCurrentLocation() { 
             return new Promise(res => { 
-                if(!navigator.geolocation) {
+                if(!navigator.geolocation) { 
                     return res(""); 
-                }
+                } 
                 
                 navigator.geolocation.getCurrentPosition( 
                     p => res(`https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`), 
