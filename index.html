@@ -395,7 +395,8 @@
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Amount <span class="text-rose-500">*</span></label>
                         <div class="relative">
-                            <input type="number" id="amount" placeholder="0" class="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl p-5 text-4xl font-black text-slate-800 outline-none text-center focus:bg-white focus:border-violet-400 focus:ring-4 focus:ring-violet-400/10 transition-all" required oninvalid="this.setCustomValidity('Please complete this form.')" oninput="this.setCustomValidity('')">
+                            <!-- 🛑 เปลี่ยนเป็น type="text" และเพิ่ม oninput สำหรับใส่ Comma อัตโนมัติ -->
+                            <input type="text" inputmode="decimal" id="amount" placeholder="0" class="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl p-5 text-4xl font-black text-slate-800 outline-none text-center focus:bg-white focus:border-violet-400 focus:ring-4 focus:ring-violet-400/10 transition-all" required oninput="formatNumberInput(event); this.setCustomValidity('')" oninvalid="this.setCustomValidity('Please complete this form.')">
                             <span class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm bg-white px-2 py-1 rounded-lg border border-slate-100 shadow-sm">THB</span>
                         </div>
                     </div>
@@ -505,13 +506,13 @@
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Amount <span class="text-rose-500">*</span></label>
                             <div class="relative">
-                                <input type="number" id="subs-amount" placeholder="0" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700" required>
+                                <!-- 🛑 เปลี่ยนเป็น type="text" และเพิ่ม oninput สำหรับใส่ Comma อัตโนมัติ -->
+                                <input type="text" inputmode="decimal" id="subs-amount" placeholder="0" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700" required oninput="formatNumberInput(event)">
                             </div>
                         </div>
                         
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Cycle</label>
-                            <!-- 🛑 เปลี่ยนเป็นภาษาอังกฤษ -->
                             <select id="subs-cycle" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer" required>
                                 <option value="Monthly" selected>Monthly</option>
                                 <option value="Yearly">Yearly</option>
@@ -522,10 +523,7 @@
                     <div class="grid grid-cols-2 gap-3 mt-2">
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Due Date</label>
-                            <!-- เปลี่ยนเป็นภาษาอังกฤษ -->
                             <input type="number" id="subs-date-monthly" min="1" max="31" placeholder="Day (1-31)" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700" required>
-                            
-                            <!-- ช่องสำหรับรายปี (ปฏิทินเลือกวันและเดือน) -->
                             <input type="date" id="subs-date-yearly" class="hidden w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700">
                         </div>
                         
@@ -572,7 +570,6 @@
                     </div>
                     
                     <div class="space-y-1.5 mt-2">
-                        <!-- เปลี่ยนเป็นภาษาอังกฤษ -->
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Card Name <span class="text-[8px] opacity-70">(Optional)</span></label>
                         <input type="text" id="subs-card-name" placeholder="e.g. KBank, Citi" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700">
                     </div>
@@ -586,7 +583,6 @@
             <h3 class="text-xs font-bold text-violet-500 uppercase tracking-widest pt-2 flex items-center gap-2">
                 <i class="fas fa-list-ul"></i> Active Subscriptions
             </h3>
-            <!-- เปลี่ยนเป็นภาษาอังกฤษ -->
             <p class="text-[10px] text-slate-400 leading-tight">These amounts will not be included in your main expenses until you save them as transactions.</p>
             
             <div id="subscriptions-list" class="space-y-3"></div>
@@ -804,6 +800,16 @@
             'Invest_Other': '#38bdf8'
         };
 
+        // 🛑 ฟังก์ชันใส่ Comma อัตโนมัติในช่องกรอกเงิน
+        function formatNumberInput(e) {
+            let val = e.target.value.replace(/,/g, '');
+            if (!isNaN(val) && val !== '') {
+                let parts = val.split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                e.target.value = parts.join('.');
+            }
+        }
+
         const paymentDisplays = {
             'VISA': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain"></div> VISA</div>',
             'MasterCard': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-4 object-contain"></div> MasterCard</div>',
@@ -831,7 +837,6 @@
             }
         }
 
-        // 🛑 Event Listener สลับช่องวันที่เมื่อเปลี่ยน Cycle
         document.getElementById('subs-cycle').addEventListener('change', function(e) {
             const val = e.target.value;
             const mInput = document.getElementById('subs-date-monthly');
@@ -1333,7 +1338,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // 🛑 ฟังก์ชันแก้ไข Subs: รองรับรูปแบบ Due Date ทั้งแบบรายเดือน(ตัวเลข) และรายปี(วัน-เดือน)
+        // 🛑 ฟังก์ชันแก้ไข Subs
         function openSubsEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
             
@@ -1349,8 +1354,7 @@
             const yInput = document.getElementById('subs-date-yearly');
             const cycleSelect = document.getElementById('subs-cycle');
             
-            // ตรวจสอบว่ารูปแบบเป็น วัน-เดือน หรือไม่ (เช่น 20-Nov หรือ 20-11)
-            if (editDateStr.includes('-')) {
+            if (editDateStr.includes('-') && isNaN(editDateStr)) {
                 cycleSelect.value = 'Yearly';
                 mInput.classList.add('hidden');
                 mInput.required = false;
@@ -1361,7 +1365,6 @@
                 let currentYear = new Date().getFullYear();
                 let monthNum = "01";
                 
-                // แปลงชื่อเดือนกลับเป็นตัวเลขเพื่อให้ Calendar เลือกได้
                 if (isNaN(parts[1])) {
                     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                     const monthIndex = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase());
@@ -1452,7 +1455,7 @@
             e.preventDefault(); 
             
             const detailsVal = document.getElementById('details').value; 
-            const amountVal = document.getElementById('amount').value;
+            const amountVal = document.getElementById('amount').value.replace(/,/g, '');
             
             if (!detailsVal || !detailsVal.trim()) { 
                 showToast("Please enter a Note!", true); 
@@ -1513,12 +1516,58 @@
             btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
-        // 🛑 Submit Subs: บันทึกรายปีเป็นแค่ วัน-เดือน (เช่น 20-Nov) ตัดปีทิ้ง
+        // 🛑 เพิ่มฟังก์ชัน One Click Pay (ปุ่ม Pay)
+        async function paySubscription(rowId) {
+            if(!confirm("บันทึกรายการนี้เป็น 'จ่ายแล้ว' ลงในหน้า Home ใช่หรือไม่?")) return;
+            
+            const item = expenses.find(x => x.rowId == rowId);
+            if(!item) return;
+
+            showToast("Processing payment...");
+            
+            const amt = parseFloat(item.amount) || 0;
+            const today = new Date();
+            const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            const timeStr = today.toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' });
+            
+            let paymentStr = item.payment || '';
+            let basePay = 'Credit Card / E-Wallet'; 
+            if(paymentStr.includes('Cash')) basePay = 'Cash';
+            else if(paymentStr.includes('Bank Transfer')) basePay = 'Internet Banking / QR Payment';
+            else if(paymentStr.includes('E-Wallet')) basePay = 'Credit Card / E-Wallet';
+            else if(paymentStr.includes('VISA') || paymentStr.includes('MasterCard') || paymentStr.includes('JCB') || paymentStr.includes('UnionPay')) {
+                basePay = 'Credit Card / E-Wallet';
+            }
+
+            const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
+
+            const payload = { 
+                date: dateStr, 
+                time: timeStr, 
+                payment: basePay, 
+                category: "Bills", 
+                details: item.details, 
+                amount: amt, 
+                location: "", 
+                receiptBase64: null, 
+                receiptName: null, 
+                recordedBy: recordedByName 
+            };
+            
+            const res = await callApi("save", payload);
+            if(res.status === "Success") { 
+                showToast("Paid & Saved to Home!");
+                loadDataFromSheet(); 
+            } else { 
+                showToast("Error: " + res.message, true); 
+            }
+        }
+
         document.getElementById('subs-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
             const detailsVal = document.getElementById('subs-details').value; 
-            const amountVal = document.getElementById('subs-amount').value;
+            const amountVal = document.getElementById('subs-amount').value.replace(/,/g, '');
             const basePay = document.getElementById('subs-payment').value;
             const cardName = document.getElementById('subs-card-name').value.trim();
             const cycleVal = document.getElementById('subs-cycle').value;
@@ -1543,7 +1592,7 @@
                     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                     const monthIndex = parseInt(parts[1]) - 1;
                     const monthName = monthNames[monthIndex];
-                    formattedDate = `${parts[2]}-${monthName}`; // กลายเป็นรูปแบบ DD-MMM เช่น 20-Nov
+                    formattedDate = `${parts[2]}-${monthName}`; 
                 }
             }
             
@@ -1880,7 +1929,6 @@
                 }
             }
 
-            // 2. คำนวณยอดเงิน (เฉพาะรายจ่ายหลัก)
             regularExpenses.forEach((item) => {
                 const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
                 const amt = parseFloat(item.amount) || 0;
@@ -1943,6 +1991,9 @@
 
             // 🛑 3. เรนเดอร์หน้า Subscriptions 
             let totalSubsCost = 0;
+            const today = new Date();
+            const currentDay = today.getDate();
+            const currentMonth = today.getMonth() + 1; // 1-12
             
             if (subsExpenses.length === 0) {
                 if (subsList) {
@@ -1951,7 +2002,6 @@
             } else {
                 subsExpenses.forEach(item => {
                     const amt = parseFloat(item.amount) || 0;
-                    totalSubsCost += amt;
                     
                     let payText = item.payment || '';
                     let payIcon = '<i class="fas fa-credit-card text-slate-400"></i>';
@@ -1972,33 +2022,79 @@
                         payIcon = '<span class="text-[10px]">🏦</span>';
                     }
 
-                    // 🛑 แสดงวันที่ให้ดูง่ายขึ้น
+                    // 🛑 คำนวณยอดเงินและระบบแจ้งเตือน
+                    let daysLeft = 999;
                     let cycleDisplay = item.date;
-                    if (cycleDisplay && !cycleDisplay.includes('-')) {
-                        cycleDisplay = 'Day ' + cycleDisplay;
+                    let isYearly = item.date && item.date.includes('-');
+                    
+                    if (isYearly) {
+                        totalSubsCost += (amt / 12); // ถ้าเป็นรายปี หาร 12 ก่อนบวกยอดรวมรายเดือน
+                        
+                        const parts = item.date.split('-');
+                        const itemDay = parseInt(parts[0]);
+                        
+                        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                        const itemMonth = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase()) + 1;
+                        
+                        if (itemMonth === currentMonth) {
+                            if (itemDay === currentDay) daysLeft = 0;
+                            else if (itemDay > currentDay && itemDay <= currentDay + 5) daysLeft = itemDay - currentDay;
+                            else if (itemDay < currentDay && currentDay - itemDay <= 3) daysLeft = itemDay - currentDay;
+                        }
+                    } else {
+                        totalSubsCost += amt; // ถ้าเป็นรายเดือน บวกเต็ม
+                        
+                        const itemDay = parseInt(item.date);
+                        if (!isNaN(itemDay)) {
+                            cycleDisplay = 'Day ' + item.date;
+                            if (itemDay === currentDay) daysLeft = 0;
+                            else if (itemDay > currentDay && itemDay <= currentDay + 5) daysLeft = itemDay - currentDay;
+                            else if (itemDay < currentDay && currentDay - itemDay <= 3) daysLeft = itemDay - currentDay;
+                        }
+                    }
+                    
+                    // 🛑 ตกแต่งสีแจ้งเตือน
+                    let dateStyle = "text-slate-400";
+                    let dateIconStyle = "text-slate-400";
+                    if (daysLeft === 0) {
+                        dateStyle = "text-rose-500 font-bold";
+                        dateIconStyle = "text-rose-500 animate-pulse";
+                        cycleDisplay += " (Today!)";
+                    } else if (daysLeft < 0 && daysLeft >= -3) {
+                        dateStyle = "text-rose-500 font-bold";
+                        dateIconStyle = "text-rose-500";
+                        cycleDisplay += ` (${Math.abs(daysLeft)} days ago)`;
+                    } else if (daysLeft > 0 && daysLeft <= 5) {
+                        dateStyle = "text-orange-500 font-bold";
+                        dateIconStyle = "text-orange-500";
+                        cycleDisplay += ` (In ${daysLeft} days)`;
                     }
 
                     if (subsList) {
                         const div = document.createElement('div'); 
                         div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow";
                         div.innerHTML = `
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shadow-inner text-lg">
+                            <div class="flex items-center gap-3 w-full">
+                                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shadow-inner text-lg flex-shrink-0">
                                     <i class="fas fa-sync-alt"></i>
                                 </div>
-                                <div>
-                                    <p class="font-bold text-slate-800 text-sm">${item.details}</p>
-                                    <p class="text-[10px] text-slate-400 font-medium flex items-center gap-1.5 mt-0.5">
-                                        <i class="far fa-calendar-alt"></i> Due: ${cycleDisplay} 
-                                        <span class="mx-1 opacity-50">•</span> 
-                                        <span class="flex items-center gap-1">${payIcon} ${payText}</span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-bold text-slate-800 text-sm truncate">${item.details}</p>
+                                    <p class="text-[10px] ${dateStyle} font-medium flex items-center gap-1.5 mt-0.5">
+                                        <i class="far fa-calendar-alt ${dateIconStyle}"></i> ${cycleDisplay} 
+                                        <span class="mx-1 text-slate-300">•</span> 
+                                        <span class="flex items-center gap-1 text-slate-400">${payIcon} ${payText}</span>
                                     </p>
                                 </div>
                             </div>
-                            <div class="text-right flex flex-col items-end">
+                            <div class="text-right flex flex-col items-end ml-2 flex-shrink-0">
                                 <p class="text-base font-black text-rose-500">-${amt.toLocaleString()} THB</p>
-                                <div class="flex gap-3 mt-1 items-center">
-                                    <button onclick="openSubsEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors">
+                                <div class="flex gap-2 mt-1.5 items-center">
+                                    <!-- ปุ่ม Pay -->
+                                    <button onclick="paySubscription('${item.rowId}')" class="text-white bg-violet-500 hover:bg-violet-600 px-2 py-1 rounded text-[9px] font-bold shadow-sm transition-colors flex items-center gap-1">
+                                        <i class="fas fa-check-circle"></i> Pay
+                                    </button>
+                                    <button onclick="openSubsEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors ml-1">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors">
@@ -2015,7 +2111,7 @@
             const totalSubsEl = document.getElementById('total-subs-cost'); 
             
             if (totalSubsEl) {
-                totalSubsEl.innerText = totalSubsCost.toLocaleString();
+                totalSubsEl.innerText = totalSubsCost.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2});
             }
 
             const dateDropdown = document.getElementById('dashboard-date-filter'); 
