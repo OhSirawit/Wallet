@@ -485,6 +485,7 @@
                 </div>
             </div>
             
+            <!-- 🛑 ฟอร์ม Subscriptions ที่ปรับ Due Date และแยกช่อง Card Name -->
             <section class="modern-card p-6 border-none shadow-lg shadow-slate-200/50" id="subs-form-section">
                 <div class="flex justify-between items-center mb-4">
                     <h3 id="subs-form-title" class="text-sm font-bold text-slate-800 flex items-center gap-2">
@@ -510,17 +511,21 @@
                         </div>
                         
                         <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Due Date / Cycle</label>
-                            <select id="subs-date" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer" required>
-                                <option value="รายสัปดาห์ (Weekly)">รายสัปดาห์ (Weekly)</option>
-                                <option value="รายเดือน (Monthly)" selected>รายเดือน (Monthly)</option>
-                                <option value="รายปี (Yearly)">รายปี (Yearly)</option>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Cycle</label>
+                            <select id="subs-cycle" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer" required>
+                                <option value="Monthly" selected>รายเดือน (Monthly)</option>
+                                <option value="Yearly">รายปี (Yearly)</option>
                             </select>
                         </div>
                     </div>
                     
-                    <!-- 🛑 Custom Dropdown สำหรับเลือก Payment + โลโก้ และช่องกรอกชื่อบัตร (อัปเดตโลโก้ VISA แล้ว) -->
                     <div class="grid grid-cols-2 gap-3 mt-2">
+                        <!-- ช่องปฏิทินที่เพิ่มเข้ามา -->
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Due Date</label>
+                            <input type="date" id="subs-date" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700" required>
+                        </div>
+                        
                         <div class="space-y-1.5 relative">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Payment Method</label>
                             <input type="hidden" id="subs-payment" value="VISA">
@@ -561,11 +566,11 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Card Name <span class="text-[8px] opacity-70">(Optional)</span></label>
-                            <input type="text" id="subs-card-name" placeholder="e.g. KBank, Citi" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700">
-                        </div>
+                    </div>
+                    
+                    <div class="space-y-1.5 mt-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Card Name <span class="text-[8px] opacity-70">(Optional)</span></label>
+                        <input type="text" id="subs-card-name" placeholder="e.g. KBank, Citi" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700">
                     </div>
                     
                     <button type="submit" id="subs-submit-btn" class="w-full bg-violet-100 text-violet-600 py-3.5 rounded-xl text-sm font-bold mt-2 hover:bg-violet-200 transition-colors">
@@ -794,7 +799,7 @@
             'Invest_Other': '#38bdf8'
         };
 
-        // 🛑 ข้อมูลสำหรับ Custom Dropdown ในหน้า Subs (อัปเดตโลโก้ VISA แล้ว)
+        // 🛑 ข้อมูลสำหรับ Custom Dropdown ในหน้า Subs
         const paymentDisplays = {
             'VISA': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain"></div> VISA</div>',
             'MasterCard': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-4 object-contain"></div> MasterCard</div>',
@@ -895,6 +900,7 @@
                 document.getElementById('main-app').classList.remove('hidden');
                 
                 document.getElementById('date').valueAsDate = new Date(); 
+                document.getElementById('subs-date').valueAsDate = new Date(); 
                 
                 const profileImg = localStorage.getItem('userProfileImg');
                 const displayName = localStorage.getItem('userDisplayName');
@@ -908,6 +914,7 @@
                 if(displayName) { 
                     document.getElementById('nav-display-name').innerText = displayName; 
                 }
+                
                 loadDataFromSheet(); 
             } else {
                 localStorage.removeItem('loginTimestamp');
@@ -967,6 +974,7 @@
                         document.getElementById('login-page').classList.add('hidden'); 
                         document.getElementById('main-app').classList.remove('hidden'); 
                         document.getElementById('date').valueAsDate = new Date(); 
+                        document.getElementById('subs-date').valueAsDate = new Date(); 
                         
                         document.getElementById('user-profile-img').src = finalPic; 
                         document.getElementById('user-profile-img').classList.remove('hidden'); 
@@ -1015,10 +1023,12 @@
                 localStorage.setItem('userProfileImg', res.profilePic || 'https://ui-avatars.com/api/?name=' + user + '&background=8b5cf6&color=fff');
                 
                 document.getElementById('login-page').classList.add('opacity-0'); 
+                
                 setTimeout(() => { 
                     document.getElementById('login-page').classList.add('hidden'); 
                     document.getElementById('main-app').classList.remove('hidden'); 
                     document.getElementById('date').valueAsDate = new Date(); 
+                    document.getElementById('subs-date').valueAsDate = new Date(); 
                     
                     document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg'); 
                     document.getElementById('user-profile-img').classList.remove('hidden'); 
@@ -1295,7 +1305,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // 🛑 ฟังก์ชันแก้ไขสำหรับ Subscriptions ที่รองรับ Card Name
+        // 🛑 ฟังก์ชันแก้ไข Subs: ดึงข้อมูลวันที่ที่ถูกแปลงกลับมาใส่ใน Date Picker ให้ถูกต้อง
         function openSubsEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
             
@@ -1306,18 +1316,23 @@
             editingSubsRowId = rowId;
             document.getElementById('subs-amount').value = item.amount;
             
-            // 🛑 ดึงข้อมูล Due Date มาแสดงผล
-            const itemDate = item.date || 'รายเดือน (Monthly)';
-            const dateSelect = document.getElementById('subs-date');
+            // 🛑 จัดการเรื่องวันที่และรอบบิล
+            let editDateStr = item.date || ""; 
+            let parts = editDateStr.split('/');
+            let currentYear = new Date().getFullYear();
             
-            const optionExists = Array.from(dateSelect.options).some(opt => opt.value === itemDate);
-            if (!optionExists) {
-                let tempOpt = document.createElement("option");
-                tempOpt.value = itemDate;
-                tempOpt.text = itemDate;
-                dateSelect.appendChild(tempOpt);
+            if (parts.length === 2) {
+                // รูปแบบ DD/MM -> ถือเป็นรายเดือน
+                document.getElementById('subs-cycle').value = 'Monthly';
+                document.getElementById('subs-date').value = `${currentYear}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+            } else if (parts.length === 3) {
+                // รูปแบบ DD/MM/YYYY -> ถือเป็นรายปี
+                document.getElementById('subs-cycle').value = 'Yearly';
+                document.getElementById('subs-date').value = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+            } else {
+                document.getElementById('subs-cycle').value = 'Monthly';
+                document.getElementById('subs-date').valueAsDate = new Date();
             }
-            dateSelect.value = itemDate;
             
             // แยก Payment Type กับ Card Name ออกจากกัน
             let paymentStr = item.payment || '';
@@ -1359,6 +1374,9 @@
         function cancelSubsEdit() {
             editingSubsRowId = null;
             document.getElementById('subs-form').reset();
+            
+            document.getElementById('subs-cycle').value = 'Monthly';
+            document.getElementById('subs-date').valueAsDate = new Date();
             
             document.getElementById('subs-payment').value = 'VISA';
             updatePaymentDisplay('subs-payment', 'VISA');
@@ -1434,7 +1452,7 @@
             btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
-        // 🛑 Submit สำหรับฟอร์ม Subscriptions
+        // 🛑 Submit Subs: แปลงวันที่ให้เป็น วัน/เดือน หรือ วัน/เดือน/ปี ตาม Cycle
         document.getElementById('subs-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
@@ -1442,7 +1460,25 @@
             const amountVal = document.getElementById('subs-amount').value;
             const basePay = document.getElementById('subs-payment').value;
             const cardName = document.getElementById('subs-card-name').value.trim();
-            const cycleVal = document.getElementById('subs-date').value;
+            
+            const rawDate = document.getElementById('subs-date').value; 
+            const cycleVal = document.getElementById('subs-cycle').value;
+            
+            let formattedDate = rawDate;
+            if (rawDate) {
+                const parts = rawDate.split('-');
+                if (parts.length === 3) {
+                    const yyyy = parts[0];
+                    const mm = parts[1];
+                    const dd = parts[2];
+                    
+                    if (cycleVal === 'Monthly') {
+                        formattedDate = `${dd}/${mm}`;
+                    } else if (cycleVal === 'Yearly') {
+                        formattedDate = `${dd}/${mm}/${yyyy}`;
+                    }
+                }
+            }
             
             // รวมประเภทจ่ายเงินเข้ากับชื่อบัตร
             const finalPayment = cardName ? `${basePay} - ${cardName}` : basePay;
@@ -1464,7 +1500,7 @@
             const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
             
             const payload = { 
-                date: cycleVal, 
+                date: formattedDate, // ส่งวันที่ที่ฟอร์แมตแล้วไป
                 time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }), 
                 payment: finalPayment, 
                 category: "Subscription_List", 
@@ -1681,7 +1717,6 @@
             let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
             let sortedExpenses = [...expenses];
             
-            // 🛑 ปรับปรุงระบบ Sort ให้รองรับกรณี Date เป็น "รายเดือน" (Monthly) เพื่อไม่ให้พัง
             sortedExpenses.sort((a,b) => {
                 let rawDateB = new Date(b.date + ' ' + (b.time || '00:00')); 
                 let rawDateA = new Date(a.date + ' ' + (a.time || '00:00'));
@@ -1840,7 +1875,7 @@
                 }
             });
 
-            // 🛑 3. เรนเดอร์หน้า Subscriptions (ดึงโลโก้ SVG ของ VISA ล่าสุดมาใช้)
+            // 3. เรนเดอร์หน้า Subscriptions (ดึงโลโก้ SVG คมชัดมาแสดง)
             let totalSubsCost = 0;
             
             if (subsExpenses.length === 0) {
@@ -1852,7 +1887,6 @@
                     const amt = parseFloat(item.amount) || 0;
                     totalSubsCost += amt;
                     
-                    // 🛑 แสดงไอคอนและรายละเอียดโลโก้บัตรเครดิต SVG ให้สมบูรณ์ในหน้ารายการ
                     let payText = item.payment || '';
                     let payIcon = '<i class="fas fa-credit-card text-slate-400"></i>';
                     
@@ -1883,7 +1917,7 @@
                                 <div>
                                     <p class="font-bold text-slate-800 text-sm">${item.details}</p>
                                     <p class="text-[10px] text-slate-400 font-medium flex items-center gap-1.5 mt-0.5">
-                                        <i class="far fa-calendar-alt"></i> Cycle: ${item.date} 
+                                        <i class="far fa-calendar-alt"></i> Due: ${item.date} 
                                         <span class="mx-1 opacity-50">•</span> 
                                         <span class="flex items-center gap-1">${payIcon} ${payText}</span>
                                     </p>
