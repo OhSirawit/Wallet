@@ -511,9 +511,10 @@
                         
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Cycle</label>
+                            <!-- 🛑 เปลี่ยนเป็นภาษาอังกฤษ -->
                             <select id="subs-cycle" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer" required>
-                                <option value="Monthly" selected>รายเดือน (Monthly)</option>
-                                <option value="Yearly">รายปี (Yearly)</option>
+                                <option value="Monthly" selected>Monthly</option>
+                                <option value="Yearly">Yearly</option>
                             </select>
                         </div>
                     </div>
@@ -521,8 +522,9 @@
                     <div class="grid grid-cols-2 gap-3 mt-2">
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Due Date</label>
-                            <!-- ช่องสำหรับรายเดือน (ตัวเลข 1-31) -->
-                            <input type="number" id="subs-date-monthly" min="1" max="31" placeholder="วันที่ (1-31)" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700" required>
+                            <!-- เปลี่ยนเป็นภาษาอังกฤษ -->
+                            <input type="number" id="subs-date-monthly" min="1" max="31" placeholder="Day (1-31)" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700" required>
+                            
                             <!-- ช่องสำหรับรายปี (ปฏิทินเลือกวันและเดือน) -->
                             <input type="date" id="subs-date-yearly" class="hidden w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700">
                         </div>
@@ -570,6 +572,7 @@
                     </div>
                     
                     <div class="space-y-1.5 mt-2">
+                        <!-- เปลี่ยนเป็นภาษาอังกฤษ -->
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Card Name <span class="text-[8px] opacity-70">(Optional)</span></label>
                         <input type="text" id="subs-card-name" placeholder="e.g. KBank, Citi" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700">
                     </div>
@@ -583,7 +586,8 @@
             <h3 class="text-xs font-bold text-violet-500 uppercase tracking-widest pt-2 flex items-center gap-2">
                 <i class="fas fa-list-ul"></i> Active Subscriptions
             </h3>
-            <p class="text-[10px] text-slate-400 leading-tight">ยอดเหล่านี้จะไม่ถูกนำไปคำนวณรวมในรายจ่ายหลักจนกว่าคุณจะบันทึกในหน้า Home</p>
+            <!-- เปลี่ยนเป็นภาษาอังกฤษ -->
+            <p class="text-[10px] text-slate-400 leading-tight">These amounts will not be included in your main expenses until you save them as transactions.</p>
             
             <div id="subscriptions-list" class="space-y-3"></div>
         </div>
@@ -827,6 +831,7 @@
             }
         }
 
+        // 🛑 Event Listener สลับช่องวันที่เมื่อเปลี่ยน Cycle
         document.getElementById('subs-cycle').addEventListener('change', function(e) {
             const val = e.target.value;
             const mInput = document.getElementById('subs-date-monthly');
@@ -1075,6 +1080,7 @@
             return JSON.parse(jsonPayload); 
         }
 
+        // จัดการคลิกเพื่อปิด Dropdown
         document.addEventListener('click', function(event) { 
             const menu = document.getElementById('top-menu'); 
             const menuBtn = document.getElementById('menu-btn'); 
@@ -1327,7 +1333,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // 🛑 ฟังก์ชันแก้ไข Subs: รองรับรูปแบบ Due Date ทั้งแบบรายเดือนและรายปี (วัน/เดือน)
+        // 🛑 ฟังก์ชันแก้ไข Subs: รองรับรูปแบบ Due Date ทั้งแบบรายเดือน(ตัวเลข) และรายปี(วัน-เดือน)
         function openSubsEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
             
@@ -1343,20 +1349,31 @@
             const yInput = document.getElementById('subs-date-yearly');
             const cycleSelect = document.getElementById('subs-cycle');
             
-            if (editDateStr.includes('/')) {
+            // ตรวจสอบว่ารูปแบบเป็น วัน-เดือน หรือไม่ (เช่น 20-Nov หรือ 20-11)
+            if (editDateStr.includes('-')) {
                 cycleSelect.value = 'Yearly';
                 mInput.classList.add('hidden');
                 mInput.required = false;
                 yInput.classList.remove('hidden');
                 yInput.required = true;
                 
-                let parts = editDateStr.split('/');
+                let parts = editDateStr.split('-');
                 let currentYear = new Date().getFullYear();
+                let monthNum = "01";
                 
-                if(parts.length === 2) {
-                    yInput.value = `${currentYear}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-                } else if(parts.length === 3) {
-                    yInput.value = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                // แปลงชื่อเดือนกลับเป็นตัวเลขเพื่อให้ Calendar เลือกได้
+                if (isNaN(parts[1])) {
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const monthIndex = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase());
+                    if(monthIndex !== -1) {
+                        monthNum = (monthIndex + 1).toString().padStart(2, '0');
+                    }
+                } else {
+                    monthNum = parts[1].padStart(2, '0');
+                }
+                
+                if(parts.length >= 2) {
+                    yInput.value = `${currentYear}-${monthNum}-${parts[0].padStart(2, '0')}`;
                 }
             } else {
                 cycleSelect.value = 'Monthly';
@@ -1496,7 +1513,7 @@
             btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
-        // 🛑 Submit Subs: บันทึกรายปีเป็นแค่ วัน/เดือน (DD/MM) ตัดปีออก
+        // 🛑 Submit Subs: บันทึกรายปีเป็นแค่ วัน-เดือน (เช่น 20-Nov) ตัดปีทิ้ง
         document.getElementById('subs-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
@@ -1522,7 +1539,12 @@
                     return;
                 }
                 const parts = rawDate.split('-');
-                formattedDate = `${parts[2]}/${parts[1]}`; // DD/MM (ตัดปีออกเรียบร้อย)
+                if (parts.length === 3) {
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const monthIndex = parseInt(parts[1]) - 1;
+                    const monthName = monthNames[monthIndex];
+                    formattedDate = `${parts[2]}-${monthName}`; // กลายเป็นรูปแบบ DD-MMM เช่น 20-Nov
+                }
             }
             
             const finalPayment = cardName ? `${basePay} - ${cardName}` : basePay;
@@ -1919,7 +1941,7 @@
                 }
             });
 
-            // 3. เรนเดอร์หน้า Subscriptions 
+            // 🛑 3. เรนเดอร์หน้า Subscriptions 
             let totalSubsCost = 0;
             
             if (subsExpenses.length === 0) {
@@ -1950,12 +1972,10 @@
                         payIcon = '<span class="text-[10px]">🏦</span>';
                     }
 
-                    // 🛑 ตรวจสอบรูปแบบวันที่เพื่อแสดงผล
+                    // 🛑 แสดงวันที่ให้ดูง่ายขึ้น
                     let cycleDisplay = item.date;
-                    if (cycleDisplay && !cycleDisplay.includes('/')) {
-                        cycleDisplay = 'วันที่ ' + cycleDisplay;
-                    } else if (cycleDisplay && cycleDisplay.includes('/')) {
-                        cycleDisplay = 'วันที่ ' + cycleDisplay;
+                    if (cycleDisplay && !cycleDisplay.includes('-')) {
+                        cycleDisplay = 'Day ' + cycleDisplay;
                     }
 
                     if (subsList) {
