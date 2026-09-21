@@ -17,6 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- นำเข้าไลบรารี OCR สำหรับสแกนสลิป -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
     <style>
@@ -33,306 +34,74 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         
-        .ambient-bg { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            z-index: -1; 
-            pointer-events: none; 
-            overflow: hidden; 
-        }
+        .ambient-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; }
+        .ambient-glow-1 { position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vw; background: rgba(139, 92, 246, 0.2); border-radius: 50%; filter: blur(90px); }
+        .ambient-glow-2 { position: absolute; bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: rgba(236, 72, 153, 0.15); border-radius: 50%; filter: blur(90px); }
+        .ambient-glow-3 { position: absolute; top: 40%; left: 40%; width: 50vw; height: 50vw; background: rgba(56, 189, 248, 0.15); border-radius: 50%; filter: blur(100px); }
         
-        .ambient-glow-1 { 
-            position: absolute; 
-            top: -10%; 
-            left: -10%; 
-            width: 60vw; 
-            height: 60vw; 
-            background: rgba(139, 92, 246, 0.2); 
-            border-radius: 50%; 
-            filter: blur(90px); 
-        }
+        .modern-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 1); border-radius: 24px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); transition: all 0.3s ease; }
         
-        .ambient-glow-2 { 
-            position: absolute; 
-            bottom: -10%; 
-            right: -10%; 
-            width: 60vw; 
-            height: 60vw; 
-            background: rgba(236, 72, 153, 0.15); 
-            border-radius: 50%; 
-            filter: blur(90px); 
-        }
+        .input-style { background: #f8fafc; border: 2px solid transparent; transition: all 0.3s ease; appearance: none; }
+        .input-style:focus { background: #ffffff; border-color: #c4b5fd; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
         
-        .ambient-glow-3 { 
-            position: absolute; 
-            top: 40%; 
-            left: 40%; 
-            width: 50vw; 
-            height: 50vw; 
-            background: rgba(56, 189, 248, 0.15); 
-            border-radius: 50%; 
-            filter: blur(100px); 
-        }
+        .btn-modern { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 20px rgba(219, 39, 119, 0.2); border: none; }
+        .btn-modern:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(219, 39, 119, 0.3); }
+        .btn-modern:active { transform: scale(0.96) translateY(0); box-shadow: 0 5px 10px rgba(219, 39, 119, 0.2); }
         
-        .modern-card { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px); 
-            border: 1px solid rgba(255, 255, 255, 1); 
-            border-radius: 24px; 
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); 
-            transition: all 0.3s ease; 
-        }
+        .nav-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-active { color: #8b5cf6 !important; font-weight: 800; background: #f5f3ff; border-radius: 100px; box-shadow: inset 0 2px 4px rgba(139, 92, 246, 0.05); }
         
-        .input-style { 
-            background: #f8fafc; 
-            border: 2px solid transparent; 
-            transition: all 0.3s ease; 
-            appearance: none; 
-        }
+        .page-content { display: none; }
+        .page-active { display: block; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .input-style:focus { 
-            background: #ffffff; 
-            border-color: #c4b5fd; 
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); 
-        }
+        .day-details { display: none; overflow: hidden; }
+        .day-details.active { display: block; animation: fadeDown 0.3s ease-out forwards; }
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .btn-modern { 
-            background: linear-gradient(135deg, #8b5cf6, #ec4899); 
-            color: white; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            box-shadow: 0 10px 20px rgba(219, 39, 119, 0.2); 
-            border: none; 
-        }
+        .rotate-icon { transition: transform 0.3s ease; }
+        .rotated { transform: rotate(180deg); }
         
-        .btn-modern:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 12px 25px rgba(219, 39, 119, 0.3); 
-        }
+        .menu-dropdown { opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .menu-dropdown.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
         
-        .btn-modern:active { 
-            transform: scale(0.96) translateY(0); 
-            box-shadow: 0 5px 10px rgba(219, 39, 119, 0.2); 
-        }
-        
-        .nav-btn { 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-        
-        .nav-active { 
-            color: #8b5cf6 !important; 
-            font-weight: 800; 
-            background: #f5f3ff; 
-            border-radius: 100px; 
-            box-shadow: inset 0 2px 4px rgba(139, 92, 246, 0.05); 
-        }
-        
-        .page-content { 
-            display: none; 
-        }
-        
-        .page-active { 
-            display: block; 
-            animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
-        }
-        
-        @keyframes fadeUp { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        
-        .day-details { 
-            display: none; 
-            overflow: hidden; 
-        }
-        
-        .day-details.active { 
-            display: block; 
-            animation: fadeDown 0.3s ease-out forwards; 
-        }
-        
-        @keyframes fadeDown { 
-            from { opacity: 0; transform: translateY(-10px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        
-        .rotate-icon { 
-            transition: transform 0.3s ease; 
-        }
-        
-        .rotated { 
-            transform: rotate(180deg); 
-        }
-        
-        .menu-dropdown { 
-            opacity: 0; 
-            pointer-events: none; 
-            transform: translateY(-10px); 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-        
-        .menu-dropdown.active { 
-            opacity: 1; 
-            pointer-events: auto; 
-            transform: translateY(0); 
-        }
-        
-        #toast-notification { 
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-        }
-        
-        ::-webkit-scrollbar { 
-            width: 4px; 
-        }
-        
-        ::-webkit-scrollbar-thumb { 
-            background: #c4b5fd; 
-            border-radius: 4px; 
-        }
-        
-        .scrollbar-hide::-webkit-scrollbar { 
-            display: none; 
-        }
-        
-        .scrollbar-hide { 
-            -ms-overflow-style: none; 
-            scrollbar-width: none; 
-        }
+        #toast-notification { transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #c4b5fd; border-radius: 4px; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* 🌙 Dark Mode */
-        body.dark-mode { 
-            background-color: #0f172a; 
-            color: #f8fafc; 
-        }
-        
-        body.dark-mode .modern-card { 
-            background: rgba(30, 41, 59, 0.8) !important; 
-            border-color: rgba(255, 255, 255, 0.05) !important; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
-        }
-        
-        body.dark-mode .input-style { 
-            background: #1e293b !important; 
-            border-color: #334155 !important; 
-            color: #f8fafc !important; 
-        }
-        
-        body.dark-mode .input-style:focus { 
-            background: #0f172a !important; 
-            border-color: #8b5cf6 !important; 
-        }
-        
-        body.dark-mode .bg-white { 
-            background-color: #1e293b !important; 
-        }
-        
-        body.dark-mode .bg-slate-50 { 
-            background-color: #0f172a !important; 
-        }
-        
-        body.dark-mode .bg-slate-100 { 
-            background-color: #334155 !important; 
-        }
-        
-        body.dark-mode .text-slate-800, body.dark-mode .text-slate-700 { 
-            color: #f1f5f9 !important; 
-        }
-        
-        body.dark-mode .text-slate-600 { 
-            color: #cbd5e1 !important; 
-        }
-        
-        body.dark-mode .text-slate-500, body.dark-mode .text-slate-400 { 
-            color: #94a3b8 !important; 
-        }
-        
-        body.dark-mode .border-slate-100, body.dark-mode .border-slate-50, body.dark-mode .border-slate-200 { 
-            border-color: #334155 !important; 
-        }
-        
-        body.dark-mode .hover\:bg-slate-50:hover { 
-            background-color: #334155 !important; 
-        }
-        
-        body.dark-mode .hover\:bg-violet-50:hover { 
-            background-color: rgba(139, 92, 246, 0.15) !important; 
-        }
-        
-        body.dark-mode .nav-active { 
-            background: #334155 !important; 
-            color: #c4b5fd !important; 
-        }
-        
-        body.dark-mode #toast-bg { 
-            background: rgba(30, 41, 59, 0.95) !important; 
-            border-color: #334155 !important; 
-            color: #f8fafc !important; 
-        }
-        
-        body.dark-mode select.input-style option { 
-            background: #1e293b; 
-            color: #f8fafc; 
-        }
-        
-        body.dark-mode #subs-payment-dropdown, body.dark-mode #payment-dropdown { 
-            background: #1e293b !important; 
-            border-color: #334155 !important; 
-        }
-        
-        body.dark-mode .fixed.bottom-6 { 
-            background: rgba(30, 41, 59, 0.85) !important; 
-            border-color: rgba(255, 255, 255, 0.1) !important; 
-        }
-        
-        body.dark-mode .day-details { 
-            background: rgba(15, 23, 42, 0.6) !important; 
-            border-color: #334155 !important; 
-        }
+        body.dark-mode { background-color: #0f172a; color: #f8fafc; }
+        body.dark-mode .modern-card { background: rgba(30, 41, 59, 0.8) !important; border-color: rgba(255, 255, 255, 0.05) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        body.dark-mode .input-style { background: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important; }
+        body.dark-mode .input-style:focus { background: #0f172a !important; border-color: #8b5cf6 !important; }
+        body.dark-mode .bg-white { background-color: #1e293b !important; }
+        body.dark-mode .bg-slate-50 { background-color: #0f172a !important; }
+        body.dark-mode .bg-slate-100 { background-color: #334155 !important; }
+        body.dark-mode .text-slate-800, body.dark-mode .text-slate-700 { color: #f1f5f9 !important; }
+        body.dark-mode .text-slate-600 { color: #cbd5e1 !important; }
+        body.dark-mode .text-slate-500, body.dark-mode .text-slate-400 { color: #94a3b8 !important; }
+        body.dark-mode .border-slate-100, body.dark-mode .border-slate-50, body.dark-mode .border-slate-200 { border-color: #334155 !important; }
+        body.dark-mode .hover\:bg-slate-50:hover { background-color: #334155 !important; }
+        body.dark-mode .hover\:bg-violet-50:hover { background-color: rgba(139, 92, 246, 0.15) !important; }
+        body.dark-mode .nav-active { background: #334155 !important; color: #c4b5fd !important; }
+        body.dark-mode #toast-bg { background: rgba(30, 41, 59, 0.95) !important; border-color: #334155 !important; color: #f8fafc !important; }
+        body.dark-mode select.input-style option { background: #1e293b; color: #f8fafc; }
+        body.dark-mode #subs-payment-dropdown, body.dark-mode #payment-dropdown { background: #1e293b !important; border-color: #334155 !important; }
+        body.dark-mode .fixed.bottom-6 { background: rgba(30, 41, 59, 0.85) !important; border-color: rgba(255, 255, 255, 0.1) !important; }
+        body.dark-mode .day-details { background: rgba(15, 23, 42, 0.6) !important; border-color: #334155 !important; }
         
         /* PIN Pad Styles */
-        body.dark-mode #pin-pad button { 
-            background: #1e293b !important; 
-            color: #f8fafc !important; 
-            border: 1px solid #334155; 
-        }
-        body.dark-mode #pin-pad button:hover { 
-            background: #334155 !important; 
-        }
-        
-        .pin-dot { 
-            width: 16px; 
-            height: 16px; 
-            border-radius: 50%; 
-            background: #e2e8f0; 
-            transition: all 0.2s ease; 
-            border: 2px solid transparent; 
-        }
-        
-        .pin-dot.filled { 
-            background: #8b5cf6; 
-            transform: scale(1.1); 
-            border-color: #c4b5fd; 
-        }
-        
-        .pin-shake { 
-            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; 
-        }
-        
-        @keyframes shake { 
-            10%, 90% { transform: translate3d(-1px, 0, 0); } 
-            20%, 80% { transform: translate3d(2px, 0, 0); } 
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 
-            40%, 60% { transform: translate3d(4px, 0, 0); } 
-        }
+        body.dark-mode #pin-pad button { background: #1e293b !important; color: #f8fafc !important; border: 1px solid #334155; }
+        body.dark-mode #pin-pad button:hover { background: #334155 !important; }
+        .pin-dot { width: 16px; height: 16px; border-radius: 50%; background: #e2e8f0; transition: all 0.2s ease; border: 2px solid transparent; }
+        .pin-dot.filled { background: #8b5cf6; transform: scale(1.1); border-color: #c4b5fd; }
+        .pin-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
         
         /* Voice Mic Pulse */
-        .mic-listening { 
-            animation: micPulse 1.5s infinite; 
-            color: #ec4899 !important; 
-        }
-        
+        .mic-listening { animation: micPulse 1.5s infinite; color: #ec4899 !important; }
         @keyframes micPulse { 
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); } 
             70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); } 
@@ -1729,7 +1498,7 @@
                     
                     setTimeout(() => { 
                         document.getElementById('login-page').classList.add('hidden');
-                        checkPinLock();
+                        checkPinLock(); 
                         
                         document.getElementById('date').valueAsDate = new Date();
                         document.getElementById('subs-date-monthly').value = new Date().getDate();
@@ -1789,7 +1558,7 @@
                 
                 setTimeout(() => { 
                     document.getElementById('login-page').classList.add('hidden');
-                    checkPinLock();
+                    checkPinLock(); 
                     
                     document.getElementById('date').valueAsDate = new Date();
                     document.getElementById('subs-date-monthly').value = new Date().getDate();
