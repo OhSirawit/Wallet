@@ -204,6 +204,45 @@
             scrollbar-width: none;
         }
 
+        /* PIN Pad Styles */
+        .pin-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #8b5cf6;
+            transition: all 0.2s ease;
+        }
+        .pin-dot.filled {
+            background-color: #8b5cf6;
+            transform: scale(1.1);
+        }
+        .pin-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #334155;
+            background-color: #f8fafc;
+            transition: all 0.1s ease;
+            user-select: none;
+        }
+        .pin-btn:active {
+            background-color: #e2e8f0;
+            transform: scale(0.9);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        .shake-animation {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
         /* 🌙 Dark Mode Global Styles */
         body.dark-mode { 
             background-color: #0f172a; 
@@ -293,6 +332,14 @@
             background: rgba(15, 23, 42, 0.6) !important; 
             border-color: #334155 !important; 
         }
+
+        body.dark-mode .pin-btn {
+            background-color: #1e293b;
+            color: #f8fafc;
+        }
+        body.dark-mode .pin-btn:active {
+            background-color: #334155;
+        }
     </style>
 </head>
 <body class="pb-32 relative">
@@ -351,7 +398,7 @@
         </div>
     </div>
 
-    <!-- Receipt Viewer Modal (เพิ่มใหม่) -->
+    <!-- Receipt Viewer Modal -->
     <div id="receipt-modal" class="fixed inset-0 z-[400] bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0" onclick="closeReceiptModal()">
         <div class="relative w-full max-w-lg flex flex-col items-center justify-center" onclick="event.stopPropagation()">
             <!-- ปุ่มปิดหน้าต่าง -->
@@ -361,6 +408,50 @@
             <!-- รูปภาพใบเสร็จ -->
             <img id="receipt-modal-img" src="" alt="Receipt Viewer" class="w-auto max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain transform scale-95 transition-transform duration-300 border border-white/10">
             <p class="text-white/60 text-[10px] mt-4 font-medium tracking-widest uppercase">Tap outside to close</p>
+        </div>
+    </div>
+
+    <!-- 🔒 PIN Lock Page (ใหม่) -->
+    <div id="pin-page" class="fixed inset-0 z-[250] bg-slate-50 flex items-center justify-center hidden transition-opacity duration-300 opacity-0 overflow-hidden">
+        <div class="ambient-bg">
+            <div class="ambient-glow-1"></div>
+            <div class="ambient-glow-2"></div>
+        </div>
+        <div class="flex flex-col items-center justify-center w-full max-w-sm px-6 relative z-10">
+            <div class="w-16 h-16 bg-gradient-to-tr from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shadow-fuchsia-500/30 mb-6">
+                <i id="pin-icon" class="fas fa-lock"></i>
+            </div>
+            
+            <h2 id="pin-title" class="text-2xl font-black text-slate-800 mb-2 tracking-tight">Enter PIN</h2>
+            <p id="pin-subtitle" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8">To unlock your wallet</p>
+            
+            <!-- จุดแสดง PIN -->
+            <div id="pin-dots" class="flex gap-4 mb-12 h-6 items-center justify-center">
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+            </div>
+            
+            <!-- แป้นตัวเลข -->
+            <div class="grid grid-cols-3 gap-4 mb-8">
+                <button onclick="handlePinInput('1')" class="pin-btn">1</button>
+                <button onclick="handlePinInput('2')" class="pin-btn">2</button>
+                <button onclick="handlePinInput('3')" class="pin-btn">3</button>
+                <button onclick="handlePinInput('4')" class="pin-btn">4</button>
+                <button onclick="handlePinInput('5')" class="pin-btn">5</button>
+                <button onclick="handlePinInput('6')" class="pin-btn">6</button>
+                <button onclick="handlePinInput('7')" class="pin-btn">7</button>
+                <button onclick="handlePinInput('8')" class="pin-btn">8</button>
+                <button onclick="handlePinInput('9')" class="pin-btn">9</button>
+                <div class="pin-btn" style="background: transparent;"></div>
+                <button onclick="handlePinInput('0')" class="pin-btn">0</button>
+                <button onclick="handlePinInput('back')" class="pin-btn text-rose-500" style="background: transparent; font-size: 20px;"><i class="fas fa-backspace"></i></button>
+            </div>
+            
+            <button onclick="logout()" class="text-xs font-bold text-slate-400 hover:text-rose-500 transition-colors mt-4">
+                Forgot PIN? <span class="underline">Sign Out</span>
+            </button>
         </div>
     </div>
 
@@ -460,7 +551,6 @@
             <!-- Dropdown Menu -->
             <div id="top-menu" class="menu-dropdown absolute top-16 right-6 w-64 max-h-[75vh] overflow-y-auto modern-card p-2 z-50 shadow-2xl border-none">
                 <ul class="flex flex-col space-y-1">
-                    <!-- 🌙 โหมดกลางคืน (Dark Mode Toggle) -->
                     <li>
                         <button onclick="toggleDarkMode(); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
                             <i class="fas fa-moon w-4 text-violet-500" id="dark-mode-icon"></i> <span id="dark-mode-text">Dark Mode</span>
@@ -957,8 +1047,20 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- 🔒 เพิ่มส่วนเปิดใช้งาน PIN Lock ในหน้า Profile -->
+                    <div class="w-full space-y-3 mt-6 pt-4 border-t border-slate-100 text-left">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">App Lock (PIN)</label>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle-pin-lock" class="sr-only peer" onchange="handlePinToggle(this)">
+                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-violet-500"></div>
+                            </label>
+                        </div>
+                        <p class="text-[9px] text-slate-400 ml-1 leading-tight" id="pin-status-text">Set a 4-digit PIN to secure your wallet.</p>
+                    </div>
                     
-                    <button onclick="saveProfile()" id="btn-save-profile" class="w-full btn-modern py-4 rounded-2xl text-sm font-bold mt-4 flex justify-center items-center gap-2">
+                    <button onclick="saveProfile()" id="btn-save-profile" class="w-full btn-modern py-4 rounded-2xl text-sm font-bold mt-6 flex justify-center items-center gap-2">
                         Save Changes <i class="fas fa-save text-white/80"></i>
                     </button>
                 </div>
@@ -987,13 +1089,13 @@
     </div>
 
     <script>
-        // URL SCRIPT ของคุณ[cite: 1]
+        // URL SCRIPT 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzt5OSS0xZUfdmsdpyxusHEeqof7qPWv3bQ39BX_mrk8jO9OviMCdzHuxeLuwoY_3td/exec'; 
         
         const FIXED_BUDGET = 0; 
         let expenses = []; 
-        let goalsData = []; // เก็บข้อมูล Goals
-        let currentRemainingHome = 0; // เก็บยอดคงเหลือสำหรับตรวจสอบตอนหยอดกระปุก
+        let goalsData = []; 
+        let currentRemainingHome = 0; 
         
         let myOverallCategoryChart = null; 
         let myDailyCategoryChart = null; 
@@ -1008,6 +1110,11 @@
         let editingSubsRowId = null; 
         
         let currentHistoryLimit = 20;
+
+        // 🔒 ตัวแปรสำหรับระบบ PIN
+        let currentPinInput = "";
+        let tempSetupPin = "";
+        let pinProcessMode = "unlock"; // 'unlock', 'setup1', 'setup2'
 
         const globalColorsMap = { 
             'Food': '#ec4899', 
@@ -1034,7 +1141,7 @@
                 if (type === 'light') navigator.vibrate(10);
                 else if (type === 'medium') navigator.vibrate(20);
                 else if (type === 'heavy') navigator.vibrate(30);
-                else if (type === 'success') navigator.vibrate([20, 50, 20]); // สั่นสองจังหวะ
+                else if (type === 'success') navigator.vibrate([20, 50, 20]);
                 else if (type === 'error') navigator.vibrate([50, 50, 50, 50]);
             } catch (e) { console.log("Haptic error"); }
         }
@@ -1051,7 +1158,7 @@
                     const gain = ctx.createGain();
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(freq, startTime);
-                    gain.gain.setValueAtTime(0.1, startTime); // ความดัง
+                    gain.gain.setValueAtTime(0.1, startTime);
                     gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
                     osc.connect(gain);
                     gain.connect(ctx.destination);
@@ -1059,7 +1166,6 @@
                     osc.stop(startTime + duration);
                 }
                 
-                // เล่นโน้ต 2 ตัวไล่ระดับ สร้างความรู้สึกสำเร็จ (C6 -> E6)
                 playNote(1046.50, ctx.currentTime, 0.15); 
                 playNote(1318.51, ctx.currentTime + 0.1, 0.4); 
             } catch(e) { console.log("Audio not supported or blocked"); }
@@ -1092,11 +1198,137 @@
             
             setTimeout(() => {
                 modal.classList.add('hidden');
-                img.src = ''; // เคลียร์รูปออกเพื่อไม่ให้ค้าง
+                img.src = ''; 
             }, 300);
         }
 
-        // 🌟 1. ฟังก์ชันใส่ลูกน้ำอัตโนมัติ (Auto Comma)
+        // 🔒 ฟังก์ชันระบบ PIN (App Lock)
+        function handlePinInput(num) {
+            triggerHaptic('light');
+            
+            if (num === 'back') {
+                currentPinInput = currentPinInput.slice(0, -1);
+            } else {
+                if (currentPinInput.length < 4) {
+                    currentPinInput += num;
+                }
+            }
+            updatePinUI();
+        }
+
+        function updatePinUI() {
+            const dots = document.querySelectorAll('#pin-dots .pin-dot');
+            dots.forEach((dot, idx) => {
+                if (idx < currentPinInput.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            });
+
+            if (currentPinInput.length === 4) {
+                setTimeout(processCompletePin, 150); // ดีเลย์นิดนึงให้เห็นจุดเต็มก่อน
+            }
+        }
+
+        function processCompletePin() {
+            const savedPin = localStorage.getItem('appPin');
+            const pinDotsContainer = document.getElementById('pin-dots');
+            
+            if (pinProcessMode === 'unlock') {
+                if (currentPinInput === savedPin) {
+                    // ปลดล็อคสำเร็จ!
+                    playSuccessSound();
+                    document.getElementById('pin-page').classList.add('opacity-0');
+                    setTimeout(() => {
+                        document.getElementById('pin-page').classList.add('hidden');
+                        document.getElementById('main-app').classList.remove('hidden');
+                        loadDataFromSheet();
+                    }, 300);
+                } else {
+                    // PIN ผิด
+                    triggerHaptic('error');
+                    pinDotsContainer.classList.add('shake-animation');
+                    document.getElementById('pin-subtitle').innerText = "Incorrect PIN, try again";
+                    document.getElementById('pin-subtitle').classList.replace('text-slate-400', 'text-rose-500');
+                    
+                    setTimeout(() => {
+                        pinDotsContainer.classList.remove('shake-animation');
+                        currentPinInput = "";
+                        updatePinUI();
+                    }, 400);
+                }
+            } 
+            else if (pinProcessMode === 'setup1') {
+                // ใส่รหัสครั้งแรกตอนตั้งค่า
+                tempSetupPin = currentPinInput;
+                currentPinInput = "";
+                updatePinUI();
+                pinProcessMode = 'setup2';
+                document.getElementById('pin-title').innerText = "Confirm PIN";
+                document.getElementById('pin-subtitle').innerText = "Re-enter your 4-digit PIN";
+            } 
+            else if (pinProcessMode === 'setup2') {
+                // ยืนยันรหัส
+                if (currentPinInput === tempSetupPin) {
+                    // ตั้งรหัสสำเร็จ
+                    localStorage.setItem('appPin', currentPinInput);
+                    playSuccessSound();
+                    document.getElementById('toggle-pin-lock').checked = true;
+                    document.getElementById('pin-status-text').innerText = "PIN Lock is Enabled";
+                    
+                    document.getElementById('pin-page').classList.add('opacity-0');
+                    setTimeout(() => {
+                        document.getElementById('pin-page').classList.add('hidden');
+                    }, 300);
+                } else {
+                    // ยืนยันไม่ตรงกัน
+                    triggerHaptic('error');
+                    pinDotsContainer.classList.add('shake-animation');
+                    document.getElementById('pin-subtitle').innerText = "PINs do not match, try again";
+                    document.getElementById('pin-subtitle').classList.replace('text-slate-400', 'text-rose-500');
+                    
+                    setTimeout(() => {
+                        pinDotsContainer.classList.remove('shake-animation');
+                        currentPinInput = "";
+                        tempSetupPin = "";
+                        pinProcessMode = 'setup1';
+                        document.getElementById('pin-title').innerText = "Set New PIN";
+                        document.getElementById('pin-subtitle').innerText = "Create a 4-digit PIN";
+                        document.getElementById('pin-subtitle').classList.replace('text-rose-500', 'text-slate-400');
+                        updatePinUI();
+                    }, 600);
+                }
+            }
+        }
+
+        // สำหรับหน้า Profile Toggle
+        function handlePinToggle(checkbox) {
+            triggerHaptic('medium');
+            if (checkbox.checked) {
+                // เปิดใช้งาน PIN -> เปิดหน้าตั้งค่า PIN
+                checkbox.checked = false; // ป้องกันการติ๊กจนกว่าจะตั้งสำเร็จ
+                pinProcessMode = 'setup1';
+                currentPinInput = "";
+                tempSetupPin = "";
+                
+                document.getElementById('pin-title').innerText = "Set New PIN";
+                document.getElementById('pin-subtitle').innerText = "Create a 4-digit PIN";
+                document.getElementById('pin-subtitle').classList.replace('text-rose-500', 'text-slate-400');
+                document.getElementById('pin-icon').className = "fas fa-shield-alt";
+                
+                updatePinUI();
+                const pinPage = document.getElementById('pin-page');
+                pinPage.classList.remove('hidden');
+                setTimeout(() => { pinPage.classList.remove('opacity-0'); }, 10);
+            } else {
+                // ปิดใช้งาน PIN
+                localStorage.removeItem('appPin');
+                document.getElementById('pin-status-text').innerText = "Set a 4-digit PIN to secure your wallet.";
+                showToast("PIN Lock disabled");
+            }
+        }
+
         function formatNumberInput(e) {
             let val = e.target.value.replace(/,/g, '');
             if (!isNaN(val) && val !== '') {
@@ -1106,7 +1338,6 @@
             }
         }
 
-        // 🌟 2. โหมดมืด (Dark Mode)
         function toggleDarkMode() {
             triggerHaptic('light');
             const body = document.body;
@@ -1139,7 +1370,6 @@
             if(myDailyCategoryChart) myDailyCategoryChart.update();
         }
 
-        // 🌟 3. ระบบ Budget รายเดือน
         function setMonthlyBudget() {
             triggerHaptic('light');
             let current = localStorage.getItem('monthlyBudget') || '';
@@ -1157,9 +1387,8 @@
             }
         }
 
-        // 🌟 4. ระบบ Quick Add
         function quickAdd(amount, category, details, payment = 'Cash') {
-            triggerHaptic('medium'); // สั่นตอนกด Quick Add
+            triggerHaptic('medium'); 
             
             document.getElementById('amount').value = amount;
             formatNumberInput({target: document.getElementById('amount')}); 
@@ -1285,6 +1514,7 @@
             }
         }
 
+        // 🌟 อัปเดตเงื่อนไข Login ให้เช็ค PIN ด้วย
         window.onload = function() { 
             const loginTimestamp = localStorage.getItem('loginTimestamp');
             const now = Date.now();
@@ -1298,11 +1528,35 @@
                 updateDarkModeUI(true);
             }
 
+            // เช็คว่าเคยล็อคอินอยู่ไหม (Session ยังไม่หมดอายุ)
             if (loginTimestamp && (now - parseInt(loginTimestamp)) < SEVEN_DAYS) {
-                localStorage.setItem('loginTimestamp', now.toString());
-                document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
+                localStorage.setItem('loginTimestamp', now.toString()); // ต่ออายุ Session
                 
+                const savedPin = localStorage.getItem('appPin');
+                
+                // ถ้ายืนยันตัวตนแล้ว ให้เช็คว่า "เปิดใช้ PIN ไว้ไหม"
+                if (savedPin) {
+                    document.getElementById('login-page').classList.add('hidden');
+                    // ปิดหน้าแอปหลักไว้ก่อน โชว์หน้า PIN
+                    pinProcessMode = 'unlock';
+                    currentPinInput = "";
+                    document.getElementById('pin-title').innerText = "Enter PIN";
+                    document.getElementById('pin-subtitle').innerText = "To unlock your wallet";
+                    document.getElementById('pin-subtitle').classList.replace('text-rose-500', 'text-slate-400');
+                    document.getElementById('pin-icon').className = "fas fa-lock";
+                    updatePinUI();
+                    
+                    const pinPage = document.getElementById('pin-page');
+                    pinPage.classList.remove('hidden');
+                    setTimeout(() => { pinPage.classList.remove('opacity-0'); }, 10);
+                } else {
+                    // ถ้าไม่ได้เปิด PIN ไว้ ทะลุเข้าแอปปกติ
+                    document.getElementById('login-page').classList.add('hidden');
+                    document.getElementById('main-app').classList.remove('hidden');
+                    loadDataFromSheet();
+                }
+                
+                // อัปเดตข้อมูลผู้ใช้เตรียมไว้
                 document.getElementById('date').valueAsDate = new Date(); 
                 document.getElementById('subs-date-monthly').value = new Date().getDate();
                 document.getElementById('subs-date-yearly').valueAsDate = new Date();
@@ -1315,13 +1569,12 @@
                     document.getElementById('user-profile-img').classList.remove('hidden'); 
                     document.getElementById('user-profile-icon').classList.add('hidden'); 
                 }
-                
                 if(displayName) { 
                     document.getElementById('nav-display-name').innerText = displayName; 
                 }
                 
-                loadDataFromSheet(); 
             } else {
+                // Session หมดอายุ หรือเข้าครั้งแรก โชว์หน้า Login
                 localStorage.removeItem('loginTimestamp');
                 document.getElementById('login-page').classList.remove('hidden', 'opacity-0', 'pointer-events-none');
                 document.getElementById('main-app').classList.add('hidden');
@@ -1354,6 +1607,7 @@
             });
         };
 
+        // ทำเช่นเดียวกันกับตอน Login ด้วย Google
         async function handleCredentialResponse(response) {
             const responsePayload = decodeJwtResponse(response.credential);
             const userEmail = responsePayload.email;
@@ -1379,20 +1633,35 @@
                     document.getElementById('login-page').classList.add('opacity-0'); 
                     
                     setTimeout(() => { 
-                        playSuccessSound(); // เสียงตอน Login สำเร็จ
-                        document.getElementById('login-page').classList.add('hidden'); 
-                        document.getElementById('main-app').classList.remove('hidden'); 
-                        
+                        // อัปเดตข้อมูลผู้ใช้
                         document.getElementById('date').valueAsDate = new Date(); 
                         document.getElementById('subs-date-monthly').value = new Date().getDate(); 
                         document.getElementById('subs-date-yearly').valueAsDate = new Date();
-                        
                         document.getElementById('user-profile-img').src = finalPic; 
                         document.getElementById('user-profile-img').classList.remove('hidden'); 
                         document.getElementById('user-profile-icon').classList.add('hidden');
                         document.getElementById('nav-display-name').innerText = finalName; 
-                        
-                        loadDataFromSheet(); 
+
+                        document.getElementById('login-page').classList.add('hidden'); 
+
+                        // 🔒 เช็คว่าตั้ง PIN ไว้ไหม
+                        const savedPin = localStorage.getItem('appPin');
+                        if (savedPin) {
+                            pinProcessMode = 'unlock';
+                            currentPinInput = "";
+                            document.getElementById('pin-title').innerText = "Enter PIN";
+                            document.getElementById('pin-subtitle').innerText = "To unlock your wallet";
+                            document.getElementById('pin-subtitle').classList.replace('text-rose-500', 'text-slate-400');
+                            document.getElementById('pin-icon').className = "fas fa-lock";
+                            updatePinUI();
+                            const pinPage = document.getElementById('pin-page');
+                            pinPage.classList.remove('hidden');
+                            setTimeout(() => { pinPage.classList.remove('opacity-0'); }, 10);
+                        } else {
+                            playSuccessSound(); 
+                            document.getElementById('main-app').classList.remove('hidden'); 
+                            loadDataFromSheet(); 
+                        }
                     }, 500); 
                 } else if (res.userStatus === "Pending") { 
                     loginError.classList.remove('text-violet-500'); 
@@ -1438,20 +1707,34 @@
                 document.getElementById('login-page').classList.add('opacity-0'); 
                 
                 setTimeout(() => { 
-                    playSuccessSound(); // เสียงตอน Login สำเร็จ
-                    document.getElementById('login-page').classList.add('hidden'); 
-                    document.getElementById('main-app').classList.remove('hidden'); 
-                    
                     document.getElementById('date').valueAsDate = new Date(); 
                     document.getElementById('subs-date-monthly').value = new Date().getDate(); 
                     document.getElementById('subs-date-yearly').valueAsDate = new Date();
-                    
                     document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg'); 
                     document.getElementById('user-profile-img').classList.remove('hidden'); 
                     document.getElementById('user-profile-icon').classList.add('hidden'); 
                     document.getElementById('nav-display-name').innerText = res.displayName; 
-                    
-                    loadDataFromSheet(); 
+
+                    document.getElementById('login-page').classList.add('hidden'); 
+
+                    // 🔒 เช็คว่าตั้ง PIN ไว้ไหม
+                    const savedPin = localStorage.getItem('appPin');
+                    if (savedPin) {
+                        pinProcessMode = 'unlock';
+                        currentPinInput = "";
+                        document.getElementById('pin-title').innerText = "Enter PIN";
+                        document.getElementById('pin-subtitle').innerText = "To unlock your wallet";
+                        document.getElementById('pin-subtitle').classList.replace('text-rose-500', 'text-slate-400');
+                        document.getElementById('pin-icon').className = "fas fa-lock";
+                        updatePinUI();
+                        const pinPage = document.getElementById('pin-page');
+                        pinPage.classList.remove('hidden');
+                        setTimeout(() => { pinPage.classList.remove('opacity-0'); }, 10);
+                    } else {
+                        playSuccessSound();
+                        document.getElementById('main-app').classList.remove('hidden'); 
+                        loadDataFromSheet(); 
+                    }
                 }, 500);
             } else { 
                 loginError.classList.remove('text-violet-500'); 
@@ -1532,7 +1815,7 @@
             
             if (isError) { 
                 toastIcon.className = "fas fa-exclamation-circle text-rose-500 text-xl"; 
-                triggerHaptic('error'); // สั่นเมื่อมี Error
+                triggerHaptic('error'); 
             } else { 
                 toastIcon.className = "fas fa-check-circle text-emerald-500 text-xl"; 
             } 
@@ -1555,7 +1838,7 @@
         }
 
         function switchPage(pageId) { 
-            triggerHaptic('light'); // สั่นเบาๆ ตอนสลับหน้า
+            triggerHaptic('light'); 
             
             if(localStorage.getItem('loginTimestamp')) { 
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
@@ -1597,6 +1880,11 @@
                 document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash'; 
                 document.getElementById('profile-confirm-password').type = 'password'; 
                 document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
+
+                // อัปเดตสถานะปุ่ม Toggle PIN
+                const hasPin = localStorage.getItem('appPin') !== null;
+                document.getElementById('toggle-pin-lock').checked = hasPin;
+                document.getElementById('pin-status-text').innerText = hasPin ? "PIN Lock is Enabled" : "Set a 4-digit PIN to secure your wallet.";
             } else { 
                 updateUI(); 
             }
@@ -1901,8 +2189,8 @@
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
-                playSuccessSound(); // เสียงตอนกดบันทึกสำเร็จ
-                triggerHaptic('success'); // สั่นตอบสนองตอนบันทึกสำเร็จ
+                playSuccessSound(); 
+                triggerHaptic('success'); 
                 
                 if(editingRowId) {
                     showToast("Updated successfully!");
@@ -1923,7 +2211,6 @@
             btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
-        // 🌟 5. ฟังก์ชันกดจ่ายบิลจากหน้า Subs เข้าหน้า Home
         async function paySubscription(rowId) {
             triggerHaptic('medium');
             if(!confirm("Are you sure you want to log this as 'Paid' to the Home expenses?")) {
@@ -1981,7 +2268,6 @@
             }
         }
 
-        // 🌟 6. บันทึกกระปุกออมสินใหม่
         document.getElementById('goal-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -2019,7 +2305,6 @@
             btn.innerHTML = 'Create Goal <i class="fas fa-flag"></i>';
         });
 
-        // 🌟 7. ฟังก์ชันเปิด/ปิด Modal หยอดกระปุก
         function openAddFundModal(goalId, goalName) {
             triggerHaptic('light');
             document.getElementById('fund-goal-id').value = goalId;
@@ -2049,7 +2334,6 @@
             }, 300);
         }
 
-        // 🌟 8. ฟังก์ชันกดยืนยันยอดกระปุก
         async function confirmAddFund() {
             triggerHaptic('medium');
             const amountVal = document.getElementById('fund-amount').value.replace(/,/g, '');
@@ -2092,7 +2376,6 @@
             btn.innerHTML = 'Add Fund';
         }
 
-        // 🌟 9. สร้าง UI กระปุกออมสิน
         function renderGoals() {
             const list = document.getElementById('goals-list');
             if(!list) return;
@@ -2481,8 +2764,6 @@
 
                 const div = document.createElement('div'); 
                 div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow"; 
-                
-                // 🛑 เปลี่ยนจากลิงก์ <a> เป็น <button onclick="openReceiptModal(...)"> 🛑
                 div.innerHTML = `
                     <div class="flex gap-3.5 items-center text-left w-full overflow-hidden">
                         <div class="w-12 h-12 flex-shrink-0 ${isIncome ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow-emerald-500/30' : 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 border border-white'} rounded-2xl flex items-center justify-center shadow-md">
