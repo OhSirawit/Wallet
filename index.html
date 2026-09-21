@@ -613,13 +613,13 @@
                                 <span class="text-[10px] text-violet-700 font-bold truncate max-w-[80px]" id="receipt-text">Add Receipt</span>
                             </label>
                         </div>
-                        <div class="flex items-center justify-center gap-2 h-full py-3.5 bg-slate-50 rounded-xl border border-slate-100 cursor-pointer" onclick="document.getElementById('save-location').click()">
+                        <div class="flex items-center justify-center gap-2 h-full py-3.5 bg-slate-50 rounded-xl border border-slate-100 cursor-pointer" onclick="triggerHaptic('light'); document.getElementById('save-location').click()">
                             <input type="checkbox" id="save-location" checked class="w-4 h-4 accent-violet-500 rounded cursor-pointer">
                             <label for="save-location" class="text-[10px] font-bold text-slate-600 uppercase cursor-pointer">Save GPS</label>
                         </div>
                     </div>
 
-                    <button type="submit" id="submit-btn" class="w-full btn-modern py-4 rounded-2xl text-sm font-bold flex justify-center items-center gap-2 mt-6">
+                    <button type="submit" id="submit-btn" class="w-full btn-modern py-4 rounded-2xl text-sm font-bold flex justify-center items-center gap-2 mt-6" onclick="triggerHaptic('light')">
                         Save Transaction <i class="fas fa-paper-plane text-white/80"></i>
                     </button>
                 </form>
@@ -687,7 +687,7 @@
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Payment Method</label>
                             <input type="hidden" id="subs-payment" value="VISA">
                             
-                            <button type="button" id="subs-payment-btn" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 flex justify-between items-center bg-white cursor-pointer" onclick="document.getElementById('subs-payment-dropdown').classList.toggle('hidden'); event.stopPropagation();">
+                            <button type="button" id="subs-payment-btn" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 flex justify-between items-center bg-white cursor-pointer" onclick="triggerHaptic('light'); document.getElementById('subs-payment-dropdown').classList.toggle('hidden'); event.stopPropagation();">
                                 <span id="subs-payment-selected" class="flex items-center gap-2">
                                     <div class="flex items-center gap-3">
                                         <div class="w-6 flex justify-center">
@@ -730,7 +730,7 @@
                         <input type="text" id="subs-card-name" placeholder="e.g. KBank, Citi" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700">
                     </div>
                     
-                    <button type="submit" id="subs-submit-btn" class="w-full bg-violet-100 text-violet-600 py-3.5 rounded-xl text-sm font-bold mt-2 hover:bg-violet-200 transition-colors">
+                    <button type="submit" id="subs-submit-btn" class="w-full bg-violet-100 text-violet-600 py-3.5 rounded-xl text-sm font-bold mt-2 hover:bg-violet-200 transition-colors" onclick="triggerHaptic('light')">
                         Save Subscription
                     </button>
                 </form>
@@ -773,7 +773,7 @@
                         </div>
                     </div>
                     
-                    <button type="submit" id="goal-submit-btn" class="w-full btn-modern py-3.5 rounded-xl text-sm font-bold mt-2 flex justify-center items-center gap-2">
+                    <button type="submit" id="goal-submit-btn" class="w-full btn-modern py-3.5 rounded-xl text-sm font-bold mt-2 flex justify-center items-center gap-2" onclick="triggerHaptic('light')">
                         Create Goal <i class="fas fa-flag"></i>
                     </button>
                 </form>
@@ -791,7 +791,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Timeline</h2>
                 <div class="relative bg-white rounded-xl border border-slate-100 shadow-sm">
-                    <select id="sort-filter" onchange="updateUI()" class="bg-transparent text-violet-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer pr-7">
+                    <select id="sort-filter" onchange="triggerHaptic('light'); updateUI()" class="bg-transparent text-violet-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer pr-7">
                         <option value="latest" selected>⏱️ Latest</option>
                         <option value="date">📅 Date</option>
                         <option value="payment">💳 Payment</option>
@@ -816,7 +816,7 @@
             
             <div id="history-list" class="space-y-3"></div>
             
-            <button id="load-more-btn" onclick="loadMoreHistory()" class="hidden w-full py-3.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-200 transition-colors mt-4">
+            <button id="load-more-btn" onclick="triggerHaptic('light'); loadMoreHistory()" class="hidden w-full py-3.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-200 transition-colors mt-4">
                 Load More
             </button>
         </div>
@@ -826,7 +826,7 @@
             <div class="flex justify-between items-center">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Summary</h2>
                 <div class="relative bg-white rounded-xl border border-slate-100 shadow-sm">
-                    <input type="month" id="summary-month-filter" onchange="updateUI()" class="bg-transparent text-violet-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer w-[120px]">
+                    <input type="month" id="summary-month-filter" onchange="triggerHaptic('light'); updateUI()" class="bg-transparent text-violet-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer w-[120px]">
                 </div>
             </div>
             
@@ -879,7 +879,7 @@
                 <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Daily Focus</h3>
                     <div class="relative bg-violet-50 rounded-lg border border-violet-100">
-                        <select id="dashboard-date-filter" onchange="updateDailyCategoryChart()" class="bg-transparent text-violet-700 text-[10px] font-bold px-3 py-1.5 outline-none appearance-none pr-6 cursor-pointer">
+                        <select id="dashboard-date-filter" onchange="triggerHaptic('light'); updateDailyCategoryChart()" class="bg-transparent text-violet-700 text-[10px] font-bold px-3 py-1.5 outline-none appearance-none pr-6 cursor-pointer">
                             <option value="">No Data</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-violet-400">
@@ -909,7 +909,7 @@
                         <div class="w-28 h-28 rounded-3xl bg-slate-100 overflow-hidden border-4 border-white shadow-lg shadow-violet-500/20">
                             <img id="profile-preview" src="" alt="Profile" class="w-full h-full object-cover">
                         </div>
-                        <label for="profile-pic-upload" class="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded-full flex items-center justify-center cursor-pointer shadow-lg shadow-fuchsia-500/30 hover:scale-110 transition-transform border-2 border-white">
+                        <label for="profile-pic-upload" class="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded-full flex items-center justify-center cursor-pointer shadow-lg shadow-fuchsia-500/30 hover:scale-110 transition-transform border-2 border-white" onclick="triggerHaptic('light')">
                             <i class="fas fa-camera text-sm"></i>
                         </label>
                         <input type="file" id="profile-pic-upload" accept="image/*" class="hidden">
@@ -974,7 +974,7 @@
     </div>
 
     <script>
-        // ------------------ แก้ไข SCRIPT_URL เป็นอันใหม่ที่คุณเพิ่ง Deploy ------------------
+        // ------------------ URL ล่าสุดของคุณ ------------------
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzt5OSS0xZUfdmsdpyxusHEeqof7qPWv3bQ39BX_mrk8jO9OviMCdzHuxeLuwoY_3td/exec'; 
         
         const FIXED_BUDGET = 0; 
@@ -1014,6 +1014,44 @@
             'Invest_Other': '#38bdf8'
         };
 
+        // 🌟 ฟังก์ชันระบบสั่น (Haptic Feedback)
+        function triggerHaptic(type = 'light') {
+            if (!navigator.vibrate) return;
+            try {
+                if (type === 'light') navigator.vibrate(10);
+                else if (type === 'medium') navigator.vibrate(20);
+                else if (type === 'heavy') navigator.vibrate(30);
+                else if (type === 'success') navigator.vibrate([20, 50, 20]); // สั่นสองจังหวะ
+                else if (type === 'error') navigator.vibrate([50, 50, 50, 50]);
+            } catch (e) { console.log("Haptic error"); }
+        }
+
+        // 🌟 ฟังก์ชันระบบเสียง (Web Audio API - เสียง "ตริ๊ง")
+        function playSuccessSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                
+                function playNote(freq, startTime, duration) {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, startTime);
+                    gain.gain.setValueAtTime(0.1, startTime); // ความดัง
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(startTime);
+                    osc.stop(startTime + duration);
+                }
+                
+                // เล่นโน้ต 2 ตัวไล่ระดับ สร้างความรู้สึกสำเร็จ (C6 -> E6)
+                playNote(1046.50, ctx.currentTime, 0.15); 
+                playNote(1318.51, ctx.currentTime + 0.1, 0.4); 
+            } catch(e) { console.log("Audio not supported or blocked"); }
+        }
+
         // 🌟 1. ฟังก์ชันใส่ลูกน้ำอัตโนมัติ (Auto Comma)
         function formatNumberInput(e) {
             let val = e.target.value.replace(/,/g, '');
@@ -1026,6 +1064,7 @@
 
         // 🌟 2. โหมดมืด (Dark Mode)
         function toggleDarkMode() {
+            triggerHaptic('light');
             const body = document.body;
             body.classList.toggle('dark-mode');
             const isDark = body.classList.contains('dark-mode');
@@ -1058,6 +1097,7 @@
 
         // 🌟 3. ระบบ Budget รายเดือน
         function setMonthlyBudget() {
+            triggerHaptic('light');
             let current = localStorage.getItem('monthlyBudget') || '';
             let val = prompt("Set your monthly budget limit (THB) \n(Leave blank to use Total Income instead):", current);
             
@@ -1075,6 +1115,8 @@
 
         // 🌟 4. ระบบ Quick Add
         function quickAdd(amount, category, details, payment = 'Cash') {
+            triggerHaptic('medium'); // สั่นตอนกด Quick Add
+            
             document.getElementById('amount').value = amount;
             formatNumberInput({target: document.getElementById('amount')}); 
             
@@ -1118,6 +1160,7 @@
         }
 
         function selectPaymentOption(type, value) {
+            triggerHaptic('light');
             if (type === 'subs-payment') {
                 document.getElementById('subs-payment').value = value;
                 updatePaymentDisplay('subs-payment', value);
@@ -1144,6 +1187,7 @@
         });
 
         function togglePasswordVisibility(inputId, iconId) {
+            triggerHaptic('light');
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
             
@@ -1291,6 +1335,7 @@
                     document.getElementById('login-page').classList.add('opacity-0'); 
                     
                     setTimeout(() => { 
+                        playSuccessSound(); // เสียงตอน Login สำเร็จ
                         document.getElementById('login-page').classList.add('hidden'); 
                         document.getElementById('main-app').classList.remove('hidden'); 
                         
@@ -1322,6 +1367,7 @@
         }
         
         async function loginWithPassword() {
+            triggerHaptic('light');
             const user = document.getElementById('login-username').value; 
             const pass = document.getElementById('login-password').value; 
             const loginError = document.getElementById('login-error');
@@ -1348,6 +1394,7 @@
                 document.getElementById('login-page').classList.add('opacity-0'); 
                 
                 setTimeout(() => { 
+                    playSuccessSound(); // เสียงตอน Login สำเร็จ
                     document.getElementById('login-page').classList.add('hidden'); 
                     document.getElementById('main-app').classList.remove('hidden'); 
                     
@@ -1397,6 +1444,7 @@
         });
 
         function logout() { 
+            triggerHaptic('light');
             const modal = document.getElementById('logout-modal'); 
             const content = document.getElementById('logout-modal-content'); 
             
@@ -1412,6 +1460,7 @@
         }
 
         function closeLogoutModal() { 
+            triggerHaptic('light');
             const modal = document.getElementById('logout-modal'); 
             const content = document.getElementById('logout-modal-content'); 
             
@@ -1425,6 +1474,7 @@
         }
 
         function confirmLogout() { 
+            triggerHaptic('medium');
             localStorage.clear(); 
             location.reload(); 
         }
@@ -1438,6 +1488,7 @@
             
             if (isError) { 
                 toastIcon.className = "fas fa-exclamation-circle text-rose-500 text-xl"; 
+                triggerHaptic('error'); // สั่นเมื่อมี Error
             } else { 
                 toastIcon.className = "fas fa-check-circle text-emerald-500 text-xl"; 
             } 
@@ -1452,6 +1503,7 @@
         }
 
         function toggleMenu(e) { 
+            triggerHaptic('light');
             if(e) {
                 e.stopPropagation(); 
             }
@@ -1459,6 +1511,8 @@
         }
 
         function switchPage(pageId) { 
+            triggerHaptic('light'); // สั่นเบาๆ ตอนสลับหน้า
+            
             if(localStorage.getItem('loginTimestamp')) { 
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
             } 
@@ -1507,6 +1561,7 @@
         }
 
         async function saveProfile() {
+            triggerHaptic('light');
             const displayName = document.getElementById('profile-display-name').value;
             const newPassword = document.getElementById('profile-new-password').value; 
             const confirmPassword = document.getElementById('profile-confirm-password').value; 
@@ -1537,6 +1592,8 @@
             const res = await callApi("updateProfile", payload);
             
             if(res.status === "Success") {
+                playSuccessSound();
+                triggerHaptic('success');
                 showToast("Profile updated!"); 
                 localStorage.setItem('userDisplayName', displayName); 
                 document.getElementById('nav-display-name').innerText = displayName; 
@@ -1589,6 +1646,7 @@
         }
 
         function openEditForm(rowId) {
+            triggerHaptic('light');
             const item = expenses.find(x => x.rowId == rowId);
             
             if(!item) {
@@ -1625,6 +1683,7 @@
         }
 
         function cancelEdit() {
+            triggerHaptic('light');
             editingRowId = null;
             document.getElementById('expense-form').reset();
             document.getElementById('date').valueAsDate = new Date();
@@ -1635,6 +1694,7 @@
         }
 
         function openSubsEditForm(rowId) {
+            triggerHaptic('light');
             const item = expenses.find(x => x.rowId == rowId);
             
             if(!item) {
@@ -1729,6 +1789,7 @@
         }
 
         function cancelSubsEdit() {
+            triggerHaptic('light');
             editingSubsRowId = null;
             document.getElementById('subs-form').reset();
             
@@ -1796,6 +1857,9 @@
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
+                playSuccessSound(); // เสียงตอนกดบันทึกสำเร็จ
+                triggerHaptic('success'); // สั่นตอบสนองตอนบันทึกสำเร็จ
+                
                 if(editingRowId) {
                     showToast("Updated successfully!");
                 } else {
@@ -1817,6 +1881,7 @@
 
         // 🌟 5. ฟังก์ชันกดจ่ายบิลจากหน้า Subs เข้าหน้า Home
         async function paySubscription(rowId) {
+            triggerHaptic('medium');
             if(!confirm("Are you sure you want to log this as 'Paid' to the Home expenses?")) {
                 return;
             }
@@ -1863,6 +1928,8 @@
             const res = await callApi("save", payload);
             
             if(res.status === "Success") { 
+                playSuccessSound();
+                triggerHaptic('success');
                 showToast("Paid & Saved to Home!"); 
                 loadDataFromSheet(); 
             } else { 
@@ -1895,6 +1962,8 @@
             const res = await callApi("saveGoal", payload);
             
             if (res.status === "Success") {
+                playSuccessSound();
+                triggerHaptic('success');
                 showToast("Goal created successfully!");
                 document.getElementById('goal-form').reset();
                 loadDataFromSheet();
@@ -1908,6 +1977,7 @@
 
         // 🌟 7. ฟังก์ชันเปิด/ปิด Modal หยอดกระปุก
         function openAddFundModal(goalId, goalName) {
+            triggerHaptic('light');
             document.getElementById('fund-goal-id').value = goalId;
             document.getElementById('fund-goal-title').innerText = "Add to: " + goalName;
             document.getElementById('fund-remaining-display').innerText = currentRemainingHome.toLocaleString();
@@ -1924,6 +1994,7 @@
         }
 
         function closeAddFundModal() {
+            triggerHaptic('light');
             const modal = document.getElementById('add-fund-modal');
             const content = document.getElementById('add-fund-modal-content');
             modal.classList.add('opacity-0');
@@ -1936,6 +2007,7 @@
 
         // 🌟 8. ฟังก์ชันกดยืนยันยอดกระปุก
         async function confirmAddFund() {
+            triggerHaptic('medium');
             const amountVal = document.getElementById('fund-amount').value.replace(/,/g, '');
             if (!amountVal || parseFloat(amountVal) <= 0) {
                 showToast("Please enter a valid amount", true);
@@ -1963,9 +2035,11 @@
             const res = await callApi("addFund", payload);
 
             if (res.status === "Success") {
+                playSuccessSound();
+                triggerHaptic('success');
                 showToast("Added to your goal!");
                 closeAddFundModal();
-                loadDataFromSheet(); // โหลดใหม่เพื่อดึง Goals และหักลบ Expenses ออกจากหน้า Home อัตโนมัติ
+                loadDataFromSheet(); 
             } else {
                 showToast("Error: " + res.message, true);
             }
@@ -2097,6 +2171,8 @@
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
+                playSuccessSound();
+                triggerHaptic('success');
                 if(editingSubsRowId) { 
                     showToast("Subscription updated!"); 
                 } else { 
@@ -2114,12 +2190,14 @@
         });
 
         async function deleteItem(rowId) { 
+            triggerHaptic('medium');
             if(confirm('Delete this record permanently?')) { 
                 showToast("Deleting...");
                 
                 const res = await callApi("delete", { rowId: rowId });
                 
                 if(res.status === "Success") { 
+                    triggerHaptic('light');
                     showToast("Deleted successfully!"); 
                     loadDataFromSheet(); 
                 } else { 
@@ -2129,6 +2207,7 @@
         }
 
         function toggleDay(date) { 
+            triggerHaptic('light');
             const el = document.getElementById('details-' + date); 
             const icon = document.getElementById('icon-' + date); 
             
@@ -2776,6 +2855,7 @@
         }
 
         function exportToExcel() { 
+            triggerHaptic('light');
             if (expenses.length === 0) { 
                 showToast("No data to export", true); 
                 return; 
