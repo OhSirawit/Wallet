@@ -17,34 +17,54 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- นำเข้าไลบรารี OCR สำหรับสแกนสลิป -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
         
-        body { font-family: 'Plus Jakarta Sans', 'Kanit', sans-serif; color: #0f172a; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; background-color: #f8fafc; overflow-x: hidden; transition: background-color 0.3s ease, color 0.3s ease; }
+        body { 
+            font-family: 'Plus Jakarta Sans', 'Kanit', sans-serif; 
+            color: #0f172a; 
+            -webkit-tap-highlight-color: transparent; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f8fafc; 
+            overflow-x: hidden; 
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
         .ambient-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; }
         .ambient-glow-1 { position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vw; background: rgba(139, 92, 246, 0.2); border-radius: 50%; filter: blur(90px); }
         .ambient-glow-2 { position: absolute; bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: rgba(236, 72, 153, 0.15); border-radius: 50%; filter: blur(90px); }
         .ambient-glow-3 { position: absolute; top: 40%; left: 40%; width: 50vw; height: 50vw; background: rgba(56, 189, 248, 0.15); border-radius: 50%; filter: blur(100px); }
+        
         .modern-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 1); border-radius: 24px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); transition: all 0.3s ease; }
+        
         .input-style { background: #f8fafc; border: 2px solid transparent; transition: all 0.3s ease; appearance: none; }
         .input-style:focus { background: #ffffff; border-color: #c4b5fd; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+        
         .btn-modern { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 20px rgba(219, 39, 119, 0.2); border: none; }
         .btn-modern:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(219, 39, 119, 0.3); }
         .btn-modern:active { transform: scale(0.96) translateY(0); box-shadow: 0 5px 10px rgba(219, 39, 119, 0.2); }
+        
         .nav-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .nav-active { color: #8b5cf6 !important; font-weight: 800; background: #f5f3ff; border-radius: 100px; box-shadow: inset 0 2px 4px rgba(139, 92, 246, 0.05); }
+        
         .page-content { display: none; }
         .page-active { display: block; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
         .day-details { display: none; overflow: hidden; }
         .day-details.active { display: block; animation: fadeDown 0.3s ease-out forwards; }
         @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .rotate-icon { transition: transform 0.3s ease; }
         .rotated { transform: rotate(180deg); }
+        
         .menu-dropdown { opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .menu-dropdown.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        
         #toast-notification { transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #c4b5fd; border-radius: 4px; }
@@ -82,7 +102,11 @@
         
         /* Voice Mic Pulse */
         .mic-listening { animation: micPulse 1.5s infinite; color: #ec4899 !important; }
-        @keyframes micPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); } 70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); } }
+        @keyframes micPulse { 
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); } 
+            70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); } 
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); } 
+        }
     </style>
 </head>
 <body class="pb-32 relative">
@@ -302,11 +326,10 @@
                         <p class="text-xs font-bold uppercase tracking-wider text-white/90">Remaining</p>
                     </div>
                     <div class="flex flex-col items-end gap-2">
-                        <!-- 🛑 จุดที่แก้ไขเวลาให้อัปเดตได้สมบูรณ์และมีไอคอนเสมอ -->
                         <span id="last-updated-text-card" class="text-[9px] font-medium text-white/90 bg-white/20 px-2.5 py-1 rounded-md backdrop-blur-md border border-white/30 shadow-sm whitespace-nowrap">
                             <i class="fas fa-clock mr-1"></i> Updated : -
                         </span>
-                        <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 mt-2">
+                        <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
                             <i class="fas fa-piggy-bank text-white text-xs"></i>
                         </div>
                     </div>
@@ -323,6 +346,7 @@
 
                 <div class="flex justify-between items-center text-[11px] font-bold relative z-10 opacity-90">
                     <span>Spent: <span id="cash-used-text">0</span></span>
+                    <!-- 🎯 Budget Limit Settings -->
                     <span class="cursor-pointer hover:text-white transition-colors border-b border-white/30 border-dashed pb-0.5" onclick="setMonthlyBudget()" title="Click to set monthly budget">
                         Budget: <span id="budget-base-text">0</span> <i class="fas fa-edit ml-1 opacity-70"></i>
                     </span>
@@ -345,6 +369,7 @@
                     <button type="button" onclick="quickAdd('60', 'Food', 'Coffee', 'Cash'); doHaptic('light');" class="flex-shrink-0 bg-white border border-slate-100 px-4 py-2.5 rounded-xl shadow-sm text-[10px] font-bold text-slate-600 hover:text-violet-600 hover:border-violet-200 hover:bg-violet-50 transition-all flex items-center gap-1.5">
                         <i class="fas fa-coffee text-amber-500"></i> Coffee
                     </button>
+                    <!-- Transit ราคา 17 บาท จ่ายบัตรเครดิต -->
                     <button type="button" onclick="quickAdd('17', 'Transport', 'MRT/BTS', 'Credit Card / E-Wallet'); doHaptic('light');" class="flex-shrink-0 bg-white border border-slate-100 px-4 py-2.5 rounded-xl shadow-sm text-[10px] font-bold text-slate-600 hover:text-violet-600 hover:border-violet-200 hover:bg-violet-50 transition-all flex items-center gap-1.5">
                         <i class="fas fa-train text-blue-500"></i> Transit
                     </button>
@@ -452,6 +477,7 @@
                 </button>
             </div>
 
+            <!-- สร้างเป้าหมายใหม่ -->
             <section class="modern-card p-6 border-none shadow-lg shadow-slate-200/50">
                 <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2 mb-4">
                     <i class="fas fa-bullseye text-violet-500"></i> New Goal
@@ -541,7 +567,10 @@
                             <button type="button" id="subs-payment-btn" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 flex justify-between items-center bg-white cursor-pointer" onclick="document.getElementById('subs-payment-dropdown').classList.toggle('hidden'); event.stopPropagation(); doHaptic('light');">
                                 <span id="subs-payment-selected" class="flex items-center gap-2">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-6 flex justify-center"><img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain"></div> VISA
+                                        <div class="w-6 flex justify-center">
+                                            <img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain">
+                                        </div> 
+                                        VISA
                                     </div>
                                 </span>
                                 <i class="fas fa-chevron-down text-slate-400"></i>
@@ -612,6 +641,7 @@
                 </div>
             </div>
 
+            <!-- 🔍 Smart Search Bar -->
             <div class="relative w-full mb-4">
                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                     <i class="fas fa-search text-slate-400 text-sm"></i>
@@ -630,6 +660,7 @@
         <div id="page-analytics" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Summary</h2>
+                <!-- 📊 Toggle Monthly / Yearly -->
                 <div class="flex bg-slate-100 rounded-lg p-1 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                     <button id="btn-view-monthly" onclick="setSummaryView('monthly'); doHaptic('light');" class="text-[10px] font-bold px-3 py-1.5 rounded-md bg-white shadow-sm text-violet-600 dark:bg-slate-700 dark:text-violet-400 transition-all">Monthly</button>
                     <button id="btn-view-yearly" onclick="setSummaryView('yearly'); doHaptic('light');" class="text-[10px] font-bold px-3 py-1.5 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-all">Yearly</button>
@@ -662,6 +693,7 @@
                 </div>
             </div>
 
+            <!-- กราฟรายปี (Yearly View) -->
             <div id="yearly-chart-container" class="hidden modern-card p-6 border-none shadow-lg shadow-slate-200/50 mt-4">
                 <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-4">Monthly Expenses</h3>
                 <canvas id="yearlyChart"></canvas>
@@ -697,6 +729,7 @@
                 <div id="category-dashboard-list" class="mt-6 space-y-0.5 border-t border-slate-100 pt-4"></div>
             </div>
 
+            <!-- 🔥 Trending Hashtags Card -->
             <div class="modern-card p-6 border-none shadow-lg shadow-slate-200/50">
                 <h3 class="text-[10px] font-bold text-fuchsia-500 uppercase tracking-widest text-center mb-4"><i class="fas fa-hashtag"></i> Trending Hashtags</h3>
                 <div id="hashtag-list" class="space-y-1.5 mt-2"></div>
@@ -730,6 +763,7 @@
                 </button>
             </div>
             
+            <!-- 🔒 Security Settings (PIN) -->
             <div class="modern-card p-6 border-none shadow-lg shadow-slate-200/50">
                 <h3 class="text-[10px] font-bold text-rose-500 uppercase tracking-widest flex items-center gap-2 mb-4"><i class="fas fa-shield-alt"></i> App Lock PIN</h3>
                 <div class="flex justify-between items-center">
@@ -738,6 +772,7 @@
                 </div>
             </div>
 
+            <!-- Profile Settings -->
             <div class="modern-card p-6 border-none shadow-lg shadow-slate-200/50">
                 <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Account Info</h3>
                 <div class="flex flex-col items-center space-y-4">
@@ -840,17 +875,26 @@
         let audioCtx;
 
         function initAudio() {
-            if (!audioCtx) audioCtx = new AudioContext();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
         }
 
         function doHaptic(type = 'light') {
             try {
                 if (navigator.vibrate) {
-                    if (type === 'light') navigator.vibrate(30);
-                    else if (type === 'heavy') navigator.vibrate([50, 50, 50]);
+                    if (type === 'light') {
+                        navigator.vibrate(30);
+                    } else if (type === 'heavy') {
+                        navigator.vibrate([50, 50, 50]);
+                    }
                 }
-            } catch (e) {}
+            } catch (e) {
+                // Ignore if not supported
+            }
         }
 
         function playSuccessSound() {
@@ -858,21 +902,27 @@
                 initAudio();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
+                
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
                 osc.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1);
+                
                 gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
+                
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.1);
-            } catch (e) {}
+            } catch (e) {
+                // Ignore if not supported
+            }
         }
 
         // 🔒 App Lock (PIN) Logic
         let pinInput = '';
-        let pinMode = 'login';
+        let pinMode = 'login'; // 'login', 'setup_1', 'setup_2'
         let tempSetupPin = '';
 
         function checkPinLock() {
@@ -929,7 +979,9 @@
                 pinInput += num;
                 document.getElementById(`dot-${pinInput.length}`).classList.add('filled');
             }
-            if (pinInput.length === 4) setTimeout(handlePinComplete, 200);
+            if (pinInput.length === 4) {
+                setTimeout(handlePinComplete, 200);
+            }
         }
 
         function deletePin() {
@@ -984,22 +1036,34 @@
             showToast(msg, true);
             const container = document.getElementById('pin-dots-container');
             container.classList.add('pin-shake');
-            setTimeout(() => { container.classList.remove('pin-shake'); resetPinPad(); }, 400);
+            setTimeout(() => {
+                container.classList.remove('pin-shake');
+                resetPinPad();
+            }, 400);
         }
 
         // 🎙️ Voice Quick Add
         function startVoiceRecording() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) { showToast('Voice Recognition not supported on this browser', true); return; }
             
-            initAudio(); doHaptic('heavy');
+            if (!SpeechRecognition) { 
+                showToast('Voice Recognition not supported on this browser', true); 
+                return; 
+            }
+            
+            initAudio(); 
+            doHaptic('heavy');
+            
             const recognition = new SpeechRecognition();
             recognition.lang = 'th-TH'; 
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
             const micBtn = document.getElementById('voice-btn');
-            recognition.onstart = function() { micBtn.classList.add('mic-listening'); };
+
+            recognition.onstart = function() {
+                micBtn.classList.add('mic-listening');
+            };
 
             recognition.onresult = function(event) {
                 const transcript = event.results[0][0].transcript;
@@ -1012,15 +1076,25 @@
                         const amtEl = document.getElementById('amount');
                         amtEl.value = maxNum;
                         formatNumberInput({target: amtEl});
+                        
                         let cleanNote = transcript.replace(/\d+/g, '').replace(/บาท/g, '').trim();
                         document.getElementById('details').value = cleanNote || transcript;
                     }
                 }
-                doHaptic('heavy'); showToast("Voice applied!");
+                
+                doHaptic('heavy');
+                showToast("Voice applied!");
             };
 
-            recognition.onerror = function(event) { console.log(event.error); micBtn.classList.remove('mic-listening'); };
-            recognition.onend = function() { micBtn.classList.remove('mic-listening'); };
+            recognition.onerror = function(event) {
+                console.log(event.error);
+                micBtn.classList.remove('mic-listening');
+            };
+
+            recognition.onend = function() {
+                micBtn.classList.remove('mic-listening');
+            };
+
             recognition.start();
         }
 
@@ -1029,20 +1103,34 @@
 
         document.getElementById('goal-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            
             const name = document.getElementById('goal-name').value;
             const target = parseFloat(document.getElementById('goal-target').value.replace(/,/g, ''));
-            if(!name || isNaN(target) || target <= 0) return;
             
-            savingGoals.push({ id: Date.now().toString(), name: name, target: target, current: 0 });
+            if(!name || isNaN(target) || target <= 0) {
+                return;
+            }
+            
+            savingGoals.push({ 
+                id: Date.now().toString(), 
+                name: name, 
+                target: target, 
+                current: 0 
+            });
+            
             localStorage.setItem('savingGoals', JSON.stringify(savingGoals));
             
             document.getElementById('goal-form').reset();
-            renderGoals(); showToast("Goal created!"); doHaptic('heavy'); playSuccessSound();
+            renderGoals();
+            showToast("Goal created!");
+            doHaptic('heavy'); 
+            playSuccessSound();
         });
 
         function renderGoals() {
             const container = document.getElementById('goals-list');
             if(!container) return;
+            
             container.innerHTML = '';
             
             if(savingGoals.length === 0) {
@@ -1081,15 +1169,27 @@
         function fundGoal(id) {
             doHaptic('light');
             const amtStr = prompt("How much do you want to add to this goal?");
-            if(!amtStr) return;
+            
+            if(!amtStr) {
+                return;
+            }
+            
             const amt = parseFloat(amtStr.replace(/,/g, ''));
-            if(isNaN(amt) || amt <= 0) { showToast("Invalid amount", true); return; }
+            
+            if(isNaN(amt) || amt <= 0) { 
+                showToast("Invalid amount", true); 
+                return; 
+            }
             
             const goal = savingGoals.find(g => g.id === id);
+            
             if(goal) {
                 goal.current += amt;
                 localStorage.setItem('savingGoals', JSON.stringify(savingGoals));
-                renderGoals(); showToast("Funds added! Keep going!"); doHaptic('heavy'); playSuccessSound();
+                renderGoals();
+                showToast("Funds added! Keep going!");
+                doHaptic('heavy'); 
+                playSuccessSound();
             }
         }
 
@@ -1098,14 +1198,18 @@
             if(confirm("Delete this goal?")) {
                 savingGoals = savingGoals.filter(g => g.id !== id);
                 localStorage.setItem('savingGoals', JSON.stringify(savingGoals));
-                renderGoals(); showToast("Goal removed.");
+                renderGoals();
+                showToast("Goal removed.");
             }
         }
 
         // 🌟 In-App Receipt Modal Logic
         function viewReceipt(url, event) {
-            if(event) event.stopPropagation();
+            if(event) {
+                event.stopPropagation();
+            }
             doHaptic('light');
+            
             const modal = document.getElementById('receipt-modal');
             const img = document.getElementById('receipt-modal-img');
             const loader = document.getElementById('receipt-modal-loader');
@@ -1115,316 +1219,1238 @@
             
             let directUrl = url;
             const match = url.match(/\/d\/(.+?)\//) || url.match(/id=(.+?)(&|$)/);
-            if (match && match[1]) directUrl = "https://drive.google.com/uc?export=view&id=" + match[1];
+            
+            if (match && match[1]) {
+                directUrl = "https://drive.google.com/uc?export=view&id=" + match[1];
+            }
             
             img.classList.add('hidden');
             loader.classList.remove('hidden');
             
-            img.onload = () => { loader.classList.add('hidden'); img.classList.remove('hidden'); };
-            img.onerror = () => { loader.classList.add('hidden'); window.open(url, '_blank'); closeReceiptModal(); };
+            img.onload = () => {
+                loader.classList.add('hidden');
+                img.classList.remove('hidden');
+            };
+            
+            img.onerror = () => {
+                loader.classList.add('hidden');
+                window.open(url, '_blank');
+                closeReceiptModal();
+            };
+            
             img.src = directUrl;
         }
 
         function closeReceiptModal(e) {
-            if(e && e.target.id !== 'receipt-modal') return; 
+            if(e && e.target.id !== 'receipt-modal') {
+                return;
+            }
+            
             const modal = document.getElementById('receipt-modal');
             modal.classList.add('opacity-0');
-            setTimeout(() => { modal.classList.add('hidden'); document.getElementById('receipt-modal-img').src = ""; }, 300);
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.getElementById('receipt-modal-img').src = "";
+            }, 300);
         }
 
         // 🌟 Auto-Sync Offline Mode
-        window.addEventListener('online', () => { document.getElementById('offline-banner').classList.add('hidden'); syncOfflineData(); });
-        window.addEventListener('offline', () => { document.getElementById('offline-banner').classList.remove('hidden'); });
+        window.addEventListener('online', () => {
+            document.getElementById('offline-banner').classList.add('hidden');
+            syncOfflineData();
+        });
+
+        window.addEventListener('offline', () => {
+            document.getElementById('offline-banner').classList.remove('hidden');
+        });
 
         async function syncOfflineData() {
             let queue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
-            if (queue.length === 0) return;
+            
+            if (queue.length === 0) {
+                return;
+            }
+            
             showToast(`Syncing ${queue.length} offline records...`);
             let successCount = 0;
+            
             for (let i = 0; i < queue.length; i++) {
                 let req = queue[i];
-                try { let res = await callApi(req.action, req.payload); if (res.status === "Success") successCount++; } catch(e) { console.log(e); }
+                try {
+                    let res = await callApi(req.action, req.payload);
+                    if (res.status === "Success") {
+                        successCount++;
+                    }
+                } catch(e) {
+                    console.log(e);
+                }
             }
+            
             localStorage.removeItem('offlineQueue');
             showToast(`Synced ${successCount} records!`);
             loadDataFromSheet();
         }
 
+        // 🌟 Yearly Dashboard Toggle
         function setSummaryView(type) {
-            const btnMonth = document.getElementById('btn-view-monthly'); const btnYear = document.getElementById('btn-view-yearly');
-            const monthFilter = document.getElementById('summary-month-filter'); const yearFilter = document.getElementById('summary-year-filter');
-            const yearlyChartContainer = document.getElementById('yearly-chart-container'); const monthlyStatsContainer = document.getElementById('monthly-stats-container');
+            const btnMonth = document.getElementById('btn-view-monthly');
+            const btnYear = document.getElementById('btn-view-yearly');
+            const monthFilter = document.getElementById('summary-month-filter');
+            const yearFilter = document.getElementById('summary-year-filter');
+            const yearlyChartContainer = document.getElementById('yearly-chart-container');
+            const monthlyStatsContainer = document.getElementById('monthly-stats-container');
 
             if(type === 'monthly') {
                 btnMonth.className = "text-[10px] font-bold px-3 py-1.5 rounded-md bg-white shadow-sm text-violet-600 dark:bg-slate-700 dark:text-violet-400 transition-all";
                 btnYear.className = "text-[10px] font-bold px-3 py-1.5 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-all";
-                monthFilter.classList.remove('hidden'); yearFilter.classList.add('hidden');
-                yearlyChartContainer.classList.add('hidden'); monthlyStatsContainer.classList.remove('hidden');
+                monthFilter.classList.remove('hidden');
+                yearFilter.classList.add('hidden');
+                yearlyChartContainer.classList.add('hidden');
+                monthlyStatsContainer.classList.remove('hidden');
             } else {
                 btnYear.className = "text-[10px] font-bold px-3 py-1.5 rounded-md bg-white shadow-sm text-violet-600 dark:bg-slate-700 dark:text-violet-400 transition-all";
                 btnMonth.className = "text-[10px] font-bold px-3 py-1.5 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-all";
-                monthFilter.classList.add('hidden'); yearFilter.classList.remove('hidden');
-                yearlyChartContainer.classList.remove('hidden'); monthlyStatsContainer.classList.add('hidden');
+                monthFilter.classList.add('hidden');
+                yearFilter.classList.remove('hidden');
+                yearlyChartContainer.classList.remove('hidden');
+                monthlyStatsContainer.classList.add('hidden');
             }
             updateUI();
         }
 
         async function callApi(action, payload = {}) {
             try {
-                const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, payload: payload, rowId: payload.rowId }) });
+                const response = await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                    body: JSON.stringify({ 
+                        action: action, 
+                        payload: payload, 
+                        rowId: payload.rowId 
+                    }) 
+                });
                 return await response.json();
-            } catch (error) { console.error("API Error:", error); return { status: "Error" }; }
+            } catch (error) { 
+                console.error("API Error:", error); 
+                return { status: "Error" }; 
+            }
         }
 
         async function loadCategories() {
             try {
                 const res = await callApi("getCategories");
                 if (res.status === "Success" && res.data) {
-                    const catSelect = document.getElementById('category'); catSelect.innerHTML = ''; 
-                    const groups = [{ key: 'EXPENSES', label: 'EXPENSES' }, { key: 'INCOME', label: 'INCOME' }, { key: 'INVESTMENT', label: 'INVESTMENT' }];
+                    const catSelect = document.getElementById('category');
+                    catSelect.innerHTML = ''; 
+                    
+                    const groups = [
+                        { key: 'EXPENSES', label: 'EXPENSES' }, 
+                        { key: 'INCOME', label: 'INCOME' }, 
+                        { key: 'INVESTMENT', label: 'INVESTMENT' }
+                    ];
+
                     groups.forEach(g => {
                         if (res.data[g.key] && res.data[g.key].length > 0) {
-                            const optgroup = document.createElement('optgroup'); optgroup.label = g.label;
-                            res.data[g.key].forEach(c => { const opt = document.createElement('option'); opt.value = c; opt.text = c; optgroup.appendChild(opt); });
+                            const optgroup = document.createElement('optgroup');
+                            optgroup.label = g.label;
+                            res.data[g.key].forEach(c => {
+                                const opt = document.createElement('option');
+                                opt.value = c;
+                                opt.text = c;
+                                optgroup.appendChild(opt);
+                            });
                             catSelect.appendChild(optgroup);
                         }
                     });
                 }
-            } catch (e) { console.log("Failed to load categories."); }
+            } catch (e) {
+                console.log("Failed to load dynamic categories.");
+            }
         }
 
         window.onload = function() { 
-            const loginTimestamp = localStorage.getItem('loginTimestamp'); const now = Date.now(); const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
-            const currentMonthStr = new Date().toISOString().slice(0, 7); document.getElementById('summary-month-filter').value = currentMonthStr;
+            const loginTimestamp = localStorage.getItem('loginTimestamp');
+            const now = Date.now();
+            const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
-            if (localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark-mode'); updateDarkModeUI(true); }
-            if (!navigator.onLine) { document.getElementById('offline-banner').classList.remove('hidden'); }
+            const currentMonthStr = new Date().toISOString().slice(0, 7);
+            document.getElementById('summary-month-filter').value = currentMonthStr;
+
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                updateDarkModeUI(true);
+            }
+
+            if (!navigator.onLine) {
+                document.getElementById('offline-banner').classList.remove('hidden');
+            }
 
             if (loginTimestamp && (now - parseInt(loginTimestamp)) < SEVEN_DAYS) {
-                localStorage.setItem('loginTimestamp', now.toString()); document.getElementById('login-page').classList.add('hidden');
+                localStorage.setItem('loginTimestamp', now.toString());
+                document.getElementById('login-page').classList.add('hidden');
                 
                 checkPinLock(); 
                 
-                document.getElementById('date').valueAsDate = new Date(); document.getElementById('subs-date-monthly').value = new Date().getDate(); document.getElementById('subs-date-yearly').valueAsDate = new Date();
-                const profileImg = localStorage.getItem('userProfileImg'); const displayName = localStorage.getItem('userDisplayName');
-                if(profileImg) { document.getElementById('user-profile-img').src = profileImg; document.getElementById('user-profile-img').classList.remove('hidden'); document.getElementById('user-profile-icon').classList.add('hidden'); }
-                if(displayName) document.getElementById('nav-display-name').innerText = displayName;
+                document.getElementById('date').valueAsDate = new Date();
+                document.getElementById('subs-date-monthly').value = new Date().getDate();
+                document.getElementById('subs-date-yearly').valueAsDate = new Date();
                 
-                loadCategories(); loadDataFromSheet(); renderGoals();
+                const profileImg = localStorage.getItem('userProfileImg');
+                const displayName = localStorage.getItem('userDisplayName');
+                
+                if(profileImg) {
+                    document.getElementById('user-profile-img').src = profileImg;
+                    document.getElementById('user-profile-img').classList.remove('hidden');
+                    document.getElementById('user-profile-icon').classList.add('hidden');
+                }
+                
+                if(displayName) {
+                    document.getElementById('nav-display-name').innerText = displayName;
+                }
+                
+                loadCategories();
+                loadDataFromSheet(); 
+                renderGoals();
             } else {
-                localStorage.removeItem('loginTimestamp'); document.getElementById('login-page').classList.remove('hidden', 'opacity-0', 'pointer-events-none'); document.getElementById('main-app').classList.add('hidden');
+                localStorage.removeItem('loginTimestamp');
+                document.getElementById('login-page').classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+                document.getElementById('main-app').classList.add('hidden');
             }
 
+            // 📸 Slip OCR Scanner Logic
             document.getElementById('receipt-file').addEventListener('change', async function(e) {
-                const file = e.target.files[0]; if (!file) return;
-                doHaptic('light'); const btnText = document.getElementById('receipt-text'); btnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scanning Slip...';
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                doHaptic('light');
+                const btnText = document.getElementById('receipt-text');
+                btnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scanning Slip...';
                 
                 const reader = new FileReader();
-                reader.onload = function(event) { receiptBase64 = event.target.result; receiptName = file.name; };
+                reader.onload = function(event) {
+                    receiptBase64 = event.target.result;
+                    receiptName = file.name;
+                };
                 reader.readAsDataURL(file);
 
                 try {
-                    const worker = await Tesseract.createWorker('eng'); const result = await worker.recognize(file); await worker.terminate();
-                    const amounts = result.data.text.match(/\b\d{1,3}(,\d{3})*\.\d{2}\b/g);
+                    const worker = await Tesseract.createWorker('eng');
+                    const result = await worker.recognize(file);
+                    await worker.terminate();
+                    
+                    const text = result.data.text;
+                    const amounts = text.match(/\b\d{1,3}(,\d{3})*\.\d{2}\b/g);
+                    
                     if (amounts && amounts.length > 0) {
                         const maxAmt = Math.max(...amounts.map(a => parseFloat(a.replace(/,/g, ''))));
                         if (maxAmt > 0) {
-                            document.getElementById('amount').value = maxAmt; formatNumberInput({target: document.getElementById('amount')});
-                            doHaptic('heavy'); showToast(`Scanned Amount: ${maxAmt.toLocaleString()} THB`);
+                            document.getElementById('amount').value = maxAmt;
+                            formatNumberInput({target: document.getElementById('amount')});
+                            doHaptic('heavy');
+                            showToast(`Scanned Amount: ${maxAmt.toLocaleString()} THB`);
                         }
                     }
-                } catch(err) { console.log("OCR Error:", err); }
+                } catch(err) {
+                    console.log("OCR Error:", err);
+                }
+                
                 btnText.innerText = "Slip Attached";
             });
 
             document.getElementById('profile-pic-upload').addEventListener('change', function(e) {
-                const file = e.target.files[0]; if (!file) return;
+                const file = e.target.files[0];
+                if (!file) return;
+                
                 const reader = new FileReader();
-                reader.onload = function(event) { newProfilePicBase64 = event.target.result; newProfilePicName = file.name; document.getElementById('profile-preview').src = newProfilePicBase64; };
+                reader.onload = function(event) {
+                    newProfilePicBase64 = event.target.result;
+                    newProfilePicName = file.name;
+                    document.getElementById('profile-preview').src = newProfilePicBase64;
+                };
                 reader.readAsDataURL(file);
             });
         };
 
         async function handleCredentialResponse(response) {
-            const responsePayload = decodeJwtResponse(response.credential); const userEmail = responsePayload.email;
-            const loginError = document.getElementById('login-error'); loginError.classList.remove('hidden', 'text-rose-500'); loginError.classList.add('text-violet-500'); loginError.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking account status...';
+            const responsePayload = decodeJwtResponse(response.credential);
+            const userEmail = responsePayload.email;
+            
+            const loginError = document.getElementById('login-error');
+            loginError.classList.remove('hidden', 'text-rose-500');
+            loginError.classList.add('text-violet-500');
+            loginError.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking account status...';
+
             const res = await callApi("checkUser", { email: userEmail });
             
             if(res.status === "Success") {
                 if(res.userStatus === "Approved") {
-                    localStorage.setItem('loginTimestamp', Date.now().toString()); localStorage.setItem('userEmail', userEmail); 
-                    const finalPic = res.profilePic || responsePayload.picture; const finalName = res.displayName || responsePayload.name || userEmail.split('@')[0];
-                    localStorage.setItem('userProfileImg', finalPic); localStorage.setItem('userDisplayName', finalName);
+                    localStorage.setItem('loginTimestamp', Date.now().toString());
+                    localStorage.setItem('userEmail', userEmail); 
+                    
+                    const finalPic = res.profilePic || responsePayload.picture;
+                    const finalName = res.displayName || responsePayload.name || userEmail.split('@')[0];
+                    
+                    localStorage.setItem('userProfileImg', finalPic);
+                    localStorage.setItem('userDisplayName', finalName);
+                    
                     document.getElementById('login-page').classList.add('opacity-0'); 
+                    
                     setTimeout(() => { 
-                        document.getElementById('login-page').classList.add('hidden'); checkPinLock(); 
-                        document.getElementById('date').valueAsDate = new Date(); document.getElementById('subs-date-monthly').value = new Date().getDate(); document.getElementById('subs-date-yearly').valueAsDate = new Date();
-                        document.getElementById('user-profile-img').src = finalPic; document.getElementById('user-profile-img').classList.remove('hidden'); document.getElementById('user-profile-icon').classList.add('hidden'); document.getElementById('nav-display-name').innerText = finalName; 
-                        loadCategories(); loadDataFromSheet(); renderGoals(); playSuccessSound();
+                        document.getElementById('login-page').classList.add('hidden');
+                        checkPinLock(); 
+                        
+                        document.getElementById('date').valueAsDate = new Date();
+                        document.getElementById('subs-date-monthly').value = new Date().getDate();
+                        document.getElementById('subs-date-yearly').valueAsDate = new Date();
+                        
+                        document.getElementById('user-profile-img').src = finalPic;
+                        document.getElementById('user-profile-img').classList.remove('hidden');
+                        document.getElementById('user-profile-icon').classList.add('hidden');
+                        document.getElementById('nav-display-name').innerText = finalName; 
+                        
+                        loadCategories();
+                        loadDataFromSheet(); 
+                        renderGoals();
+                        playSuccessSound();
                     }, 500); 
-                } else if (res.userStatus === "Pending") { loginError.classList.remove('text-violet-500'); loginError.classList.add('text-amber-500'); loginError.innerHTML = '<i class="fas fa-clock"></i> Waiting for Admin Approval'; } 
-                else { loginError.classList.remove('text-violet-500'); loginError.classList.add('text-rose-500'); loginError.innerHTML = '<i class="fas fa-ban"></i> Access Denied'; }
-            } else { loginError.classList.remove('text-violet-500'); loginError.classList.add('text-rose-500'); loginError.innerText = "System Error. Please try again."; }
+                } else if (res.userStatus === "Pending") {
+                    loginError.classList.remove('text-violet-500');
+                    loginError.classList.add('text-amber-500');
+                    loginError.innerHTML = '<i class="fas fa-clock"></i> Waiting for Admin Approval';
+                } else {
+                    loginError.classList.remove('text-violet-500');
+                    loginError.classList.add('text-rose-500');
+                    loginError.innerHTML = '<i class="fas fa-ban"></i> Access Denied';
+                }
+            } else {
+                loginError.classList.remove('text-violet-500');
+                loginError.classList.add('text-rose-500');
+                loginError.innerText = "System Error. Please try again.";
+            }
         }
         
         async function loginWithPassword() {
-            const user = document.getElementById('login-username').value; const pass = document.getElementById('login-password').value; const loginError = document.getElementById('login-error');
-            if(!user || !pass) { loginError.classList.remove('hidden', 'text-violet-500'); loginError.classList.add('text-rose-500'); loginError.innerHTML = "Please enter username and password"; return; }
-            loginError.classList.remove('hidden', 'text-rose-500'); loginError.classList.add('text-violet-500'); loginError.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking credentials...';
+            const user = document.getElementById('login-username').value;
+            const pass = document.getElementById('login-password').value;
+            const loginError = document.getElementById('login-error');
+            
+            if(!user || !pass) {
+                loginError.classList.remove('hidden', 'text-violet-500');
+                loginError.classList.add('text-rose-500');
+                loginError.innerHTML = "Please enter username and password";
+                return;
+            }
+            
+            loginError.classList.remove('hidden', 'text-rose-500');
+            loginError.classList.add('text-violet-500');
+            loginError.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking credentials...';
+            
             const res = await callApi("loginWithPassword", { username: user, password: pass });
+            
             if (res.status === "Success") {
-                localStorage.setItem('loginTimestamp', Date.now().toString()); localStorage.setItem('userEmail', user); localStorage.setItem('userDisplayName', res.displayName); localStorage.setItem('userProfileImg', res.profilePic || 'https://ui-avatars.com/api/?name=' + user + '&background=8b5cf6&color=fff');
+                localStorage.setItem('loginTimestamp', Date.now().toString());
+                localStorage.setItem('userEmail', user);
+                localStorage.setItem('userDisplayName', res.displayName);
+                localStorage.setItem('userProfileImg', res.profilePic || 'https://ui-avatars.com/api/?name=' + user + '&background=8b5cf6&color=fff');
+                
                 document.getElementById('login-page').classList.add('opacity-0'); 
+                
                 setTimeout(() => { 
-                    document.getElementById('login-page').classList.add('hidden'); checkPinLock(); 
-                    document.getElementById('date').valueAsDate = new Date(); document.getElementById('subs-date-monthly').value = new Date().getDate(); document.getElementById('subs-date-yearly').valueAsDate = new Date();
-                    document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg'); document.getElementById('user-profile-img').classList.remove('hidden'); document.getElementById('user-profile-icon').classList.add('hidden'); document.getElementById('nav-display-name').innerText = res.displayName; 
-                    loadCategories(); loadDataFromSheet(); renderGoals(); playSuccessSound();
+                    document.getElementById('login-page').classList.add('hidden');
+                    checkPinLock(); 
+                    
+                    document.getElementById('date').valueAsDate = new Date();
+                    document.getElementById('subs-date-monthly').value = new Date().getDate();
+                    document.getElementById('subs-date-yearly').valueAsDate = new Date();
+                    
+                    document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg');
+                    document.getElementById('user-profile-img').classList.remove('hidden');
+                    document.getElementById('user-profile-icon').classList.add('hidden');
+                    document.getElementById('nav-display-name').innerText = res.displayName; 
+                    
+                    loadCategories();
+                    loadDataFromSheet(); 
+                    renderGoals();
+                    playSuccessSound();
                 }, 500);
-            } else { loginError.classList.remove('text-violet-500'); loginError.classList.add('text-rose-500'); loginError.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + (res.message || "Login failed"); }
+            } else {
+                loginError.classList.remove('text-violet-500');
+                loginError.classList.add('text-rose-500');
+                loginError.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + (res.message || "Login failed");
+            }
         }
 
-        function decodeJwtResponse(token) { var base64Url = token.split('.')[1]; var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join('')); return JSON.parse(jsonPayload); }
+        function decodeJwtResponse(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
 
         document.addEventListener('click', function(event) { 
-            const menu = document.getElementById('top-menu'); const menuBtn = document.getElementById('menu-btn'); 
-            if (menu && menuBtn) { if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) { menu.classList.remove('active'); } } 
-            const subsPayDrop = document.getElementById('subs-payment-dropdown'); const subsPayBtn = document.getElementById('subs-payment-btn');
-            if (subsPayDrop && subsPayBtn && !subsPayDrop.contains(event.target) && !subsPayBtn.contains(event.target)) { subsPayDrop.classList.add('hidden'); }
+            const menu = document.getElementById('top-menu');
+            const menuBtn = document.getElementById('menu-btn'); 
+            
+            if (menu && menuBtn) {
+                if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) {
+                    menu.classList.remove('active');
+                }
+            } 
+            
+            const subsPayDrop = document.getElementById('subs-payment-dropdown');
+            const subsPayBtn = document.getElementById('subs-payment-btn');
+            
+            if (subsPayDrop && subsPayBtn && !subsPayDrop.contains(event.target) && !subsPayBtn.contains(event.target)) {
+                subsPayDrop.classList.add('hidden');
+            }
         });
 
-        function logout() { const modal = document.getElementById('logout-modal'); const content = document.getElementById('logout-modal-content'); modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10); toggleMenu(); }
-        function closeLogoutModal() { const modal = document.getElementById('logout-modal'); const content = document.getElementById('logout-modal-content'); modal.classList.add('opacity-0'); content.classList.remove('scale-100'); content.classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); }, 300); }
-        function confirmLogout() { localStorage.clear(); location.reload(); }
-
-        function showToast(message, isError = false) { 
-            const toast = document.getElementById('toast-notification'); const toastMsg = document.getElementById('toast-message'); const toastIcon = document.getElementById('toast-icon'); 
-            toastMsg.innerText = message; 
-            if (isError) toastIcon.className = "fas fa-exclamation-circle text-rose-500 text-xl"; else toastIcon.className = "fas fa-check-circle text-emerald-500 text-xl"; 
-            toast.classList.remove('-translate-y-32', 'opacity-0'); toast.classList.add('translate-y-0', 'opacity-100'); 
-            setTimeout(() => { toast.classList.remove('translate-y-0', 'opacity-100'); toast.classList.add('-translate-y-32', 'opacity-0'); }, 3000); 
+        function logout() {
+            const modal = document.getElementById('logout-modal');
+            const content = document.getElementById('logout-modal-content');
+            
+            modal.classList.remove('hidden');
+            
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+            
+            toggleMenu();
         }
 
-        function toggleMenu(e) { if(e) e.stopPropagation(); document.getElementById('top-menu').classList.toggle('active'); }
+        function closeLogoutModal() {
+            const modal = document.getElementById('logout-modal');
+            const content = document.getElementById('logout-modal-content');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function confirmLogout() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        function showToast(message, isError = false) { 
+            const toast = document.getElementById('toast-notification');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon'); 
+            
+            toastMsg.innerText = message; 
+            
+            if (isError) {
+                toastIcon.className = "fas fa-exclamation-circle text-rose-500 text-xl";
+            } else {
+                toastIcon.className = "fas fa-check-circle text-emerald-500 text-xl";
+            } 
+            
+            toast.classList.remove('-translate-y-32', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100'); 
+            
+            setTimeout(() => { 
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-32', 'opacity-0');
+            }, 3000); 
+        }
+
+        function toggleMenu(e) {
+            if(e) {
+                e.stopPropagation();
+            }
+            document.getElementById('top-menu').classList.toggle('active');
+        }
 
         function switchPage(pageId) { 
-            if(localStorage.getItem('loginTimestamp')) localStorage.setItem('loginTimestamp', Date.now().toString());
+            if(localStorage.getItem('loginTimestamp')) {
+                localStorage.setItem('loginTimestamp', Date.now().toString());
+            } 
+            
             const pages = ['home', 'subscriptions', 'history', 'analytics', 'dashboard', 'profile', 'goals'];
+            
             pages.forEach(id => { 
-                const pageEl = document.getElementById('page-' + id); if(pageEl) pageEl.classList.remove('page-active');
-                const navEl = document.getElementById('nav-' + id); if(navEl) navEl.classList.remove('nav-active');
+                const pageEl = document.getElementById('page-' + id);
+                if(pageEl) {
+                    pageEl.classList.remove('page-active');
+                }
+                const navEl = document.getElementById('nav-' + id);
+                if(navEl) {
+                    navEl.classList.remove('nav-active');
+                }
             }); 
+            
             document.getElementById('page-' + pageId).classList.add('page-active');
-            const targetNav = document.getElementById('nav-' + pageId); if(targetNav) targetNav.classList.add('nav-active');
+            const targetNav = document.getElementById('nav-' + pageId);
+            
+            if(targetNav) {
+                targetNav.classList.add('nav-active');
+            }
+            
             document.getElementById('top-menu').classList.remove('active'); 
             
-            if (pageId === 'history' || pageId === 'analytics' || pageId === 'dashboard' || pageId === 'subscriptions') { loadDataFromSheet(); } 
-            else if (pageId === 'profile') {
+            if (pageId === 'history' || pageId === 'analytics' || pageId === 'dashboard' || pageId === 'subscriptions') {
+                loadDataFromSheet();
+            } else if (pageId === 'profile') {
                 updatePinProfileUI(); 
-                document.getElementById('profile-display-name').value = localStorage.getItem('userDisplayName') || ''; document.getElementById('profile-email-readonly').value = localStorage.getItem('userEmail') || ''; document.getElementById('profile-preview').src = localStorage.getItem('userProfileImg') || 'https://via.placeholder.com/150';
-                newProfilePicBase64 = null; newProfilePicName = null;
-                document.getElementById('profile-new-password').type = 'password'; document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash'; document.getElementById('profile-confirm-password').type = 'password'; document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
-            } else if (pageId === 'goals') { renderGoals(); } else { updateUI(); }
+                document.getElementById('profile-display-name').value = localStorage.getItem('userDisplayName') || '';
+                document.getElementById('profile-email-readonly').value = localStorage.getItem('userEmail') || '';
+                document.getElementById('profile-preview').src = localStorage.getItem('userProfileImg') || 'https://via.placeholder.com/150';
+                
+                newProfilePicBase64 = null;
+                newProfilePicName = null;
+                
+                document.getElementById('profile-new-password').type = 'password';
+                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash';
+                document.getElementById('profile-confirm-password').type = 'password';
+                document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
+            } else if (pageId === 'goals') {
+                renderGoals();
+            } else {
+                updateUI();
+            }
+            
             window.scrollTo(0,0); 
         }
 
         async function saveProfile() {
-            const displayName = document.getElementById('profile-display-name').value; const newPassword = document.getElementById('profile-new-password').value; const confirmPassword = document.getElementById('profile-confirm-password').value; const email = localStorage.getItem('userEmail');
-            if(!displayName) { showToast("Please enter a display name", true); return; }
-            if(newPassword && newPassword !== confirmPassword) { showToast("Passwords do not match!", true); return; }
-            const btn = document.getElementById('btn-save-profile'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
+            const displayName = document.getElementById('profile-display-name').value;
+            const newPassword = document.getElementById('profile-new-password').value;
+            const confirmPassword = document.getElementById('profile-confirm-password').value;
+            const email = localStorage.getItem('userEmail');
             
-            const payload = { email: email, displayName: displayName, password: newPassword, profilePicBase64: newProfilePicBase64, profilePicName: newProfilePicName };
+            if(!displayName) {
+                showToast("Please enter a display name", true);
+                return;
+            }
+            
+            if(newPassword && newPassword !== confirmPassword) {
+                showToast("Passwords do not match!", true);
+                return;
+            }
+            
+            const btn = document.getElementById('btn-save-profile');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
+            
+            const payload = {
+                email: email,
+                displayName: displayName,
+                password: newPassword,
+                profilePicBase64: newProfilePicBase64,
+                profilePicName: newProfilePicName
+            };
+            
             const res = await callApi("updateProfile", payload);
             
             if(res.status === "Success") {
-                showToast("Profile updated!"); localStorage.setItem('userDisplayName', displayName); document.getElementById('nav-display-name').innerText = displayName; 
-                document.getElementById('profile-new-password').value = ''; document.getElementById('profile-confirm-password').value = ''; document.getElementById('profile-new-password').type = 'password'; document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash'; document.getElementById('profile-confirm-password').type = 'password'; document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
-                if(newProfilePicBase64) { document.getElementById('user-profile-img').src = newProfilePicBase64; localStorage.setItem('userProfileImg', newProfilePicBase64); }
-            } else { showToast("Error updating profile", true); }
-            btn.disabled = false; btn.innerHTML = 'Save Changes <i class="fas fa-save text-white/80"></i>';
+                showToast("Profile updated!");
+                localStorage.setItem('userDisplayName', displayName);
+                document.getElementById('nav-display-name').innerText = displayName; 
+                
+                document.getElementById('profile-new-password').value = '';
+                document.getElementById('profile-confirm-password').value = '';
+                document.getElementById('profile-new-password').type = 'password';
+                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash';
+                document.getElementById('profile-confirm-password').type = 'password';
+                document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
+                
+                if(newProfilePicBase64) {
+                    document.getElementById('user-profile-img').src = newProfilePicBase64;
+                    localStorage.setItem('userProfileImg', newProfilePicBase64);
+                }
+            } else {
+                showToast("Error updating profile", true);
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = 'Save Changes <i class="fas fa-save text-white/80"></i>';
         }
 
         function cancelEdit() {
-            editingRowId = null; document.getElementById('expense-form').reset(); document.getElementById('date').valueAsDate = new Date();
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction'; document.getElementById('submit-btn').innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; document.getElementById('cancel-edit-btn').classList.add('hidden');
-        }
-
-        // 🛑 ฟังก์ชันแก้ไขบั๊กเวลา
-        function updateTimestampDisplay() {
-            const now = new Date();
-            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const day = now.getDate().toString().padStart(2, '0');
-            const month = months[now.getMonth()];
-            const year = now.getFullYear();
-            let hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            const strHours = hours.toString().padStart(2, '0');
+            editingRowId = null;
+            document.getElementById('expense-form').reset();
+            document.getElementById('date').valueAsDate = new Date();
             
-            const timeString = `${day} ${month} ${year} • ${strHours}:${minutes} ${ampm}`;
-            
-            const updateElCard = document.getElementById('last-updated-text-card');
-            if(updateElCard) updateElCard.innerHTML = `<i class="fas fa-clock mr-1"></i> Updated : ${timeString}`;
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction';
+            document.getElementById('submit-btn').innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
         document.getElementById('expense-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); initAudio(); 
-            const detailsVal = document.getElementById('details').value; const amountVal = document.getElementById('amount').value.replace(/,/g, '');
-            if (!detailsVal || !detailsVal.trim()) { showToast("Please enter a Note!", true); return; }
-            if (!amountVal || parseFloat(amountVal) <= 0) { showToast("Please enter a valid amount!", true); return; }
-            const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...'; 
+            e.preventDefault(); 
+            initAudio(); 
+            
+            const detailsVal = document.getElementById('details').value;
+            const amountVal = document.getElementById('amount').value.replace(/,/g, '');
+            
+            if (!detailsVal || !detailsVal.trim()) {
+                showToast("Please enter a Note!", true);
+                return;
+            }
+            
+            if (!amountVal || parseFloat(amountVal) <= 0) {
+                showToast("Please enter a valid amount!", true);
+                return;
+            }
+            
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...'; 
             
             const loc = document.getElementById('save-location').checked ? await getCurrentLocation() : "";
             const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
-            const payload = { date: document.getElementById('date').value, time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }), payment: document.getElementById('payment').value, category: document.getElementById('category').value, details: detailsVal.trim(), amount: amountVal, location: loc, receiptBase64: receiptBase64, receiptName: receiptName, recordedBy: recordedByName };
             
-            const actionType = editingRowId ? "edit" : "save"; const rowIdToSend = editingRowId || null;
+            const payload = { 
+                date: document.getElementById('date').value,
+                time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }), 
+                payment: document.getElementById('payment').value,
+                category: document.getElementById('category').value,
+                details: detailsVal.trim(),
+                amount: amountVal,
+                location: loc,
+                receiptBase64: receiptBase64,
+                receiptName: receiptName,
+                recordedBy: recordedByName 
+            };
+            
+            const actionType = editingRowId ? "edit" : "save";
+            const rowIdToSend = editingRowId || null;
 
             if (!navigator.onLine) {
-                let q = JSON.parse(localStorage.getItem('offlineQueue') || '[]'); q.push({ action: actionType, payload: { ...payload, rowId: rowIdToSend } }); localStorage.setItem('offlineQueue', JSON.stringify(q));
+                let q = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+                q.push({ action: actionType, payload: { ...payload, rowId: rowIdToSend } });
+                localStorage.setItem('offlineQueue', JSON.stringify(q));
+                
                 showToast("No internet. Saved to Offline Queue!");
-                cancelEdit(); receiptBase64 = null; receiptName = null; document.getElementById('receipt-text').innerText = "Add Receipt"; btn.disabled = false; btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>';
-                expenses.unshift({ ...payload, rowId: "offline-" + Date.now(), amount: amountVal }); updateUI(); playSuccessSound(); doHaptic('heavy'); return;
+                
+                cancelEdit();
+                receiptBase64 = null;
+                receiptName = null;
+                document.getElementById('receipt-text').innerText = "Add Receipt";
+                
+                btn.disabled = false;
+                btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>';
+                
+                expenses.unshift({ ...payload, rowId: "offline-" + Date.now(), amount: amountVal });
+                updateUI();
+                playSuccessSound(); 
+                doHaptic('heavy');
+                return;
             }
 
-            if(localStorage.getItem('loginTimestamp')) localStorage.setItem('loginTimestamp', Date.now().toString());
+            if(localStorage.getItem('loginTimestamp')) {
+                localStorage.setItem('loginTimestamp', Date.now().toString());
+            }
+            
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
-                if(editingRowId) showToast("Updated successfully!"); else showToast("Record saved successfully!");
-                cancelEdit(); receiptBase64 = null; receiptName = null; document.getElementById('receipt-text').innerText = "Add Receipt"; loadDataFromSheet(); playSuccessSound(); doHaptic('heavy');
-            } else showToast("Error: " + res.message, true);
-            btn.disabled = false; btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
+                if(editingRowId) {
+                    showToast("Updated successfully!");
+                } else {
+                    showToast("Record saved successfully!");
+                }
+                
+                cancelEdit();
+                receiptBase64 = null;
+                receiptName = null;
+                document.getElementById('receipt-text').innerText = "Add Receipt";
+                loadDataFromSheet(); 
+                playSuccessSound(); 
+                doHaptic('heavy');
+            } else {
+                showToast("Error: " + res.message, true);
+            } 
+            
+            btn.disabled = false;
+            btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
+        async function loadDataFromSheet() { 
+            const list = document.getElementById('history-list');
+            const subsList = document.getElementById('subscriptions-list');
+            
+            if(list) {
+                list.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>';
+            }
+            if(subsList) {
+                subsList.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>';
+            }
+            
+            const res = await callApi("get");
+            
+            if(res.status === "Success" && res.data) {
+                expenses = res.data;
+            }
+            
+            updateTimestampDisplay();
+            updateUI();
+        }
+
+        function loadMoreHistory() {
+            currentHistoryLimit += 20;
+            updateUI();
+        }
+
+        function openEditForm(rowId) {
+            const item = expenses.find(x => x.rowId == rowId);
+            if(!item) return;
+            
+            editingRowId = rowId;
+            document.getElementById('amount').value = item.amount;
+            document.getElementById('date').value = item.date;
+            document.getElementById('payment').value = item.payment;
+            
+            let catSelect = document.getElementById('category');
+            let optionExists = Array.from(catSelect.options).some(opt => opt.value === item.category);
+            
+            if (!optionExists) {
+                let tempOpt = document.createElement("option");
+                tempOpt.value = item.category;
+                tempOpt.text = "🔄 " + item.category;
+                catSelect.appendChild(tempOpt);
+            }
+            
+            document.getElementById('category').value = item.category;
+            document.getElementById('details').value = item.details;
+            
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Transaction';
+            document.getElementById('submit-btn').innerHTML = 'Update Transaction <i class="fas fa-check text-white/80"></i>';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            
+            switchPage('home');
+            
+            setTimeout(() => {
+                document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
+        function openSubsEditForm(rowId) {
+            const item = expenses.find(x => x.rowId == rowId);
+            if(!item) return;
+            
+            editingSubsRowId = rowId;
+            document.getElementById('subs-amount').value = item.amount;
+            
+            let editDateStr = item.date || ""; 
+            const mInput = document.getElementById('subs-date-monthly');
+            const yInput = document.getElementById('subs-date-yearly');
+            const cycleSelect = document.getElementById('subs-cycle');
+            
+            if (editDateStr.includes('-') && isNaN(editDateStr)) {
+                cycleSelect.value = 'Yearly';
+                mInput.classList.add('hidden');
+                mInput.required = false;
+                yInput.classList.remove('hidden');
+                yInput.required = true;
+                
+                let parts = editDateStr.split('-');
+                let currentYear = new Date().getFullYear();
+                let monthNum = "01";
+                
+                if (isNaN(parts[1])) {
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const monthIndex = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase());
+                    
+                    if(monthIndex !== -1) {
+                        monthNum = (monthIndex + 1).toString().padStart(2, '0');
+                    }
+                } else {
+                    monthNum = parts[1].padStart(2, '0');
+                }
+                
+                if(parts.length >= 2) {
+                    yInput.value = `${currentYear}-${monthNum}-${parts[0].padStart(2, '0')}`;
+                }
+            } else {
+                cycleSelect.value = 'Monthly';
+                mInput.classList.remove('hidden');
+                mInput.required = true;
+                yInput.classList.add('hidden');
+                yInput.required = false;
+                
+                let dayNum = parseInt(editDateStr);
+                
+                if(!isNaN(dayNum)) {
+                    mInput.value = dayNum;
+                } else {
+                    mInput.value = new Date().getDate();
+                }
+            }
+            
+            let paymentStr = item.payment || '';
+            let basePay = 'VISA';
+            let cardName = '';
+            
+            if(paymentStr.includes(' - ')) {
+                let parts = paymentStr.split(' - ');
+                basePay = parts[0];
+                cardName = parts[1];
+            } else {
+                const knownTypes = ['VISA', 'MasterCard', 'JCB', 'UnionPay', 'Cash', 'E-Wallet', 'Bank Transfer'];
+                let found = knownTypes.find(t => paymentStr.startsWith(t));
+                
+                if(found) {
+                    basePay = found;
+                    cardName = paymentStr.substring(found.length).trim();
+                } else {
+                    basePay = 'VISA';
+                    cardName = paymentStr;
+                }
+            }
+            
+            document.getElementById('subs-payment').value = basePay;
+            updatePaymentDisplay('subs-payment', basePay);
+            document.getElementById('subs-card-name').value = cardName;
+            document.getElementById('subs-details').value = item.details;
+            
+            document.getElementById('subs-form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Subscription';
+            document.getElementById('subs-submit-btn').innerHTML = 'Update Subscription';
+            document.getElementById('cancel-subs-edit-btn').classList.remove('hidden');
+            
+            switchPage('subscriptions');
+            
+            setTimeout(() => {
+                document.getElementById('subs-form-section').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
+        function cancelSubsEdit() {
+            editingSubsRowId = null;
+            document.getElementById('subs-form').reset();
+            
+            document.getElementById('subs-cycle').value = 'Monthly';
+            document.getElementById('subs-date-monthly').classList.remove('hidden');
+            document.getElementById('subs-date-monthly').required = true;
+            document.getElementById('subs-date-yearly').classList.add('hidden');
+            document.getElementById('subs-date-yearly').required = false;
+            
+            document.getElementById('subs-date-monthly').value = new Date().getDate();
+            document.getElementById('subs-date-yearly').valueAsDate = new Date();
+            
+            document.getElementById('subs-payment').value = 'VISA';
+            updatePaymentDisplay('subs-payment', 'VISA');
+            document.getElementById('subs-card-name').value = '';
+            
+            document.getElementById('subs-form-title').innerHTML = '<i class="fas fa-plus-circle text-violet-500"></i> Add Subscription';
+            document.getElementById('subs-submit-btn').innerHTML = 'Save Subscription';
+            document.getElementById('cancel-subs-edit-btn').classList.add('hidden');
+        }
+
+        async function paySubscription(rowId) {
+            if(!confirm("Are you sure you want to log this as 'Paid' to the Home expenses?")) {
+                return;
+            }
+            
+            const item = expenses.find(x => x.rowId == rowId);
+            if(!item) {
+                return;
+            }
+            
+            showToast("Processing payment...");
+            
+            const amt = parseFloat(item.amount) || 0;
+            const today = new Date();
+            const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            const timeStr = today.toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' });
+            
+            let paymentStr = item.payment || '';
+            let basePay = 'Credit Card / E-Wallet'; 
+            
+            if(paymentStr.includes('Cash')) {
+                basePay = 'Cash';
+            } else if(paymentStr.includes('Bank Transfer')) {
+                basePay = 'Internet Banking / QR Payment';
+            } else if(paymentStr.includes('E-Wallet')) {
+                basePay = 'Credit Card / E-Wallet';
+            }
+            
+            const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
+            
+            const payload = {
+                date: dateStr,
+                time: timeStr,
+                payment: basePay,
+                category: "Bills",
+                details: item.details,
+                amount: amt,
+                location: "",
+                receiptBase64: null,
+                receiptName: null,
+                recordedBy: recordedByName
+            };
+            
+            if (!navigator.onLine) {
+                let q = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+                q.push({ action: "save", payload: payload });
+                localStorage.setItem('offlineQueue', JSON.stringify(q));
+                showToast("No internet. Saved offline!");
+                return;
+            }
+
+            const res = await callApi("save", payload);
+            
+            if(res.status === "Success") {
+                showToast("Paid & Saved to Home!");
+                loadDataFromSheet();
+            } else {
+                showToast("Error: " + res.message, true);
+            }
+        }
+
+        document.getElementById('subs-form').addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            
+            const detailsVal = document.getElementById('subs-details').value;
+            const amountVal = document.getElementById('subs-amount').value.replace(/,/g, '');
+            const basePay = document.getElementById('subs-payment').value;
+            const cardName = document.getElementById('subs-card-name').value.trim();
+            const cycleVal = document.getElementById('subs-cycle').value;
+            
+            let formattedDate = "";
+            
+            if (cycleVal === 'Monthly') {
+                const dayVal = document.getElementById('subs-date-monthly').value;
+                if(!dayVal || dayVal < 1 || dayVal > 31) {
+                    showToast("Please enter a valid day (1-31)!", true);
+                    return;
+                }
+                formattedDate = dayVal; 
+            } else {
+                const rawDate = document.getElementById('subs-date-yearly').value;
+                if(!rawDate) {
+                    showToast("Please select a date!", true);
+                    return;
+                }
+                const parts = rawDate.split('-');
+                if (parts.length === 3) {
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const monthIndex = parseInt(parts[1]) - 1;
+                    const monthName = monthNames[monthIndex];
+                    formattedDate = `${parts[2]}-${monthName}`;
+                }
+            }
+            
+            const finalPayment = cardName ? `${basePay} - ${cardName}` : basePay;
+            
+            if (!detailsVal || !detailsVal.trim()) {
+                showToast("Please enter a Name!", true);
+                return;
+            }
+            
+            if (!amountVal || parseFloat(amountVal) <= 0) {
+                showToast("Please enter a valid amount!", true);
+                return;
+            }
+            
+            const btn = document.getElementById('subs-submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...'; 
+            
+            const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
+            
+            const payload = {
+                date: formattedDate,
+                time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }),
+                payment: finalPayment,
+                category: "Subscription_List",
+                details: detailsVal.trim(),
+                amount: amountVal,
+                location: "",
+                receiptBase64: null,
+                receiptName: null,
+                recordedBy: recordedByName
+            };
+            
+            const actionType = editingSubsRowId ? "edit" : "save";
+            const rowIdToSend = editingSubsRowId || null;
+            
+            if (!navigator.onLine) {
+                let q = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+                q.push({ action: actionType, payload: { ...payload, rowId: rowIdToSend } });
+                localStorage.setItem('offlineQueue', JSON.stringify(q));
+                
+                showToast("No internet. Saved to Offline Queue!");
+                cancelSubsEdit();
+                
+                btn.disabled = false;
+                btn.innerHTML = 'Save Subscription';
+                return;
+            }
+
+            if(localStorage.getItem('loginTimestamp')) {
+                localStorage.setItem('loginTimestamp', Date.now().toString());
+            }
+            
+            const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
+            
+            if(res.status === "Success") { 
+                if(editingSubsRowId) {
+                    showToast("Subscription updated!");
+                } else {
+                    showToast("Subscription saved successfully!");
+                }
+                cancelSubsEdit();
+                loadDataFromSheet(); 
+            } else {
+                showToast("Error: " + res.message, true);
+            } 
+            
+            btn.disabled = false;
+            btn.innerHTML = 'Save Subscription'; 
+        });
+
+        async function deleteItem(rowId) { 
+            if(confirm('Delete this record permanently?')) { 
+                if (!navigator.onLine) {
+                    showToast("Cannot delete while offline", true);
+                    return;
+                }
+                
+                showToast("Deleting...");
+                const res = await callApi("delete", { rowId: rowId });
+                
+                if(res.status === "Success") {
+                    showToast("Deleted successfully!");
+                    loadDataFromSheet();
+                } else {
+                    showToast("Error: " + res.message, true);
+                }
+            } 
+        }
+
+        function toggleDay(date) {
+            const el = document.getElementById('details-' + date);
+            const icon = document.getElementById('icon-' + date);
+            
+            if(el) {
+                el.classList.toggle('active');
+            }
+            
+            if(icon) {
+                icon.classList.toggle('rotated');
+            }
+        }
+        
+        function getIcon(cat) {
+            const icons = {
+                'Food': 'fa-utensils',
+                'Transport': 'fa-car',
+                'Gasoline': 'fa-gas-pump',
+                'Shopping': 'fa-bag-shopping',
+                'Bills': 'fa-file-invoice-dollar',
+                'Subscription': 'fa-sync-alt',
+                'Housing': 'fa-house',
+                'Health': 'fa-heart',
+                'Entertainment': 'fa-film',
+                'Other': 'fa-receipt',
+                'Salary': 'fa-money-bill-wave',
+                'Extra Income': 'fa-coins',
+                'Other Income': 'fa-hand-holding-dollar',
+                'Invest': 'fa-chart-pie',
+                'Invest_Other': 'fa-seedling'
+            };
+            return icons[cat] || 'fa-receipt';
+        }
+
+        function renderDoughnutChart(ctxId, chartVar, dataObj) { 
+            const ctx = document.getElementById(ctxId);
+            if(!ctx) {
+                return chartVar;
+            }
+            
+            const labels = Object.keys(dataObj);
+            const dataValues = Object.values(dataObj);
+            const bgColors = labels.map(cat => globalColorsMap[cat] || getRandomColor(cat)); 
+            
+            if(chartVar) {
+                chartVar.destroy();
+            }
+            
+            Chart.defaults.font.family = "'Plus Jakarta Sans', 'Kanit', sans-serif";
+            
+            return new Chart(ctx, { 
+                type: 'doughnut', 
+                data: { 
+                    labels: labels, 
+                    datasets: [{ 
+                        data: dataValues, 
+                        backgroundColor: bgColors, 
+                        borderWidth: 3, 
+                        borderColor: '#ffffff', 
+                        hoverOffset: 6 
+                    }] 
+                }, 
+                options: { 
+                    responsive: true, 
+                    cutout: '75%', 
+                    plugins: { 
+                        legend: { 
+                            display: false 
+                        }, 
+                        tooltip: { 
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)', 
+                            padding: 12, 
+                            cornerRadius: 16, 
+                            callbacks: { 
+                                label: function(context) { 
+                                    return ' ' + new Intl.NumberFormat('en-US').format(context.parsed) + ' THB'; 
+                                } 
+                            } 
+                        } 
+                    } 
+                } 
+            }); 
+        }
+
+        function renderYearlyChart(dataArr) {
+            const ctx = document.getElementById('yearlyChart');
+            if(myYearlyChart) {
+                myYearlyChart.destroy();
+            }
+            
+            Chart.defaults.font.family = "'Plus Jakarta Sans', 'Kanit', sans-serif";
+            
+            myYearlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+                    datasets: [{
+                        data: dataArr,
+                        backgroundColor: '#8b5cf6',
+                        borderRadius: 6,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            callbacks: {
+                                label: function(context) {
+                                    return new Intl.NumberFormat('en-US').format(context.parsed.y) + ' THB';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateDailyCategoryChart() { 
+            const dateStr = document.getElementById('dashboard-date-filter').value;
+            const dataObj = globalDailyCategoryStats[dateStr] || {};
+            
+            myDailyCategoryChart = renderDoughnutChart('dailyCategoryChart', myDailyCategoryChart, dataObj); 
+            
+            const listContainer = document.getElementById('daily-category-list');
+            listContainer.innerHTML = ''; 
+            
+            const sortedCat = Object.keys(dataObj).map(k => ({label: k, val: dataObj[k]})).sort((a,b) => b.val - a.val); 
+            
+            if(sortedCat.length === 0) {
+                listContainer.innerHTML = '<div class="text-center text-xs text-slate-400 py-4 font-medium">No Data Available</div>';
+                return;
+            } 
+            
+            const dailyTotal = sortedCat.reduce((sum, item) => sum + item.val, 0);
+            
+            sortedCat.forEach(item => { 
+                const percent = dailyTotal > 0 ? ((item.val / dailyTotal) * 100).toFixed(1) : 0;
+                const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
+                const bgColor = globalColorsMap[item.label] || getRandomColor(item.label);
+                
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center text-xs px-3 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50/50 rounded-xl transition-colors"; 
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-3.5 h-3.5 rounded-full shadow-sm" style="background-color: ${bgColor}"></span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="font-bold text-slate-700">${item.label}</span>
+                            <span class="text-[10px] text-slate-400 font-medium bg-slate-100 px-1.5 py-0.5 rounded-md">${displayPercent}%)</span>
+                        </div>
+                    </div>
+                    <span class="font-black text-slate-800">${item.val.toLocaleString()} THB</span>
+                `; 
+                listContainer.appendChild(div); 
+            }); 
+        }
+
         function updateUI() {
-            const list = document.getElementById('history-list'); const stats = document.getElementById('stats-container'); const pSum = document.getElementById('payment-summary-container'); const subsList = document.getElementById('subscriptions-list');
-            if(!list || !stats) return;
-            list.innerHTML = ''; stats.innerHTML = ''; pSum.innerHTML = ''; if (subsList) subsList.innerHTML = '';
+            const list = document.getElementById('history-list');
+            const stats = document.getElementById('stats-container');
+            const pSum = document.getElementById('payment-summary-container');
+            const subsList = document.getElementById('subscriptions-list');
+            
+            if(!list || !stats) { return; }
+            
+            list.innerHTML = '';
+            stats.innerHTML = '';
+            pSum.innerHTML = '';
+            
+            if (subsList) {
+                subsList.innerHTML = '';
+            }
 
             const viewType = document.getElementById('btn-view-yearly')?.classList.contains('bg-white') ? 'yearly' : 'monthly';
             const filterVal = viewType === 'monthly' ? document.getElementById('summary-month-filter').value : document.getElementById('summary-year-filter').value;
-            const searchInput = document.getElementById('search-history'); const searchKeyword = searchInput ? searchInput.value.toLowerCase().trim() : "";
+            
+            const searchInput = document.getElementById('search-history');
+            const searchKeyword = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
             if (expenses.length === 0) {
                 list.innerHTML = '<div class="text-center p-12 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm"><i class="fas fa-box-open text-4xl mb-4 text-slate-200"></i><br>No Records Found</div>';
                 stats.innerHTML = '<div class="text-center p-12 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm"><i class="fas fa-box-open text-4xl mb-4 text-slate-200"></i><br>No Records Found</div>';
             }
             
-            let totalExpenseHome = 0; let totalIncomeHome = 0; let totalExpenseSummary = 0; let totalIncomeSummary = 0;
-            const daily = {}; const payStats = { 'Cash': 0, 'Credit Card / E-Wallet': 0, 'Internet Banking / QR Payment': 0, 'Loan etc.': 0 };
-            const yearlyData = [0,0,0,0,0,0,0,0,0,0,0,0]; const hashtagStats = {}; 
+            let totalExpenseHome = 0;
+            let totalIncomeHome = 0;
+            let totalExpenseSummary = 0;
+            let totalIncomeSummary = 0;
+            
+            const daily = {};
+            const payStats = { 'Cash': 0, 'Credit Card / E-Wallet': 0, 'Internet Banking / QR Payment': 0, 'Loan etc.': 0 };
+            const yearlyData = [0,0,0,0,0,0,0,0,0,0,0,0];
+            const hashtagStats = {}; 
             
             let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
             let sortedExpenses = [...expenses];
             
             sortedExpenses.sort((a,b) => {
-                let rawDateB = new Date(b.date + ' ' + (b.time || '00:00')); let rawDateA = new Date(a.date + ' ' + (a.time || '00:00')); let dateB = isNaN(rawDateB) ? new Date(0) : rawDateB; let dateA = isNaN(rawDateA) ? new Date(0) : rawDateA;
-                let isIncomeA = ["Salary", "Extra Income", "Other Income"].includes(a.category); let amtA = parseFloat(a.amount) || 0; let realAmtA = isIncomeA ? amtA : -amtA;
-                let isIncomeB = ["Salary", "Extra Income", "Other Income"].includes(b.category); let amtB = parseFloat(b.amount) || 0; let realAmtB = isIncomeB ? amtB : -amtB;
+                let rawDateB = new Date(b.date + ' ' + (b.time || '00:00'));
+                let rawDateA = new Date(a.date + ' ' + (a.time || '00:00'));
+                
+                let dateB = isNaN(rawDateB) ? new Date(0) : rawDateB;
+                let dateA = isNaN(rawDateA) ? new Date(0) : rawDateA;
+                
+                let isIncomeA = ["Salary", "Extra Income", "Other Income"].includes(a.category);
+                let amtA = parseFloat(a.amount) || 0;
+                let realAmtA = isIncomeA ? amtA : -amtA;
+                
+                let isIncomeB = ["Salary", "Extra Income", "Other Income"].includes(b.category);
+                let amtB = parseFloat(b.amount) || 0;
+                let realAmtB = isIncomeB ? amtB : -amtB;
                 
                 if (sortType === 'latest') return expenses.indexOf(b) - expenses.indexOf(a); 
                 if (sortType === 'date') return dateB - dateA; 
@@ -1432,167 +2458,507 @@
                 if (sortType === 'category') return a.category === b.category ? dateB - dateA : a.category.localeCompare(b.category); 
                 if (sortType === 'price-high') return realAmtB - realAmtA; 
                 if (sortType === 'price-low') return realAmtA - realAmtB; 
-                if (sortType === 'user') return (a.recordedBy||"") === (b.recordedBy||"") ? dateB - dateA : (a.recordedBy||"").localeCompare(b.recordedBy||"");
+                if (sortType === 'user') {
+                    let userA = a.recordedBy || "";
+                    let userB = b.recordedBy || "";
+                    return userA === userB ? dateB - dateA : userA.localeCompare(userB);
+                }
                 return 0;
             });
             
-            const categoryStats = {}; globalDailyCategoryStats = {};
-            let regularExpenses = []; let subsExpenses = [];
-            sortedExpenses.forEach(item => { if (item.category === "Subscription_List") subsExpenses.push(item); else regularExpenses.push(item); });
+            const categoryStats = {};
+            globalDailyCategoryStats = {};
+            
+            let regularExpenses = [];
+            let subsExpenses = [];
+            
+            sortedExpenses.forEach(item => {
+                if (item.category === "Subscription_List") {
+                    subsExpenses.push(item);
+                } else {
+                    regularExpenses.push(item);
+                }
+            });
 
             let expensesToRender = regularExpenses;
-            if (searchKeyword !== "") expensesToRender = expensesToRender.filter(item => (item.details && item.details.toLowerCase().includes(searchKeyword)) || (item.category && item.category.toLowerCase().includes(searchKeyword)) || (item.amount && item.amount.toString().includes(searchKeyword)) || (item.payment && item.payment.toLowerCase().includes(searchKeyword)));
+            if (searchKeyword !== "") {
+                expensesToRender = expensesToRender.filter(item => 
+                    (item.details && item.details.toLowerCase().includes(searchKeyword)) ||
+                    (item.category && item.category.toLowerCase().includes(searchKeyword)) ||
+                    (item.amount && item.amount.toString().includes(searchKeyword)) ||
+                    (item.payment && item.payment.toLowerCase().includes(searchKeyword))
+                );
+            }
+            
             expensesToRender = expensesToRender.slice(0, currentHistoryLimit);
             
             expensesToRender.forEach((item) => {
                 const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
-                const amt = parseFloat(item.amount) || 0; let recordedByText = "";
-                if (item.recordedBy && item.recordedBy !== '-' && item.recordedBy !== 'undefined' && item.recordedBy.trim() !== '') recordedByText = `<span class="text-[8.5px] font-bold bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fas fa-user-circle text-violet-400 mr-1"></i>${item.recordedBy}</span>`;
+                const amt = parseFloat(item.amount) || 0;
+                let recordedByText = "";
+                
+                if (item.recordedBy && item.recordedBy !== '-' && item.recordedBy !== 'undefined' && item.recordedBy.trim() !== '') {
+                    recordedByText = `<span class="text-[8.5px] font-bold bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fas fa-user-circle text-violet-400 mr-1"></i>${item.recordedBy}</span>`;
+                }
+
                 const receiptButton = item.receipt ? `<button onclick="viewReceipt('${item.receipt}', event)" class="text-slate-300 hover:text-violet-500 transition-colors"><i class="fas fa-image"></i></button>` : '';
 
                 const div = document.createElement('div');
                 div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow"; 
                 div.innerHTML = `
                     <div class="flex gap-3.5 items-center text-left w-full overflow-hidden">
-                        <div class="w-12 h-12 flex-shrink-0 ${isIncome ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow-emerald-500/30' : 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 border border-white'} rounded-2xl flex items-center justify-center shadow-md"><i class="fas ${getIcon(item.category)} text-lg"></i></div>
-                        <div class="min-w-0 flex-1"><div class="flex items-center gap-2"><p class="font-bold text-slate-800 text-sm leading-tight truncate">${item.category}</p><span class="text-[8px] flex-shrink-0 font-bold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded uppercase tracking-wider">${item.payment}</span></div><div class="flex items-center gap-2 mt-1"><p class="text-[10px] font-bold text-slate-400 truncate max-w-[100px]">${item.details || "-"}</p>${recordedByText}</div></div>
+                        <div class="w-12 h-12 flex-shrink-0 ${isIncome ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow-emerald-500/30' : 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 border border-white'} rounded-2xl flex items-center justify-center shadow-md">
+                            <i class="fas ${getIcon(item.category)} text-lg"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2">
+                                <p class="font-bold text-slate-800 text-sm leading-tight truncate">${item.category}</p>
+                                <span class="text-[8px] flex-shrink-0 font-bold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded uppercase tracking-wider">${item.payment}</span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-1">
+                                <p class="text-[10px] font-bold text-slate-400 truncate max-w-[100px]">${item.details || "-"}</p>
+                                ${recordedByText}
+                            </div>
+                        </div>
                     </div>
                     <div class="text-right ml-2 flex-shrink-0 flex flex-col items-end justify-center">
-                        <span class="text-[9px] font-bold text-slate-400 mb-0.5"><i class="far fa-clock mr-1"></i>${item.date} ${item.time || ''}</span><p class="text-lg font-black ${isIncome ? 'text-emerald-500' : 'text-slate-800'} leading-none mt-1">${isIncome ? '+' : '-'}${amt.toLocaleString()}</p>
-                        <div class="flex justify-end gap-3 mt-1.5 items-center">${receiptButton}${item.location ? `<a href="${item.location}" target="_blank" class="text-slate-300 hover:text-blue-500 transition-colors"><i class="fas fa-location-dot"></i></a>` : ''}<button onclick="openEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors ml-1"><i class="fas fa-edit"></i></button><button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button></div>
-                    </div>`; 
+                        <span class="text-[9px] font-bold text-slate-400 mb-0.5"><i class="far fa-clock mr-1"></i>${item.date} ${item.time || ''}</span>
+                        <p class="text-lg font-black ${isIncome ? 'text-emerald-500' : 'text-slate-800'} leading-none mt-1">${isIncome ? '+' : '-'}${amt.toLocaleString()}</p>
+                        <div class="flex justify-end gap-3 mt-1.5 items-center">
+                            ${receiptButton}
+                            ${item.location ? `<a href="${item.location}" target="_blank" class="text-slate-300 hover:text-blue-500 transition-colors"><i class="fas fa-location-dot"></i></a>` : ''}
+                            <button onclick="openEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors ml-1"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `; 
                 list.appendChild(div);
             });
 
-            if(searchKeyword !== "" && expensesToRender.length === 0) list.innerHTML = `<div class="text-center p-8 text-slate-400 font-bold text-xs">No results found for "${searchKeyword}"</div>`;
+            if(searchKeyword !== "" && expensesToRender.length === 0) {
+                list.innerHTML = `<div class="text-center p-8 text-slate-400 font-bold text-xs">No results found for "${searchKeyword}"</div>`;
+            }
+            
             const loadMoreBtn = document.getElementById('load-more-btn');
-            if(loadMoreBtn) { if(searchKeyword === "" && regularExpenses.length > currentHistoryLimit) loadMoreBtn.classList.remove('hidden'); else loadMoreBtn.classList.add('hidden'); }
+            if(loadMoreBtn) {
+                if(searchKeyword === "" && regularExpenses.length > currentHistoryLimit) {
+                    loadMoreBtn.classList.remove('hidden');
+                } else {
+                    loadMoreBtn.classList.add('hidden');
+                }
+            }
 
             regularExpenses.forEach((item) => {
                 const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
-                const amt = parseFloat(item.amount) || 0; const impact = isIncome ? amt : -amt; 
-                if (isIncome) totalIncomeHome += amt; else totalExpenseHome += amt;
+                const amt = parseFloat(item.amount) || 0;
+                const impact = isIncome ? amt : -amt; 
+                
+                if (isIncome) {
+                    totalIncomeHome += amt;
+                } else {
+                    totalExpenseHome += amt;
+                }
                 
                 const isMatch = filterVal === '' || item.date.startsWith(filterVal);
+                
                 if (isMatch) {
-                    if (isIncome) totalIncomeSummary += amt;
-                    else { 
+                    if (isIncome) {
+                        totalIncomeSummary += amt;
+                    } else { 
                         totalExpenseSummary += amt; 
-                        if (!categoryStats[item.category]) categoryStats[item.category] = 0; categoryStats[item.category] += amt; 
-                        if (viewType === 'yearly') { const mIndex = parseInt(item.date.substring(5,7)) - 1; if (mIndex >= 0 && mIndex <= 11) yearlyData[mIndex] += amt; }
+                        
+                        if (!categoryStats[item.category]) {
+                            categoryStats[item.category] = 0;
+                        }
+                        
+                        categoryStats[item.category] += amt; 
+                        
+                        if (viewType === 'yearly') {
+                            const mIndex = parseInt(item.date.substring(5,7)) - 1; 
+                            if (mIndex >= 0 && mIndex <= 11) {
+                                yearlyData[mIndex] += amt;
+                            }
+                        }
 
-                        const hashRegex = /(?:^|\s)#([a-zA-Z0-9ก-๙]+)/g; let match;
+                        const hashRegex = /(?:^|\s)#([a-zA-Z0-9ก-๙]+)/g;
+                        let match;
                         while ((match = hashRegex.exec(item.details)) !== null) {
-                            let tag = match[1].toLowerCase(); if(!hashtagStats[tag]) hashtagStats[tag] = 0; hashtagStats[tag] += amt;
+                            let tag = match[1].toLowerCase();
+                            if(!hashtagStats[tag]) {
+                                hashtagStats[tag] = 0;
+                            }
+                            hashtagStats[tag] += amt;
                         }
                     }
                     
-                    let pKey = item.payment; if (!payStats.hasOwnProperty(pKey)) payStats[pKey] = 0; payStats[pKey] += impact;
-                    if (!daily[item.date]) daily[item.date] = { total: 0, categories: {} }; daily[item.date].total += impact; 
-                    if (!daily[item.date].categories[item.category]) daily[item.date].categories[item.category] = { amt: 0, isIncome: isIncome };
+                    let pKey = item.payment;
+                    if (!payStats.hasOwnProperty(pKey)) {
+                        payStats[pKey] = 0;
+                    }
+                    
+                    payStats[pKey] += impact;
+                    
+                    if (!daily[item.date]) {
+                        daily[item.date] = { total: 0, categories: {} };
+                    }
+                    
+                    daily[item.date].total += impact; 
+                    
+                    if (!daily[item.date].categories[item.category]) {
+                        daily[item.date].categories[item.category] = { amt: 0, isIncome: isIncome };
+                    }
+                    
                     daily[item.date].categories[item.category].amt += amt;
                 }
 
                 if (!isIncome) {
-                    if (!globalDailyCategoryStats[item.date]) globalDailyCategoryStats[item.date] = {};
-                    if (!globalDailyCategoryStats[item.date][item.category]) globalDailyCategoryStats[item.date][item.category] = 0;
+                    if (!globalDailyCategoryStats[item.date]) {
+                        globalDailyCategoryStats[item.date] = {};
+                    }
+                    
+                    if (!globalDailyCategoryStats[item.date][item.category]) {
+                        globalDailyCategoryStats[item.date][item.category] = 0;
+                    }
+                    
                     globalDailyCategoryStats[item.date][item.category] += amt;
                 }
             });
 
-            let totalSubsCost = 0; const today = new Date(); const currentDay = today.getDate(); const currentMonth = today.getMonth() + 1; 
-            if (subsExpenses.length === 0) { if (subsList) subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found</div>'; } 
-            else {
+            let totalSubsCost = 0;
+            const today = new Date();
+            const currentDay = today.getDate();
+            const currentMonth = today.getMonth() + 1; 
+            
+            if (subsExpenses.length === 0) {
+                if (subsList) {
+                    subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found</div>';
+                }
+            } else {
                 subsExpenses.forEach(item => {
-                    const amt = parseFloat(item.amount) || 0; let payText = item.payment || ''; let payIcon = '<i class="fas fa-credit-card text-slate-400"></i>';
-                    if(payText.includes('VISA')) payIcon = '<img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain inline">'; else if(payText.includes('MasterCard')) payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-3 inline">'; else if(payText.includes('JCB')) payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-3 inline">'; else if(payText.includes('UnionPay')) payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-3 inline">'; else if(payText.includes('Cash')) payIcon = '<span class="text-[10px]">💵</span>'; else if(payText.includes('E-Wallet')) payIcon = '<span class="text-[10px]">📱</span>'; else if(payText.includes('Bank Transfer')) payIcon = '<span class="text-[10px]">🏦</span>';
+                    const amt = parseFloat(item.amount) || 0;
+                    let payText = item.payment || '';
+                    let payIcon = '<i class="fas fa-credit-card text-slate-400"></i>';
+                    
+                    if(payText.includes('VISA')) {
+                        payIcon = '<img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain inline">';
+                    } else if(payText.includes('MasterCard')) {
+                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-3 inline">';
+                    } else if(payText.includes('JCB')) {
+                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-3 inline">';
+                    } else if(payText.includes('UnionPay')) {
+                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-3 inline">';
+                    } else if(payText.includes('Cash')) {
+                        payIcon = '<span class="text-[10px]">💵</span>';
+                    } else if(payText.includes('E-Wallet')) {
+                        payIcon = '<span class="text-[10px]">📱</span>';
+                    } else if(payText.includes('Bank Transfer')) {
+                        payIcon = '<span class="text-[10px]">🏦</span>';
+                    }
 
-                    let daysLeft = 999; let cycleDisplay = item.date; let isYearly = item.date && item.date.includes('-');
+                    let daysLeft = 999;
+                    let cycleDisplay = item.date;
+                    let isYearly = item.date && item.date.includes('-');
+                    
                     if (isYearly) {
-                        totalSubsCost += (amt / 12); const parts = item.date.split('-'); const itemDay = parseInt(parts[0]); const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]; const itemMonth = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase()) + 1;
-                        if (itemMonth === currentMonth) { if (itemDay === currentDay) daysLeft = 0; else if (itemDay > currentDay && itemDay <= currentDay + 5) daysLeft = itemDay - currentDay; else if (itemDay < currentDay && currentDay - itemDay <= 3) daysLeft = itemDay - currentDay; }
+                        totalSubsCost += (amt / 12);
+                        const parts = item.date.split('-');
+                        const itemDay = parseInt(parts[0]);
+                        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                        const itemMonth = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase()) + 1;
+                        
+                        if (itemMonth === currentMonth) {
+                            if (itemDay === currentDay) {
+                                daysLeft = 0;
+                            } else if (itemDay > currentDay && itemDay <= currentDay + 5) {
+                                daysLeft = itemDay - currentDay;
+                            } else if (itemDay < currentDay && currentDay - itemDay <= 3) {
+                                daysLeft = itemDay - currentDay;
+                            }
+                        }
                     } else {
-                        totalSubsCost += amt; const itemDay = parseInt(item.date);
-                        if (!isNaN(itemDay)) { cycleDisplay = 'Day ' + item.date; if (itemDay === currentDay) daysLeft = 0; else if (itemDay > currentDay && itemDay <= currentDay + 5) daysLeft = itemDay - currentDay; else if (itemDay < currentDay && currentDay - itemDay <= 3) daysLeft = itemDay - currentDay; }
+                        totalSubsCost += amt;
+                        const itemDay = parseInt(item.date);
+                        
+                        if (!isNaN(itemDay)) {
+                            cycleDisplay = 'Day ' + item.date;
+                            if (itemDay === currentDay) {
+                                daysLeft = 0;
+                            } else if (itemDay > currentDay && itemDay <= currentDay + 5) {
+                                daysLeft = itemDay - currentDay;
+                            } else if (itemDay < currentDay && currentDay - itemDay <= 3) {
+                                daysLeft = itemDay - currentDay;
+                            }
+                        }
                     }
                     
-                    let dateStyle = "text-slate-400"; let dateIconStyle = "text-slate-400";
-                    if (daysLeft === 0) { dateStyle = "text-rose-500 font-bold"; dateIconStyle = "text-rose-500 animate-pulse"; cycleDisplay += " (Today!)"; } else if (daysLeft < 0 && daysLeft >= -3) { dateStyle = "text-rose-500 font-bold"; dateIconStyle = "text-rose-500"; cycleDisplay += ` (${Math.abs(daysLeft)} days ago)`; } else if (daysLeft > 0 && daysLeft <= 5) { dateStyle = "text-amber-500 font-bold"; dateIconStyle = "text-amber-500"; cycleDisplay += ` (In ${daysLeft} days)`; }
+                    let dateStyle = "text-slate-400";
+                    let dateIconStyle = "text-slate-400";
+                    
+                    if (daysLeft === 0) {
+                        dateStyle = "text-rose-500 font-bold";
+                        dateIconStyle = "text-rose-500 animate-pulse";
+                        cycleDisplay += " (Today!)";
+                    } else if (daysLeft < 0 && daysLeft >= -3) {
+                        dateStyle = "text-rose-500 font-bold";
+                        dateIconStyle = "text-rose-500";
+                        cycleDisplay += ` (${Math.abs(daysLeft)} days ago)`;
+                    } else if (daysLeft > 0 && daysLeft <= 5) {
+                        dateStyle = "text-amber-500 font-bold";
+                        dateIconStyle = "text-amber-500";
+                        cycleDisplay += ` (In ${daysLeft} days)`;
+                    }
 
                     if (subsList) {
-                        const div = document.createElement('div'); div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow";
+                        const div = document.createElement('div');
+                        div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow";
                         div.innerHTML = `
-                            <div class="flex items-center gap-3 w-full"><div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shadow-inner text-lg flex-shrink-0"><i class="fas fa-sync-alt"></i></div><div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-sm truncate">${item.details}</p><p class="text-[10px] ${dateStyle} font-medium flex items-center gap-1.5 mt-0.5"><i class="far fa-calendar-alt ${dateIconStyle}"></i> ${cycleDisplay} <span class="mx-1 text-slate-300">•</span> <span class="flex items-center gap-1 text-slate-400">${payIcon} ${payText}</span></p></div></div>
-                            <div class="text-right flex flex-col items-end ml-2 flex-shrink-0"><p class="text-base font-black text-rose-500">-${amt.toLocaleString()} THB</p><div class="flex gap-2 mt-1.5 items-center"><button onclick="paySubscription('${item.rowId}')" class="text-white bg-violet-500 hover:bg-violet-600 px-2 py-1 rounded text-[9px] font-bold shadow-sm transition-colors flex items-center gap-1"><i class="fas fa-check-circle"></i> Pay</button><button onclick="openSubsEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors ml-1"><i class="fas fa-edit"></i></button><button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button></div></div>`;
+                            <div class="flex items-center gap-3 w-full">
+                                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shadow-inner text-lg flex-shrink-0">
+                                    <i class="fas fa-sync-alt"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-bold text-slate-800 text-sm truncate">${item.details}</p>
+                                    <p class="text-[10px] ${dateStyle} font-medium flex items-center gap-1.5 mt-0.5">
+                                        <i class="far fa-calendar-alt ${dateIconStyle}"></i> ${cycleDisplay} 
+                                        <span class="mx-1 text-slate-300">•</span> 
+                                        <span class="flex items-center gap-1 text-slate-400">${payIcon} ${payText}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-right flex flex-col items-end ml-2 flex-shrink-0">
+                                <p class="text-base font-black text-rose-500">-${amt.toLocaleString()} THB</p>
+                                <div class="flex gap-2 mt-1.5 items-center">
+                                    <button onclick="paySubscription('${item.rowId}')" class="text-white bg-violet-500 hover:bg-violet-600 px-2 py-1 rounded text-[9px] font-bold shadow-sm transition-colors flex items-center gap-1">
+                                        <i class="fas fa-check-circle"></i> Pay
+                                    </button>
+                                    <button onclick="openSubsEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors ml-1">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
                         subsList.appendChild(div);
                     }
                 });
             }
             
-            const totalSubsEl = document.getElementById('total-subs-cost'); if (totalSubsEl) totalSubsEl.innerText = totalSubsCost.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2});
+            const totalSubsEl = document.getElementById('total-subs-cost');
+            if (totalSubsEl) {
+                totalSubsEl.innerText = totalSubsCost.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2});
+            }
 
             const dateDropdown = document.getElementById('dashboard-date-filter'); 
             if (dateDropdown) { 
-                const currentSelectedDate = dateDropdown.value; dateDropdown.innerHTML = '';
+                const currentSelectedDate = dateDropdown.value;
+                dateDropdown.innerHTML = '';
                 const sortedDates = Object.keys(globalDailyCategoryStats).sort((a,b) => new Date(b) - new Date(a)); 
-                if(sortedDates.length === 0) dateDropdown.innerHTML = '<option value="">No Data</option>';
-                else {
-                    sortedDates.forEach(date => { const opt = document.createElement('option'); opt.value = date; opt.text = date; if(date === currentSelectedDate) opt.selected = true; dateDropdown.appendChild(opt); });
-                    if(!currentSelectedDate || !globalDailyCategoryStats[currentSelectedDate]) dateDropdown.value = sortedDates[0];
+                
+                if(sortedDates.length === 0) {
+                    dateDropdown.innerHTML = '<option value="">No Data</option>';
+                } else {
+                    sortedDates.forEach(date => {
+                        const opt = document.createElement('option');
+                        opt.value = date;
+                        opt.text = date;
+                        if(date === currentSelectedDate) {
+                            opt.selected = true;
+                        }
+                        dateDropdown.appendChild(opt);
+                    });
+                    
+                    if(!currentSelectedDate || !globalDailyCategoryStats[currentSelectedDate]) {
+                        dateDropdown.value = sortedDates[0];
+                    }
                 } 
             }
             
             if (viewType === 'monthly') {
                 Object.entries(payStats).forEach(([method, total]) => { 
                     if (total !== 0 || ['Cash', 'Credit Card / E-Wallet', 'Internet Banking / QR Payment', 'Loan etc.'].includes(method)) { 
-                        const payDiv = document.createElement('div'); payDiv.className = "modern-card p-4 text-left border border-slate-100 shadow-sm bg-white hover:shadow-md transition-shadow"; 
-                        let textColor = total < 0 ? "text-rose-500" : (total > 0 ? "text-emerald-500" : "text-slate-800"); let prefix = total > 0 ? "+" : "";
-                        payDiv.innerHTML = `<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${method}</span><p class="text-xl font-black ${textColor} mt-1 leading-none">${prefix}${total.toLocaleString()}</p>`; pSum.appendChild(payDiv); 
+                        const payDiv = document.createElement('div');
+                        payDiv.className = "modern-card p-4 text-left border border-slate-100 shadow-sm bg-white hover:shadow-md transition-shadow"; 
+                        
+                        let textColor = total < 0 ? "text-rose-500" : (total > 0 ? "text-emerald-500" : "text-slate-800");
+                        let prefix = total > 0 ? "+" : "";
+                        
+                        payDiv.innerHTML = `
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${method}</span>
+                            <p class="text-xl font-black ${textColor} mt-1 leading-none">${prefix}${total.toLocaleString()}</p>
+                        `;
+                        pSum.appendChild(payDiv); 
                     } 
                 });
                 
                 Object.keys(daily).sort((a,b) => new Date(b) - new Date(a)).forEach(date => { 
-                    const data = daily[date]; const mainDiv = document.createElement('div'); let totalColor = data.total >= 0 ? "text-emerald-500" : "text-slate-800"; let totalPrefix = data.total > 0 ? "+" : "";
+                    const data = daily[date];
+                    const mainDiv = document.createElement('div');
+                    
+                    let totalColor = data.total >= 0 ? "text-emerald-500" : "text-slate-800";
+                    let totalPrefix = data.total > 0 ? "+" : "";
+                    
                     mainDiv.className = "modern-card overflow-hidden border-none shadow-md shadow-slate-200/50 mb-3"; 
                     mainDiv.innerHTML = `
-                        <div onclick="toggleDay('${date}'); doHaptic('light');" class="p-4 flex justify-between items-center cursor-pointer hover:bg-violet-50/30 transition-colors"><div class="flex items-center gap-4"><div class="w-11 h-11 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center font-black text-sm border border-violet-200 shadow-inner">${date.split('-')[2]}</div><p class="text-xs font-bold text-slate-500 uppercase">${date}</p></div><div class="flex items-center gap-3 text-right"><p class="text-lg font-black ${totalColor}">${totalPrefix}${data.total.toLocaleString()}</p><div class="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center"><i id="icon-${date}" class="fas fa-chevron-down text-slate-400 text-[10px] rotate-icon"></i></div></div></div>
-                        <div id="details-${date}" class="day-details pb-4 px-5 bg-slate-50/50 border-t border-slate-100 text-left"><div class="pt-2">${Object.keys(data.categories).map(cat => { const catInfo = data.categories[cat]; const bgColor = globalColorsMap[cat] || getRandomColor(cat); return `<div class="flex justify-between items-center text-xs py-2.5 border-b border-slate-200/60 last:border-0"><div class="flex items-center gap-3"><span class="w-3 h-3 rounded-full shadow-sm" style="background-color: ${bgColor}"></span><span class="font-bold text-slate-700">${cat}</span></div><span class="font-black ${catInfo.isIncome ? 'text-emerald-500' : 'text-slate-800'}">${catInfo.isIncome ? '+' : '-'}${catInfo.amt.toLocaleString()}</span></div>`; }).join('')}</div></div>`; 
+                        <div onclick="toggleDay('${date}'); doHaptic('light');" class="p-4 flex justify-between items-center cursor-pointer hover:bg-violet-50/30 transition-colors">
+                            <div class="flex items-center gap-4">
+                                <div class="w-11 h-11 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center font-black text-sm border border-violet-200 shadow-inner">${date.split('-')[2]}</div>
+                                <p class="text-xs font-bold text-slate-500 uppercase">${date}</p>
+                            </div>
+                            <div class="flex items-center gap-3 text-right">
+                                <p class="text-lg font-black ${totalColor}">${totalPrefix}${data.total.toLocaleString()}</p>
+                                <div class="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center">
+                                    <i id="icon-${date}" class="fas fa-chevron-down text-slate-400 text-[10px] rotate-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="details-${date}" class="day-details pb-4 px-5 bg-slate-50/50 border-t border-slate-100 text-left">
+                            <div class="pt-2">
+                            ${Object.keys(data.categories).map(cat => { 
+                                const catInfo = data.categories[cat];
+                                const bgColor = globalColorsMap[cat] || getRandomColor(cat);
+                                return `
+                                    <div class="flex justify-between items-center text-xs py-2.5 border-b border-slate-200/60 last:border-0">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-3 h-3 rounded-full shadow-sm" style="background-color: ${bgColor}"></span>
+                                            <span class="font-bold text-slate-700">${cat}</span>
+                                        </div>
+                                        <span class="font-black ${catInfo.isIncome ? 'text-emerald-500' : 'text-slate-800'}">${catInfo.isIncome ? '+' : '-'}${catInfo.amt.toLocaleString()}</span>
+                                    </div>
+                                `; 
+                            }).join('')}
+                            </div>
+                        </div>
+                    `; 
                     stats.appendChild(mainDiv); 
                 });
-            } else { renderYearlyChart(yearlyData); }
+            } else {
+                renderYearlyChart(yearlyData);
+            }
 
-            let monthlyBudgetStr = localStorage.getItem('monthlyBudget'); let budgetBase = monthlyBudgetStr ? parseFloat(monthlyBudgetStr) : totalIncomeHome;
-            const remainingHome = monthlyBudgetStr ? (budgetBase - totalExpenseHome) : (totalIncomeHome - totalExpenseHome); let percentHome = budgetBase > 0 ? (totalExpenseHome / budgetBase) : 0; 
+            let monthlyBudgetStr = localStorage.getItem('monthlyBudget');
+            let budgetBase = monthlyBudgetStr ? parseFloat(monthlyBudgetStr) : totalIncomeHome;
+            const remainingHome = monthlyBudgetStr ? (budgetBase - totalExpenseHome) : (totalIncomeHome - totalExpenseHome);
+            let percentHome = budgetBase > 0 ? (totalExpenseHome / budgetBase) : 0; 
             
             const bar = document.getElementById('budget-progress-bar');
-            if(bar) { setTimeout(() => { bar.style.width = (Math.min(1, percentHome) * 100) + '%'; }, 100); if (percentHome >= 1) bar.style.backgroundColor = "#fda4af"; else if (percentHome >= 0.8) bar.style.backgroundColor = "#fcd34d"; else bar.style.backgroundColor = "#ffffff"; }
+            if(bar) {
+                setTimeout(() => {
+                    bar.style.width = (Math.min(1, percentHome) * 100) + '%';
+                }, 100);
+                if (percentHome >= 1) {
+                    bar.style.backgroundColor = "#fda4af";
+                } else if (percentHome >= 0.8) {
+                    bar.style.backgroundColor = "#fcd34d";
+                } else {
+                    bar.style.backgroundColor = "#ffffff";
+                }
+            }
             
-            document.getElementById('cash-remaining').innerText = remainingHome.toLocaleString(); const usedEl = document.getElementById('cash-used-text'); if(usedEl) usedEl.innerText = totalExpenseHome.toLocaleString(); const baseBudgetEl = document.getElementById('budget-base-text'); if(baseBudgetEl) baseBudgetEl.innerText = budgetBase.toLocaleString();
-            document.getElementById('total-expenses-text').innerText = totalExpenseSummary.toLocaleString() + " THB"; document.getElementById('total-income-text').innerText = totalIncomeSummary.toLocaleString() + " THB"; 
+            document.getElementById('cash-remaining').innerText = remainingHome.toLocaleString(); 
+            const usedEl = document.getElementById('cash-used-text');
+            if(usedEl) {
+                usedEl.innerText = totalExpenseHome.toLocaleString();
+            }
             
-            let netBalanceSummary = totalIncomeSummary - totalExpenseSummary; let balanceEl = document.getElementById('total-balance-text'); balanceEl.innerText = netBalanceSummary.toLocaleString();
-            if(netBalanceSummary < 0) { balanceEl.classList.add('text-rose-500'); balanceEl.classList.remove('text-slate-800'); } else { balanceEl.classList.remove('text-rose-500'); balanceEl.classList.add('text-slate-800'); }
+            const baseBudgetEl = document.getElementById('budget-base-text');
+            if(baseBudgetEl) {
+                baseBudgetEl.innerText = budgetBase.toLocaleString();
+            }
+            
+            document.getElementById('total-expenses-text').innerText = totalExpenseSummary.toLocaleString() + " THB";
+            document.getElementById('total-income-text').innerText = totalIncomeSummary.toLocaleString() + " THB"; 
+            
+            let netBalanceSummary = totalIncomeSummary - totalExpenseSummary;
+            let balanceEl = document.getElementById('total-balance-text');
+            balanceEl.innerText = netBalanceSummary.toLocaleString();
+            
+            if(netBalanceSummary < 0) {
+                balanceEl.classList.add('text-rose-500');
+                balanceEl.classList.remove('text-slate-800');
+            } else {
+                balanceEl.classList.remove('text-rose-500');
+                balanceEl.classList.add('text-slate-800');
+            }
             
             myOverallCategoryChart = renderDoughnutChart('overallCategoryChart', myOverallCategoryChart, categoryStats);
             const overallListContainer = document.getElementById('category-dashboard-list'); 
+            
             if(overallListContainer) { 
-                overallListContainer.innerHTML = ''; const sortedCatOverall = Object.keys(categoryStats).map(k => ({label: k, val: categoryStats[k]})).sort((a,b) => b.val - a.val); const overallTotal = sortedCatOverall.reduce((sum, item) => sum + item.val, 0);
-                sortedCatOverall.forEach(item => { const percent = overallTotal > 0 ? ((item.val / overallTotal) * 100).toFixed(1) : 0; const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent; const bgColor = globalColorsMap[item.label] || getRandomColor(item.label); const div = document.createElement('div'); div.className = "flex justify-between items-center text-xs px-3 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50/50 rounded-xl transition-colors"; div.innerHTML = `<div class="flex items-center gap-3"><span class="w-3.5 h-3.5 rounded-full shadow-sm" style="background-color: ${bgColor}"></span><div class="flex items-baseline gap-2"><span class="font-bold text-slate-700">${item.label}</span><span class="text-[10px] text-slate-400 font-medium bg-slate-100 px-1.5 py-0.5 rounded-md">${displayPercent}%)</span></div></div><span class="font-black text-slate-800">${item.val.toLocaleString()} THB</span>`; overallListContainer.appendChild(div); }); 
+                overallListContainer.innerHTML = '';
+                const sortedCatOverall = Object.keys(categoryStats).map(k => ({label: k, val: categoryStats[k]})).sort((a,b) => b.val - a.val);
+                const overallTotal = sortedCatOverall.reduce((sum, item) => sum + item.val, 0);
+                
+                sortedCatOverall.forEach(item => { 
+                    const percent = overallTotal > 0 ? ((item.val / overallTotal) * 100).toFixed(1) : 0;
+                    const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
+                    const bgColor = globalColorsMap[item.label] || getRandomColor(item.label);
+                    
+                    const div = document.createElement('div');
+                    div.className = "flex justify-between items-center text-xs px-3 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50/50 rounded-xl transition-colors"; 
+                    div.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="w-3.5 h-3.5 rounded-full shadow-sm" style="background-color: ${bgColor}"></span>
+                            <div class="flex items-baseline gap-2">
+                                <span class="font-bold text-slate-700">${item.label}</span>
+                                <span class="text-[10px] text-slate-400 font-medium bg-slate-100 px-1.5 py-0.5 rounded-md">${displayPercent}%)</span>
+                            </div>
+                        </div>
+                        <span class="font-black text-slate-800">${item.val.toLocaleString()} THB</span>
+                    `; 
+                    overallListContainer.appendChild(div); 
+                }); 
             }
 
             const hashtagListContainer = document.getElementById('hashtag-list');
             if (hashtagListContainer) {
-                hashtagListContainer.innerHTML = ''; const sortedTags = Object.keys(hashtagStats).map(k => ({label: k, val: hashtagStats[k]})).sort((a,b) => b.val - a.val);
-                if(sortedTags.length === 0) hashtagListContainer.innerHTML = '<div class="text-center text-xs text-slate-400 py-4 font-medium">No Hashtags Used</div>';
-                else { sortedTags.slice(0, 10).forEach((item, idx) => { const div = document.createElement('div'); div.className = "flex justify-between items-center text-xs px-3 py-2 bg-fuchsia-50/50 dark:bg-fuchsia-900/10 rounded-lg"; div.innerHTML = `<div class="flex items-center gap-2"><span class="text-fuchsia-500 font-black">#${idx+1}</span><span class="font-bold text-slate-700 dark:text-slate-300">#${item.label}</span></div><span class="font-black text-slate-800 dark:text-fuchsia-400">${item.val.toLocaleString()} THB</span>`; hashtagListContainer.appendChild(div); }); }
+                hashtagListContainer.innerHTML = '';
+                const sortedTags = Object.keys(hashtagStats).map(k => ({label: k, val: hashtagStats[k]})).sort((a,b) => b.val - a.val);
+                
+                if(sortedTags.length === 0) {
+                    hashtagListContainer.innerHTML = '<div class="text-center text-xs text-slate-400 py-4 font-medium">No Hashtags Used</div>';
+                } else {
+                    sortedTags.slice(0, 10).forEach((item, idx) => {
+                        const div = document.createElement('div');
+                        div.className = "flex justify-between items-center text-xs px-3 py-2 bg-fuchsia-50/50 dark:bg-fuchsia-900/10 rounded-lg";
+                        div.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="text-fuchsia-500 font-black">#${idx+1}</span>
+                                <span class="font-bold text-slate-700 dark:text-slate-300">#${item.label}</span>
+                            </div>
+                            <span class="font-black text-slate-800 dark:text-fuchsia-400">${item.val.toLocaleString()} THB</span>
+                        `;
+                        hashtagListContainer.appendChild(div);
+                    });
+                }
             }
+            
             updateDailyCategoryChart();
-            updateTimestampDisplay(); // 🛑 สั่งให้อัปเดตเวลาให้เป็นปัจจุบันทุกครั้งที่หน้าจอรีเฟรชข้อมูล
+        }
+
+        async function getCurrentLocation() {
+            return new Promise(res => {
+                if(!navigator.geolocation) {
+                    return res("");
+                }
+                navigator.geolocation.getCurrentPosition(
+                    p => res(`https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`),
+                    () => res(""),
+                    { timeout: 5000 }
+                );
+            });
         }
 
         function exportToExcel() { 
-            if (expenses.length === 0) { showToast("No data to export", true); return; } 
-            const ws = XLSX.utils.json_to_sheet(expenses); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Expenses"); XLSX.writeFile(wb, `Wallet_${new Date().toISOString().slice(0,10)}.xlsx`); 
+            if (expenses.length === 0) {
+                showToast("No data to export", true);
+                return;
+            } 
+            const ws = XLSX.utils.json_to_sheet(expenses);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Expenses");
+            XLSX.writeFile(wb, `Wallet_${new Date().toISOString().slice(0,10)}.xlsx`); 
         }
     </script>
 </body>
