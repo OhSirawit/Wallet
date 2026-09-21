@@ -181,7 +181,6 @@
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
         }
 
-        /* Animation for Progress Bar */
         @keyframes shimmer {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
@@ -204,7 +203,6 @@
             scrollbar-width: none;
         }
 
-        /* PIN Pad Styles */
         .pin-dot {
             width: 16px;
             height: 16px;
@@ -241,6 +239,17 @@
         }
         .shake-animation {
             animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        .calendar-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            position: relative;
         }
 
         /* 🌙 Dark Mode Global Styles */
@@ -398,20 +407,69 @@
         </div>
     </div>
 
+    <!-- Split Bill & QR Modal -->
+    <div id="split-bill-modal" class="fixed inset-0 z-[300] bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center px-6 transition-opacity duration-300 opacity-0">
+        <div class="modern-card p-6 w-full max-w-sm transform scale-95 transition-transform duration-300 border-none" id="split-bill-modal-content">
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-lg">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-slate-800">Split Bill</h3>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Receive via PromptPay</p>
+                    </div>
+                </div>
+                <button onclick="closeSplitBillModal()" class="text-slate-400 hover:text-rose-500 transition-colors w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4 mb-4">
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Total Bill Amount (THB)</label>
+                    <input type="text" inputmode="decimal" id="split-total" placeholder="0" class="w-full input-style border-2 border-slate-100 rounded-xl p-3.5 text-lg font-black text-slate-800 outline-none focus:border-blue-400" required oninput="formatNumberInput(event); calculateSplit()">
+                </div>
+                
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Number of People</label>
+                    <div class="flex items-center justify-between bg-slate-50 border-2 border-slate-100 rounded-xl p-2">
+                        <button onclick="adjustPeople(-1)" class="w-10 h-10 bg-white rounded-lg shadow-sm text-slate-600 font-bold hover:bg-slate-100"><i class="fas fa-minus"></i></button>
+                        <span id="split-people-display" class="font-black text-xl text-slate-800">2</span>
+                        <button onclick="adjustPeople(1)" class="w-10 h-10 bg-white rounded-lg shadow-sm text-slate-600 font-bold hover:bg-slate-100"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-blue-50 rounded-xl p-4 text-center mb-4 border border-blue-100">
+                <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Pay per person</p>
+                <div class="flex items-baseline justify-center gap-1.5">
+                    <span id="split-result" class="text-3xl font-black text-blue-700 tracking-tight">0</span>
+                    <span class="text-xs font-bold text-blue-500">THB</span>
+                </div>
+            </div>
+
+            <div class="flex justify-center mb-2">
+                <div id="qr-container" class="p-2 bg-white rounded-xl shadow-sm border border-slate-100 opacity-50 pointer-events-none transition-opacity">
+                    <img id="promptpay-qr-img" src="" alt="PromptPay QR" class="w-40 h-40 object-cover rounded-lg">
+                </div>
+            </div>
+            <p class="text-center text-[9px] font-medium text-slate-400">Powered by PromptPay</p>
+        </div>
+    </div>
+
     <!-- Receipt Viewer Modal -->
     <div id="receipt-modal" class="fixed inset-0 z-[400] bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0" onclick="closeReceiptModal()">
         <div class="relative w-full max-w-lg flex flex-col items-center justify-center" onclick="event.stopPropagation()">
-            <!-- ปุ่มปิดหน้าต่าง -->
             <button onclick="closeReceiptModal()" class="absolute -top-12 right-0 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full text-white flex items-center justify-center transition-colors shadow-lg z-10">
                 <i class="fas fa-times text-lg"></i>
             </button>
-            <!-- รูปภาพใบเสร็จ -->
             <img id="receipt-modal-img" src="" alt="Receipt Viewer" class="w-auto max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain transform scale-95 transition-transform duration-300 border border-white/10">
             <p class="text-white/60 text-[10px] mt-4 font-medium tracking-widest uppercase">Tap outside to close</p>
         </div>
     </div>
 
-    <!-- 🔒 PIN Lock Page (ใหม่) -->
+    <!-- 🔒 PIN Lock Page -->
     <div id="pin-page" class="fixed inset-0 z-[250] bg-slate-50 flex items-center justify-center hidden transition-opacity duration-300 opacity-0 overflow-hidden">
         <div class="ambient-bg">
             <div class="ambient-glow-1"></div>
@@ -425,7 +483,6 @@
             <h2 id="pin-title" class="text-2xl font-black text-slate-800 mb-2 tracking-tight">Enter PIN</h2>
             <p id="pin-subtitle" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8">To unlock your wallet</p>
             
-            <!-- จุดแสดง PIN -->
             <div id="pin-dots" class="flex gap-4 mb-12 h-6 items-center justify-center">
                 <div class="pin-dot"></div>
                 <div class="pin-dot"></div>
@@ -433,7 +490,6 @@
                 <div class="pin-dot"></div>
             </div>
             
-            <!-- แป้นตัวเลข -->
             <div class="grid grid-cols-3 gap-4 mb-8">
                 <button onclick="handlePinInput('1')" class="pin-btn">1</button>
                 <button onclick="handlePinInput('2')" class="pin-btn">2</button>
@@ -463,7 +519,6 @@
         </div>
         
         <div class="modern-card p-8 w-full max-w-sm text-center border-none shadow-2xl shadow-purple-500/10 my-8">
-            
             <div class="w-24 h-24 mx-auto mb-6 relative group cursor-default">
                 <div class="absolute inset-1 bg-gradient-to-tr from-fuchsia-500 to-violet-500 rounded-[2rem] blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div class="absolute inset-0 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-[2rem] transform -rotate-3 group-hover:rotate-0 transition-all duration-500 shadow-2xl flex items-center justify-center overflow-hidden border border-white/30 backdrop-blur-xl">
@@ -522,7 +577,6 @@
                     Sign In <i class="fas fa-arrow-right ml-1"></i>
                 </button>
             </div>
-            
             <p id="login-error" class="text-rose-500 text-xs font-bold mt-4 hidden">Unauthorized Email</p>
         </div>
     </div>
@@ -532,21 +586,27 @@
         
         <!-- Top Navigation -->
         <nav class="sticky top-0 z-50 px-6 py-4 bg-white/70 backdrop-blur-xl border-b border-slate-100 flex justify-between items-center relative">
-            <button onclick="switchPage('profile')" class="flex items-center gap-3 relative z-10 hover:opacity-75 transition-opacity text-left focus:outline-none">
-                <div class="w-10 h-10 bg-gradient-to-tr from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center text-white shadow-md shadow-fuchsia-500/20 p-0.5">
+            <button onclick="switchPage('profile')" class="flex items-center gap-3 relative z-10 hover:opacity-75 transition-opacity text-left focus:outline-none w-1/3">
+                <div class="w-10 h-10 bg-gradient-to-tr from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center text-white shadow-md shadow-fuchsia-500/20 p-0.5 flex-shrink-0">
                     <img id="user-profile-img" src="" alt="Profile" class="w-full h-full rounded-[14px] object-cover hidden border-2 border-white">
                     <i id="user-profile-icon" class="fas fa-wallet text-sm"></i>
                 </div>
-                <span class="font-bold text-slate-800 text-sm hidden sm:block truncate max-w-[120px]" id="nav-display-name">Wallet</span>
+                <span class="font-bold text-slate-800 text-sm hidden sm:block truncate" id="nav-display-name">Wallet</span>
             </button>
             
-            <div class="absolute left-1/2 transform -translate-x-1/2 text-sm font-black text-slate-800 tracking-widest z-0 flex items-center gap-1.5">
+            <div class="text-sm font-black text-slate-800 tracking-widest z-0 flex items-center justify-center gap-1.5 w-1/3">
                 <i class="fas fa-sparkles text-fuchsia-500 text-xs"></i> Expenses
             </div>
 
-            <button id="menu-btn" onclick="toggleMenu(event)" class="text-slate-500 hover:text-violet-600 transition-colors focus:outline-none w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-50 shadow-sm border border-slate-100 relative z-10">
-                <i class="fas fa-ellipsis-v"></i>
-            </button>
+            <!-- 🌟 ปุ่มหารบิล (เพิ่มใหม่) -->
+            <div class="flex items-center justify-end gap-3 z-10 w-1/3">
+                <button onclick="openSplitBillModal()" class="w-10 h-10 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center transition-colors shadow-sm border border-blue-100 focus:outline-none" title="Split Bill">
+                    <i class="fas fa-qrcode"></i>
+                </button>
+                <button id="menu-btn" onclick="toggleMenu(event)" class="text-slate-500 hover:text-violet-600 transition-colors focus:outline-none w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-50 shadow-sm border border-slate-100">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
 
             <!-- Dropdown Menu -->
             <div id="top-menu" class="menu-dropdown absolute top-16 right-6 w-64 max-h-[75vh] overflow-y-auto modern-card p-2 z-50 shadow-2xl border-none">
@@ -616,7 +676,6 @@
 
                 <div class="flex justify-between items-center text-[11px] font-bold relative z-10 opacity-90">
                     <span>Spent: <span id="cash-used-text">0</span></span>
-                    <!-- 🎯 Budget Limit Settings -->
                     <span class="cursor-pointer hover:text-white transition-colors border-b border-white/30 border-dashed pb-0.5" onclick="setMonthlyBudget()" title="Click to set monthly budget">
                         Budget: <span id="budget-base-text">0</span> <i class="fas fa-edit ml-1 opacity-70"></i>
                     </span>
@@ -634,12 +693,10 @@
                     </button>
                 </div>
 
-                <!-- ⭐ Quick Add Favorites -->
                 <div id="quick-add-container" class="flex gap-2.5 overflow-x-auto pb-3 mb-3 scrollbar-hide">
                     <button type="button" onclick="quickAdd('60', 'Food', 'Coffee', 'Cash')" class="flex-shrink-0 bg-white border border-slate-100 px-4 py-2.5 rounded-xl shadow-sm text-[10px] font-bold text-slate-600 hover:text-violet-600 hover:border-violet-200 hover:bg-violet-50 transition-all flex items-center gap-1.5">
                         <i class="fas fa-coffee text-amber-500"></i> Coffee
                     </button>
-                    <!-- 🛑 ปุ่ม Transit ราคา 17 จ่ายบัตรเครดิต -->
                     <button type="button" onclick="quickAdd('17', 'Transport', 'MRT/BTS', 'Credit Card / E-Wallet')" class="flex-shrink-0 bg-white border border-slate-100 px-4 py-2.5 rounded-xl shadow-sm text-[10px] font-bold text-slate-600 hover:text-violet-600 hover:border-violet-200 hover:bg-violet-50 transition-all flex items-center gap-1.5">
                         <i class="fas fa-train text-blue-500"></i> Transit
                     </button>
@@ -652,7 +709,6 @@
                 </div>
                 
                 <form id="expense-form" class="space-y-4">
-                    
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Amount <span class="text-rose-500">*</span></label>
                         <div class="relative">
@@ -727,6 +783,64 @@
                     </button>
                 </form>
             </section>
+        </div>
+
+        <!-- 🛑 PAGE: CALENDAR (ปฏิทินรายจ่าย - ใหม่) -->
+        <div id="page-calendar" class="page-content max-w-xl mx-auto px-5 py-4 space-y-4">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Calendar</h2>
+                <button onclick="switchPage('home')" class="text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-sm">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            
+            <div class="modern-card p-4 border-none shadow-lg shadow-slate-200/50">
+                <!-- ส่วนเลือกเดือน -->
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="changeCalendarMonth(-1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 transition-colors shadow-sm">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h3 id="calendar-month-year" class="font-black text-lg text-slate-800 tracking-tight">Month Year</h3>
+                    <button onclick="changeCalendarMonth(1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 transition-colors shadow-sm">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <!-- วันในสัปดาห์ -->
+                <div class="grid grid-cols-7 gap-1 mb-2 text-center">
+                    <div class="text-[10px] font-bold text-rose-500">SUN</div>
+                    <div class="text-[10px] font-bold text-slate-400">MON</div>
+                    <div class="text-[10px] font-bold text-slate-400">TUE</div>
+                    <div class="text-[10px] font-bold text-slate-400">WED</div>
+                    <div class="text-[10px] font-bold text-slate-400">THU</div>
+                    <div class="text-[10px] font-bold text-slate-400">FRI</div>
+                    <div class="text-[10px] font-bold text-blue-500">SAT</div>
+                </div>
+                
+                <!-- ตารางปฏิทิน (Heatmap) -->
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1.5">
+                    <!-- จะถูกเติมด้วย JS -->
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span>Low</span>
+                    <div class="flex gap-1">
+                        <div class="w-3 h-3 rounded bg-slate-50 border border-slate-100"></div>
+                        <div class="w-3 h-3 rounded bg-rose-100"></div>
+                        <div class="w-3 h-3 rounded bg-rose-300"></div>
+                        <div class="w-3 h-3 rounded bg-rose-500"></div>
+                    </div>
+                    <span>High</span>
+                </div>
+            </div>
+            
+            <!-- รายละเอียดของวันที่เลือกจากปฏิทิน -->
+            <h3 class="text-xs font-bold text-violet-500 uppercase tracking-widest pt-2 flex items-center gap-2">
+                <i class="fas fa-list-ul"></i> Selected Date
+            </h3>
+            <div id="calendar-day-details" class="space-y-3 pb-4">
+                <div class="text-center p-6 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-2xl border border-slate-100 shadow-sm">Select a date to view expenses</div>
+            </div>
         </div>
 
         <!-- 🛑 PAGE: SUBSCRIPTIONS -->
@@ -1027,8 +1141,15 @@
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Display Name</label>
                         <input type="text" id="profile-display-name" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-violet-400 text-slate-800" placeholder="Your Display Name">
                     </div>
-                    
+
+                    <!-- 🌟 ช่องกรอก PromptPay (เพิ่มใหม่) -->
                     <div class="w-full space-y-1.5 mt-4 text-left">
+                        <label class="text-[10px] font-bold text-blue-500 uppercase tracking-wide ml-1">PromptPay ID</label>
+                        <input type="text" id="profile-promptpay" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-blue-400 text-slate-800" placeholder="Phone Number or Citizen ID">
+                        <p class="text-[9px] text-slate-400 ml-1">Used for generating QR Codes when splitting bills.</p>
+                    </div>
+                    
+                    <div class="w-full space-y-1.5 mt-4 text-left border-t border-slate-100 pt-4">
                         <label class="text-[10px] font-bold text-rose-500 uppercase tracking-wide ml-1">New Password (Optional)</label>
                         <div class="relative">
                             <input type="password" id="profile-new-password" class="w-full input-style rounded-xl p-4 pr-12 text-sm font-bold outline-none border-2 border-slate-100 focus:border-rose-400 text-slate-800" placeholder="Leave blank to keep current password">
@@ -1048,7 +1169,6 @@
                         </div>
                     </div>
 
-                    <!-- 🔒 เพิ่มส่วนเปิดใช้งาน PIN Lock ในหน้า Profile -->
                     <div class="w-full space-y-3 mt-6 pt-4 border-t border-slate-100 text-left">
                         <div class="flex justify-between items-center">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">App Lock (PIN)</label>
@@ -1068,32 +1188,36 @@
         </div>
 
         <!-- Floating Bottom Navigation -->
-        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[420px] bg-white/85 backdrop-blur-xl border border-slate-100 shadow-[0_10px_40px_rgba(139,92,246,0.15)] rounded-[2rem] p-2 flex justify-between items-center">
-            <button onclick="switchPage('home')" id="nav-home" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400 nav-active">
+        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[420px] bg-white/85 backdrop-blur-xl border border-slate-100 shadow-[0_10px_40px_rgba(139,92,246,0.15)] rounded-[2rem] p-1.5 flex justify-between items-center">
+            <button onclick="switchPage('home')" id="nav-home" class="nav-btn w-1/5 py-2.5 rounded-[1.5rem] flex flex-col items-center gap-1 text-slate-400 nav-active">
                 <i class="fas fa-layer-group text-xl mb-0.5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Home</span>
+                <span class="text-[8px] font-bold uppercase tracking-widest">Home</span>
             </button>
-            <button onclick="switchPage('subscriptions')" id="nav-subscriptions" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
+            <button onclick="switchPage('calendar')" id="nav-calendar" class="nav-btn w-1/5 py-2.5 rounded-[1.5rem] flex flex-col items-center gap-1 text-slate-400">
+                <i class="fas fa-calendar-alt text-xl mb-0.5"></i>
+                <span class="text-[8px] font-bold uppercase tracking-widest">Cal</span>
+            </button>
+            <button onclick="switchPage('subscriptions')" id="nav-subscriptions" class="nav-btn w-1/5 py-2.5 rounded-[1.5rem] flex flex-col items-center gap-1 text-slate-400">
                 <i class="fas fa-sync-alt text-xl mb-0.5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Subs</span>
+                <span class="text-[8px] font-bold uppercase tracking-widest">Subs</span>
             </button>
-            <button onclick="switchPage('goals')" id="nav-goals" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
+            <button onclick="switchPage('goals')" id="nav-goals" class="nav-btn w-1/5 py-2.5 rounded-[1.5rem] flex flex-col items-center gap-1 text-slate-400">
                 <i class="fas fa-bullseye text-xl mb-0.5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Goals</span>
+                <span class="text-[8px] font-bold uppercase tracking-widest">Goals</span>
             </button>
-            <button onclick="switchPage('history')" id="nav-history" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
+            <button onclick="switchPage('history')" id="nav-history" class="nav-btn w-1/5 py-2.5 rounded-[1.5rem] flex flex-col items-center gap-1 text-slate-400">
                 <i class="fas fa-receipt text-xl mb-0.5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">History</span>
+                <span class="text-[8px] font-bold uppercase tracking-widest">History</span>
             </button>
         </div>
     </div>
 
     <script>
-        // URL SCRIPT 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzt5OSS0xZUfdmsdpyxusHEeqof7qPWv3bQ39BX_mrk8jO9OviMCdzHuxeLuwoY_3td/exec'; 
         
         const FIXED_BUDGET = 0; 
         let expenses = []; 
+        let subsExpensesGlobal = []; // สำหรับดึงไปโชว์ใน Calendar
         let goalsData = []; 
         let currentRemainingHome = 0; 
         
@@ -1111,30 +1235,21 @@
         
         let currentHistoryLimit = 20;
 
-        // 🔒 ตัวแปรสำหรับระบบ PIN
+        // ตัวแปรระบบ PIN
         let currentPinInput = "";
         let tempSetupPin = "";
-        let pinProcessMode = "unlock"; // 'unlock', 'setup1', 'setup2'
+        let pinProcessMode = "unlock";
+
+        // ตัวแปรปฏิทิน
+        let currentCalendarDate = new Date();
 
         const globalColorsMap = { 
-            'Food': '#ec4899', 
-            'Transport': '#3b82f6', 
-            'Gasoline': '#eab308', 
-            'Shopping': '#8b5cf6', 
-            'Bills': '#f97316', 
-            'Subscription': '#6366f1',
-            'Housing': '#6366f1', 
-            'Health': '#d946ef', 
-            'Entertainment': '#0ea5e9', 
-            'Other': '#64748b', 
-            'Salary': '#10b981', 
-            'Extra Income': '#34d399', 
-            'Other Income': '#6ee7b7',
-            'Invest': '#0284c7', 
-            'Invest_Other': '#38bdf8'
+            'Food': '#ec4899', 'Transport': '#3b82f6', 'Gasoline': '#eab308', 'Shopping': '#8b5cf6', 
+            'Bills': '#f97316', 'Subscription': '#6366f1', 'Housing': '#6366f1', 'Health': '#d946ef', 
+            'Entertainment': '#0ea5e9', 'Other': '#64748b', 'Salary': '#10b981', 'Extra Income': '#34d399', 
+            'Other Income': '#6ee7b7', 'Invest': '#0284c7', 'Invest_Other': '#38bdf8'
         };
 
-        // 🌟 ฟังก์ชันระบบสั่น (Haptic Feedback)
         function triggerHaptic(type = 'light') {
             if (!navigator.vibrate) return;
             try {
@@ -1146,13 +1261,11 @@
             } catch (e) { console.log("Haptic error"); }
         }
 
-        // 🌟 ฟังก์ชันระบบเสียง (Web Audio API - เสียง "ตริ๊ง")
         function playSuccessSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
-                
                 function playNote(freq, startTime, duration) {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1165,21 +1278,17 @@
                     osc.start(startTime);
                     osc.stop(startTime + duration);
                 }
-                
                 playNote(1046.50, ctx.currentTime, 0.15); 
                 playNote(1318.51, ctx.currentTime + 0.1, 0.4); 
-            } catch(e) { console.log("Audio not supported or blocked"); }
+            } catch(e) { }
         }
 
-        // 🌟 ฟังก์ชันพรีวิวใบเสร็จ (In-app Receipt Viewer)
         function openReceiptModal(url) {
             triggerHaptic('light');
             const modal = document.getElementById('receipt-modal');
             const img = document.getElementById('receipt-modal-img');
-            
             img.src = url;
             modal.classList.remove('hidden');
-            
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 img.classList.remove('scale-95');
@@ -1191,27 +1300,21 @@
             triggerHaptic('light');
             const modal = document.getElementById('receipt-modal');
             const img = document.getElementById('receipt-modal-img');
-            
             modal.classList.add('opacity-0');
             img.classList.remove('scale-100');
             img.classList.add('scale-95');
-            
             setTimeout(() => {
                 modal.classList.add('hidden');
                 img.src = ''; 
             }, 300);
         }
 
-        // 🔒 ฟังก์ชันระบบ PIN (App Lock)
         function handlePinInput(num) {
             triggerHaptic('light');
-            
             if (num === 'back') {
                 currentPinInput = currentPinInput.slice(0, -1);
             } else {
-                if (currentPinInput.length < 4) {
-                    currentPinInput += num;
-                }
+                if (currentPinInput.length < 4) currentPinInput += num;
             }
             updatePinUI();
         }
@@ -1219,16 +1322,10 @@
         function updatePinUI() {
             const dots = document.querySelectorAll('#pin-dots .pin-dot');
             dots.forEach((dot, idx) => {
-                if (idx < currentPinInput.length) {
-                    dot.classList.add('filled');
-                } else {
-                    dot.classList.remove('filled');
-                }
+                if (idx < currentPinInput.length) dot.classList.add('filled');
+                else dot.classList.remove('filled');
             });
-
-            if (currentPinInput.length === 4) {
-                setTimeout(processCompletePin, 150); // ดีเลย์นิดนึงให้เห็นจุดเต็มก่อน
-            }
+            if (currentPinInput.length === 4) setTimeout(processCompletePin, 150);
         }
 
         function processCompletePin() {
@@ -1237,7 +1334,6 @@
             
             if (pinProcessMode === 'unlock') {
                 if (currentPinInput === savedPin) {
-                    // ปลดล็อคสำเร็จ!
                     playSuccessSound();
                     document.getElementById('pin-page').classList.add('opacity-0');
                     setTimeout(() => {
@@ -1246,12 +1342,10 @@
                         loadDataFromSheet();
                     }, 300);
                 } else {
-                    // PIN ผิด
                     triggerHaptic('error');
                     pinDotsContainer.classList.add('shake-animation');
                     document.getElementById('pin-subtitle').innerText = "Incorrect PIN, try again";
                     document.getElementById('pin-subtitle').classList.replace('text-slate-400', 'text-rose-500');
-                    
                     setTimeout(() => {
                         pinDotsContainer.classList.remove('shake-animation');
                         currentPinInput = "";
@@ -1260,7 +1354,6 @@
                 }
             } 
             else if (pinProcessMode === 'setup1') {
-                // ใส่รหัสครั้งแรกตอนตั้งค่า
                 tempSetupPin = currentPinInput;
                 currentPinInput = "";
                 updatePinUI();
@@ -1269,25 +1362,18 @@
                 document.getElementById('pin-subtitle').innerText = "Re-enter your 4-digit PIN";
             } 
             else if (pinProcessMode === 'setup2') {
-                // ยืนยันรหัส
                 if (currentPinInput === tempSetupPin) {
-                    // ตั้งรหัสสำเร็จ
                     localStorage.setItem('appPin', currentPinInput);
                     playSuccessSound();
                     document.getElementById('toggle-pin-lock').checked = true;
                     document.getElementById('pin-status-text').innerText = "PIN Lock is Enabled";
-                    
                     document.getElementById('pin-page').classList.add('opacity-0');
-                    setTimeout(() => {
-                        document.getElementById('pin-page').classList.add('hidden');
-                    }, 300);
+                    setTimeout(() => { document.getElementById('pin-page').classList.add('hidden'); }, 300);
                 } else {
-                    // ยืนยันไม่ตรงกัน
                     triggerHaptic('error');
                     pinDotsContainer.classList.add('shake-animation');
                     document.getElementById('pin-subtitle').innerText = "PINs do not match, try again";
                     document.getElementById('pin-subtitle').classList.replace('text-slate-400', 'text-rose-500');
-                    
                     setTimeout(() => {
                         pinDotsContainer.classList.remove('shake-animation');
                         currentPinInput = "";
@@ -1302,42 +1388,29 @@
             }
         }
 
-        // สำหรับหน้า Profile Toggle
         function handlePinToggle(checkbox) {
             triggerHaptic('medium');
             if (checkbox.checked) {
-                // เปิดใช้งาน PIN -> เปิดหน้าตั้งค่า PIN
-                checkbox.checked = false; // ป้องกันการติ๊กจนกว่าจะตั้งสำเร็จ
+                checkbox.checked = false; 
                 pinProcessMode = 'setup1';
                 currentPinInput = "";
                 tempSetupPin = "";
-                
                 document.getElementById('pin-title').innerText = "Set New PIN";
                 document.getElementById('pin-subtitle').innerText = "Create a 4-digit PIN";
                 document.getElementById('pin-subtitle').classList.replace('text-rose-500', 'text-slate-400');
                 document.getElementById('pin-icon').className = "fas fa-shield-alt";
-                
                 updatePinUI();
                 const pinPage = document.getElementById('pin-page');
                 pinPage.classList.remove('hidden');
                 setTimeout(() => { pinPage.classList.remove('opacity-0'); }, 10);
             } else {
-                // ปิดใช้งาน PIN
                 localStorage.removeItem('appPin');
                 document.getElementById('pin-status-text').innerText = "Set a 4-digit PIN to secure your wallet.";
                 showToast("PIN Lock disabled");
             }
         }
 
-        function formatNumberInput(e) {
-            let val = e.target.value.replace(/,/g, '');
-            if (!isNaN(val) && val !== '') {
-                let parts = val.split('.');
-                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                e.target.value = parts.join('.');
-            }
-        }
-
+        // 🌟 2. โหมดมืด (Dark Mode)
         function toggleDarkMode() {
             triggerHaptic('light');
             const body = document.body;
@@ -1350,7 +1423,6 @@
         function updateDarkModeUI(isDark) {
             const icon = document.getElementById('dark-mode-icon');
             const text = document.getElementById('dark-mode-text');
-            
             if (icon && text) {
                 if(isDark) {
                     icon.classList.remove('fa-moon');
@@ -1364,21 +1436,253 @@
                     text.innerText = "Dark Mode";
                 }
             }
-            
             Chart.defaults.color = isDark ? '#94a3b8' : '#64748b';
             if(myOverallCategoryChart) myOverallCategoryChart.update();
             if(myDailyCategoryChart) myDailyCategoryChart.update();
+        }
+
+        // 🌟 3. ระบบ Calendar (สร้างปฏิทินและ Heatmap)
+        function changeCalendarMonth(offset) {
+            triggerHaptic('light');
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + offset);
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            document.getElementById('calendar-month-year').innerText = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const isCurrentMonth = (year === today.getFullYear() && month === today.getMonth());
+
+            // หาค่า Max Expense ในเดือนนี้สำหรับ Heatmap
+            let maxExpense = 0;
+            const monthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+            const expensesThisMonth = {};
+
+            Object.keys(globalDailyCategoryStats).forEach(dateStr => {
+                if (dateStr.startsWith(monthPrefix)) {
+                    let sum = 0;
+                    Object.values(globalDailyCategoryStats[dateStr]).forEach(amt => sum += amt);
+                    expensesThisMonth[dateStr] = sum;
+                    if (sum > maxExpense) maxExpense = sum;
+                }
+            });
+
+            // สร้างช่องว่างก่อนวันที่ 1
+            for (let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div class="calendar-cell"></div>`;
+            }
+
+            // สร้างปฏิทินแต่ละวัน
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${monthPrefix}-${String(day).padStart(2, '0')}`;
+                const dailyExp = expensesThisMonth[dateStr] || 0;
+                
+                // คำนวณสี Heatmap
+                let bgClass = 'bg-slate-50 text-slate-600';
+                if (dailyExp > 0) {
+                    if (dailyExp < maxExpense * 0.3) bgClass = 'bg-rose-100 text-rose-800';
+                    else if (dailyExp < maxExpense * 0.7) bgClass = 'bg-rose-300 text-rose-900';
+                    else bgClass = 'bg-rose-500 text-white font-bold shadow-md shadow-rose-500/30';
+                }
+
+                const isToday = isCurrentMonth && day === today.getDate();
+                const todayRing = isToday ? 'ring-2 ring-violet-500 ring-offset-1' : '';
+
+                // หา Subs ที่ต้องจ่ายวันนี้
+                let hasSubs = false;
+                subsExpensesGlobal.forEach(sub => {
+                    if (sub.date && !sub.date.includes('-')) {
+                        if (parseInt(sub.date) === day) hasSubs = true;
+                    } else if (sub.date && sub.date.includes('-')) {
+                        const subParts = sub.date.split('-');
+                        const subMonthIndex = monthNames.findIndex(m => m.toLowerCase() === subParts[1].toLowerCase());
+                        if (parseInt(subParts[0]) === day && subMonthIndex === month) hasSubs = true;
+                    }
+                });
+
+                const subsDot = hasSubs ? `<div class="absolute bottom-1 right-1 w-1.5 h-1.5 bg-blue-500 rounded-full shadow-[0_0_4px_rgba(59,130,246,0.8)]"></div>` : '';
+
+                grid.innerHTML += `
+                    <div onclick="showCalendarDetails('${dateStr}')" class="calendar-cell ${bgClass} ${todayRing} cursor-pointer hover:scale-105 active:scale-95 text-xs font-semibold">
+                        ${day}
+                        ${subsDot}
+                    </div>
+                `;
+            }
+            
+            showCalendarDetails(`${monthPrefix}-${String(today.getDate()).padStart(2, '0')}`);
+        }
+
+        function showCalendarDetails(dateStr) {
+            triggerHaptic('light');
+            const container = document.getElementById('calendar-day-details');
+            container.innerHTML = '';
+            
+            // หาข้อมูลรายจ่ายปกติ
+            const dayExpenses = expenses.filter(x => x.date === dateStr && x.category !== 'Subscription_List');
+            let hasData = false;
+
+            if (dayExpenses.length > 0) {
+                hasData = true;
+                dayExpenses.forEach(item => {
+                    const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
+                    const amt = parseFloat(item.amount) || 0;
+                    container.innerHTML += `
+                        <div class="modern-card p-3 flex justify-between items-center border-none shadow-sm shadow-slate-200/40">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-xl ${isIncome ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-600'} flex items-center justify-center text-sm">
+                                    <i class="fas ${getIcon(item.category)}"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800 text-xs">${item.category}</p>
+                                    <p class="text-[9px] text-slate-400">${item.details}</p>
+                                </div>
+                            </div>
+                            <span class="font-black text-sm ${isIncome ? 'text-emerald-500' : 'text-slate-800'}">${isIncome ? '+' : '-'}${amt.toLocaleString()}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            // หาข้อมูล Subscription ที่ตรงกับวันนี้
+            const dayNum = parseInt(dateStr.split('-')[2]);
+            const monthStr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][parseInt(dateStr.split('-')[1]) - 1];
+            
+            const dueSubs = subsExpensesGlobal.filter(sub => {
+                if (sub.date && !sub.date.includes('-')) return parseInt(sub.date) === dayNum;
+                if (sub.date && sub.date.includes('-')) {
+                    const parts = sub.date.split('-');
+                    return parseInt(parts[0]) === dayNum && parts[1].toLowerCase() === monthStr.toLowerCase();
+                }
+                return false;
+            });
+
+            if (dueSubs.length > 0) {
+                hasData = true;
+                container.innerHTML += `<div class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mt-3 mb-1 ml-1">Due Today</div>`;
+                dueSubs.forEach(item => {
+                    const amt = parseFloat(item.amount) || 0;
+                    container.innerHTML += `
+                        <div class="modern-card p-3 flex justify-between items-center border border-blue-100 bg-blue-50/30 shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-sm">
+                                    <i class="fas fa-sync-alt"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800 text-xs">${item.details}</p>
+                                    <p class="text-[9px] text-slate-400">${item.payment}</p>
+                                </div>
+                            </div>
+                            <span class="font-black text-sm text-blue-600">-${amt.toLocaleString()}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            if (!hasData) {
+                const dateObj = new Date(dateStr);
+                const displayDate = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                container.innerHTML = `<div class="text-center p-6 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-2xl border border-slate-100 shadow-sm">No expenses on ${displayDate}</div>`;
+            }
+        }
+
+        // 🌟 4. ระบบ Split Bill & PromptPay QR
+        function openSplitBillModal() {
+            triggerHaptic('light');
+            const ppId = localStorage.getItem('promptPayId');
+            if (!ppId) {
+                showToast("Please set PromptPay ID in Profile first!", true);
+                switchPage('profile');
+                return;
+            }
+            
+            document.getElementById('split-total').value = '';
+            document.getElementById('split-people-display').innerText = '2';
+            document.getElementById('split-result').innerText = '0';
+            document.getElementById('qr-container').classList.add('opacity-50', 'pointer-events-none');
+            document.getElementById('promptpay-qr-img').src = '';
+            
+            const modal = document.getElementById('split-bill-modal');
+            const content = document.getElementById('split-bill-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeSplitBillModal() {
+            triggerHaptic('light');
+            const modal = document.getElementById('split-bill-modal');
+            const content = document.getElementById('split-bill-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function adjustPeople(change) {
+            triggerHaptic('light');
+            const el = document.getElementById('split-people-display');
+            let current = parseInt(el.innerText);
+            if (current + change >= 2 && current + change <= 50) {
+                el.innerText = current + change;
+                calculateSplit();
+            }
+        }
+
+        function calculateSplit() {
+            const totalVal = document.getElementById('split-total').value.replace(/,/g, '');
+            const total = parseFloat(totalVal) || 0;
+            const people = parseInt(document.getElementById('split-people-display').innerText) || 2;
+            
+            const perPerson = total / people;
+            document.getElementById('split-result').innerText = perPerson > 0 ? perPerson.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}) : '0';
+            
+            const qrContainer = document.getElementById('qr-container');
+            const qrImg = document.getElementById('promptpay-qr-img');
+            const ppId = localStorage.getItem('promptPayId');
+            
+            if (total > 0 && ppId) {
+                qrContainer.classList.remove('opacity-50', 'pointer-events-none');
+                // ใช้ PromptPay API สาธารณะสำหรับสร้างภาพ QR Code
+                qrImg.src = `https://promptpay.io/${ppId}/${perPerson.toFixed(2)}.png`;
+            } else {
+                qrContainer.classList.add('opacity-50', 'pointer-events-none');
+                qrImg.src = '';
+            }
+        }
+
+        function formatNumberInput(e) {
+            let val = e.target.value.replace(/,/g, '');
+            if (!isNaN(val) && val !== '') {
+                let parts = val.split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                e.target.value = parts.join('.');
+            }
         }
 
         function setMonthlyBudget() {
             triggerHaptic('light');
             let current = localStorage.getItem('monthlyBudget') || '';
             let val = prompt("Set your monthly budget limit (THB) \n(Leave blank to use Total Income instead):", current);
-            
             if (val !== null) {
                 if (val.trim() === "" || isNaN(val.replace(/,/g, ''))) {
                     localStorage.removeItem('monthlyBudget');
-                    showToast("Budget cleared. Using Total Income.");
+                    showToast("Budget cleared.");
                 } else {
                     localStorage.setItem('monthlyBudget', val.replace(/,/g, ''));
                     showToast("Budget updated!");
@@ -1389,13 +1693,10 @@
 
         function quickAdd(amount, category, details, payment = 'Cash') {
             triggerHaptic('medium'); 
-            
             document.getElementById('amount').value = amount;
             formatNumberInput({target: document.getElementById('amount')}); 
-            
             let catSelect = document.getElementById('category');
             let optionExists = Array.from(catSelect.options).some(opt => opt.value === category);
-            
             if (!optionExists) {
                 let tempOpt = document.createElement("option");
                 tempOpt.value = category;
@@ -1403,101 +1704,9 @@
                 catSelect.appendChild(tempOpt);
             }
             catSelect.value = category;
-            
             document.getElementById('details').value = details;
-            
-            if (payment) {
-                document.getElementById('payment').value = payment;
-            }
-            
+            if (payment) document.getElementById('payment').value = payment;
             document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        const paymentDisplays = {
-            'VISA': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain"></div> VISA</div>',
-            'MasterCard': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-4 object-contain"></div> MasterCard</div>',
-            'JCB': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-4 object-contain"></div> JCB</div>',
-            'UnionPay': '<div class="flex items-center gap-3"><div class="w-6 flex justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-4 object-contain"></div> UnionPay</div>',
-            'Cash': '<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">💵</span> Cash</div>',
-            'E-Wallet': '<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">📱</span> E-Wallet</div>',
-            'Bank Transfer': '<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">🏦</span> Bank Transfer</div>'
-        };
-
-        function updatePaymentDisplay(type, value) {
-            const displayHtml = paymentDisplays[value] || `<div class="flex items-center gap-3"><span class="text-lg w-6 text-center">💳</span> ${value}</div>`;
-            
-            if (type === 'subs-payment') {
-                const el = document.getElementById('subs-payment-selected');
-                if (el) el.innerHTML = displayHtml;
-            }
-        }
-
-        function selectPaymentOption(type, value) {
-            triggerHaptic('light');
-            if (type === 'subs-payment') {
-                document.getElementById('subs-payment').value = value;
-                updatePaymentDisplay('subs-payment', value);
-                document.getElementById('subs-payment-dropdown').classList.add('hidden');
-            }
-        }
-
-        document.getElementById('subs-cycle').addEventListener('change', function(e) {
-            const val = e.target.value;
-            const mInput = document.getElementById('subs-date-monthly');
-            const yInput = document.getElementById('subs-date-yearly');
-            
-            if(val === 'Monthly') {
-                mInput.classList.remove('hidden');
-                mInput.required = true;
-                yInput.classList.add('hidden');
-                yInput.required = false;
-            } else {
-                mInput.classList.add('hidden');
-                mInput.required = false;
-                yInput.classList.remove('hidden');
-                yInput.required = true;
-            }
-        });
-
-        function togglePasswordVisibility(inputId, iconId) {
-            triggerHaptic('light');
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
-            
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            } else {
-                input.type = "password";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            }
-        }
-
-        function updateTimestampDisplay() {
-            const now = new Date();
-            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            
-            const day = now.getDate().toString().padStart(2, '0');
-            const month = months[now.getMonth()];
-            const year = now.getFullYear();
-            
-            let hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            const strHours = hours.toString().padStart(2, '0');
-            
-            const timeString = `Updated : ${day} ${month} ${year} : ${strHours}:${minutes}:${seconds} ${ampm}`;
-            
-            const updateElCard = document.getElementById('last-updated-text-card');
-            if(updateElCard) {
-                updateElCard.innerText = timeString;
-            }
         }
 
         async function callApi(action, payload = {}) {
@@ -1509,131 +1718,96 @@
                 });
                 return await response.json();
             } catch (error) { 
-                console.error("API Error:", error); 
                 return { status: "Error" }; 
             }
         }
 
-        // 🌟 อัปเดตเงื่อนไข Login ให้เช็ค PIN ด้วย
         window.onload = function() { 
             const loginTimestamp = localStorage.getItem('loginTimestamp');
             const now = Date.now();
             const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
-
-            const currentMonthStr = new Date().toISOString().slice(0, 7);
-            document.getElementById('summary-month-filter').value = currentMonthStr;
+            document.getElementById('summary-month-filter').value = new Date().toISOString().slice(0, 7);
 
             if (localStorage.getItem('darkMode') === 'true') {
                 document.body.classList.add('dark-mode');
                 updateDarkModeUI(true);
             }
 
-            // เช็คว่าเคยล็อคอินอยู่ไหม (Session ยังไม่หมดอายุ)
             if (loginTimestamp && (now - parseInt(loginTimestamp)) < SEVEN_DAYS) {
-                localStorage.setItem('loginTimestamp', now.toString()); // ต่ออายุ Session
-                
+                localStorage.setItem('loginTimestamp', now.toString()); 
                 const savedPin = localStorage.getItem('appPin');
-                
-                // ถ้ายืนยันตัวตนแล้ว ให้เช็คว่า "เปิดใช้ PIN ไว้ไหม"
                 if (savedPin) {
                     document.getElementById('login-page').classList.add('hidden');
-                    // ปิดหน้าแอปหลักไว้ก่อน โชว์หน้า PIN
                     pinProcessMode = 'unlock';
                     currentPinInput = "";
                     document.getElementById('pin-title').innerText = "Enter PIN";
                     document.getElementById('pin-subtitle').innerText = "To unlock your wallet";
-                    document.getElementById('pin-subtitle').classList.replace('text-rose-500', 'text-slate-400');
                     document.getElementById('pin-icon').className = "fas fa-lock";
                     updatePinUI();
-                    
                     const pinPage = document.getElementById('pin-page');
                     pinPage.classList.remove('hidden');
                     setTimeout(() => { pinPage.classList.remove('opacity-0'); }, 10);
                 } else {
-                    // ถ้าไม่ได้เปิด PIN ไว้ ทะลุเข้าแอปปกติ
                     document.getElementById('login-page').classList.add('hidden');
                     document.getElementById('main-app').classList.remove('hidden');
                     loadDataFromSheet();
                 }
-                
-                // อัปเดตข้อมูลผู้ใช้เตรียมไว้
                 document.getElementById('date').valueAsDate = new Date(); 
                 document.getElementById('subs-date-monthly').value = new Date().getDate();
                 document.getElementById('subs-date-yearly').valueAsDate = new Date();
                 
-                const profileImg = localStorage.getItem('userProfileImg');
-                const displayName = localStorage.getItem('userDisplayName');
-                
-                if(profileImg) { 
-                    document.getElementById('user-profile-img').src = profileImg; 
+                if(localStorage.getItem('userProfileImg')) { 
+                    document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg'); 
                     document.getElementById('user-profile-img').classList.remove('hidden'); 
                     document.getElementById('user-profile-icon').classList.add('hidden'); 
                 }
-                if(displayName) { 
-                    document.getElementById('nav-display-name').innerText = displayName; 
-                }
-                
+                if(localStorage.getItem('userDisplayName')) document.getElementById('nav-display-name').innerText = localStorage.getItem('userDisplayName'); 
             } else {
-                // Session หมดอายุ หรือเข้าครั้งแรก โชว์หน้า Login
                 localStorage.removeItem('loginTimestamp');
                 document.getElementById('login-page').classList.remove('hidden', 'opacity-0', 'pointer-events-none');
                 document.getElementById('main-app').classList.add('hidden');
             }
 
             document.getElementById('receipt-file').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                document.getElementById('receipt-text').innerText = file.name;
+                if (!e.target.files[0]) return;
+                document.getElementById('receipt-text').innerText = e.target.files[0].name;
                 const reader = new FileReader();
-                reader.onload = function(event) { 
-                    receiptBase64 = event.target.result; 
-                    receiptName = file.name; 
-                };
-                reader.readAsDataURL(file);
+                reader.onload = function(event) { receiptBase64 = event.target.result; receiptName = e.target.files[0].name; };
+                reader.readAsDataURL(e.target.files[0]);
             });
 
             document.getElementById('profile-pic-upload').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
+                if (!e.target.files[0]) return;
                 const reader = new FileReader();
                 reader.onload = function(event) { 
                     newProfilePicBase64 = event.target.result; 
-                    newProfilePicName = file.name; 
+                    newProfilePicName = e.target.files[0].name; 
                     document.getElementById('profile-preview').src = newProfilePicBase64; 
                 };
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(e.target.files[0]);
             });
         };
 
-        // ทำเช่นเดียวกันกับตอน Login ด้วย Google
         async function handleCredentialResponse(response) {
             const responsePayload = decodeJwtResponse(response.credential);
             const userEmail = responsePayload.email;
-            
             const loginError = document.getElementById('login-error');
             loginError.classList.remove('hidden', 'text-rose-500'); 
             loginError.classList.add('text-violet-500');
-            loginError.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking account status...';
+            loginError.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
 
             const res = await callApi("checkUser", { email: userEmail });
-            
             if(res.status === "Success") {
                 if(res.userStatus === "Approved") {
                     localStorage.setItem('loginTimestamp', Date.now().toString()); 
                     localStorage.setItem('userEmail', userEmail); 
-                    
                     const finalPic = res.profilePic || responsePayload.picture; 
                     const finalName = res.displayName || responsePayload.name || userEmail.split('@')[0];
-                    
                     localStorage.setItem('userProfileImg', finalPic); 
                     localStorage.setItem('userDisplayName', finalName);
                     
                     document.getElementById('login-page').classList.add('opacity-0'); 
-                    
                     setTimeout(() => { 
-                        // อัปเดตข้อมูลผู้ใช้
                         document.getElementById('date').valueAsDate = new Date(); 
                         document.getElementById('subs-date-monthly').value = new Date().getDate(); 
                         document.getElementById('subs-date-yearly').valueAsDate = new Date();
@@ -1641,17 +1815,13 @@
                         document.getElementById('user-profile-img').classList.remove('hidden'); 
                         document.getElementById('user-profile-icon').classList.add('hidden');
                         document.getElementById('nav-display-name').innerText = finalName; 
-
                         document.getElementById('login-page').classList.add('hidden'); 
 
-                        // 🔒 เช็คว่าตั้ง PIN ไว้ไหม
-                        const savedPin = localStorage.getItem('appPin');
-                        if (savedPin) {
+                        if (localStorage.getItem('appPin')) {
                             pinProcessMode = 'unlock';
                             currentPinInput = "";
                             document.getElementById('pin-title').innerText = "Enter PIN";
                             document.getElementById('pin-subtitle').innerText = "To unlock your wallet";
-                            document.getElementById('pin-subtitle').classList.replace('text-rose-500', 'text-slate-400');
                             document.getElementById('pin-icon').className = "fas fa-lock";
                             updatePinUI();
                             const pinPage = document.getElementById('pin-page');
@@ -1675,7 +1845,7 @@
             } else { 
                 loginError.classList.remove('text-violet-500'); 
                 loginError.classList.add('text-rose-500'); 
-                loginError.innerText = "System Error. Please try again."; 
+                loginError.innerText = "System Error."; 
             }
         }
         
@@ -1684,20 +1854,17 @@
             const user = document.getElementById('login-username').value; 
             const pass = document.getElementById('login-password').value; 
             const loginError = document.getElementById('login-error');
-            
             if(!user || !pass) { 
                 loginError.classList.remove('hidden', 'text-violet-500'); 
                 loginError.classList.add('text-rose-500'); 
                 loginError.innerHTML = "Please enter username and password"; 
                 return; 
             }
-            
             loginError.classList.remove('hidden', 'text-rose-500'); 
             loginError.classList.add('text-violet-500'); 
-            loginError.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking credentials...';
+            loginError.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking...';
             
             const res = await callApi("loginWithPassword", { username: user, password: pass });
-            
             if (res.status === "Success") {
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
                 localStorage.setItem('userEmail', user); 
@@ -1705,26 +1872,17 @@
                 localStorage.setItem('userProfileImg', res.profilePic || 'https://ui-avatars.com/api/?name=' + user + '&background=8b5cf6&color=fff');
                 
                 document.getElementById('login-page').classList.add('opacity-0'); 
-                
                 setTimeout(() => { 
                     document.getElementById('date').valueAsDate = new Date(); 
-                    document.getElementById('subs-date-monthly').value = new Date().getDate(); 
-                    document.getElementById('subs-date-yearly').valueAsDate = new Date();
                     document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg'); 
                     document.getElementById('user-profile-img').classList.remove('hidden'); 
-                    document.getElementById('user-profile-icon').classList.add('hidden'); 
                     document.getElementById('nav-display-name').innerText = res.displayName; 
-
                     document.getElementById('login-page').classList.add('hidden'); 
 
-                    // 🔒 เช็คว่าตั้ง PIN ไว้ไหม
-                    const savedPin = localStorage.getItem('appPin');
-                    if (savedPin) {
+                    if (localStorage.getItem('appPin')) {
                         pinProcessMode = 'unlock';
                         currentPinInput = "";
                         document.getElementById('pin-title').innerText = "Enter PIN";
-                        document.getElementById('pin-subtitle').innerText = "To unlock your wallet";
-                        document.getElementById('pin-subtitle').classList.replace('text-rose-500', 'text-slate-400');
                         document.getElementById('pin-icon').className = "fas fa-lock";
                         updatePinUI();
                         const pinPage = document.getElementById('pin-page');
@@ -1743,61 +1901,21 @@
             }
         }
 
-        function decodeJwtResponse(token) { 
-            var base64Url = token.split('.')[1]; 
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); 
-            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) { 
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); 
-            }).join('')); 
-            return JSON.parse(jsonPayload); 
-        }
-
-        document.addEventListener('click', function(event) { 
-            const menu = document.getElementById('top-menu'); 
-            const menuBtn = document.getElementById('menu-btn'); 
-            
-            if (menu && menuBtn) { 
-                if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) { 
-                    menu.classList.remove('active'); 
-                } 
-            } 
-            
-            const subsPayDrop = document.getElementById('subs-payment-dropdown');
-            const subsPayBtn = document.getElementById('subs-payment-btn');
-            
-            if (subsPayDrop && subsPayBtn && !subsPayDrop.contains(event.target) && !subsPayBtn.contains(event.target)) {
-                subsPayDrop.classList.add('hidden');
-            }
-        });
-
         function logout() { 
             triggerHaptic('light');
-            const modal = document.getElementById('logout-modal'); 
-            const content = document.getElementById('logout-modal-content'); 
-            
-            modal.classList.remove('hidden'); 
-            
+            document.getElementById('logout-modal').classList.remove('hidden'); 
             setTimeout(() => { 
-                modal.classList.remove('opacity-0'); 
-                content.classList.remove('scale-95'); 
-                content.classList.add('scale-100'); 
+                document.getElementById('logout-modal').classList.remove('opacity-0'); 
+                document.getElementById('logout-modal-content').classList.remove('scale-95').add('scale-100'); 
             }, 10); 
-            
             toggleMenu(); 
         }
 
         function closeLogoutModal() { 
             triggerHaptic('light');
-            const modal = document.getElementById('logout-modal'); 
-            const content = document.getElementById('logout-modal-content'); 
-            
-            modal.classList.add('opacity-0'); 
-            content.classList.remove('scale-100'); 
-            content.classList.add('scale-95'); 
-            
-            setTimeout(() => { 
-                modal.classList.add('hidden'); 
-            }, 300); 
+            document.getElementById('logout-modal').classList.add('opacity-0'); 
+            document.getElementById('logout-modal-content').classList.remove('scale-100').add('scale-95'); 
+            setTimeout(() => { document.getElementById('logout-modal').classList.add('hidden'); }, 300); 
         }
 
         function confirmLogout() { 
@@ -1806,88 +1924,33 @@
             location.reload(); 
         }
 
-        function showToast(message, isError = false) { 
-            const toast = document.getElementById('toast-notification'); 
-            const toastMsg = document.getElementById('toast-message'); 
-            const toastIcon = document.getElementById('toast-icon'); 
-            
-            toastMsg.innerText = message; 
-            
-            if (isError) { 
-                toastIcon.className = "fas fa-exclamation-circle text-rose-500 text-xl"; 
-                triggerHaptic('error'); 
-            } else { 
-                toastIcon.className = "fas fa-check-circle text-emerald-500 text-xl"; 
-            } 
-            
-            toast.classList.remove('-translate-y-32', 'opacity-0'); 
-            toast.classList.add('translate-y-0', 'opacity-100'); 
-            
-            setTimeout(() => { 
-                toast.classList.remove('translate-y-0', 'opacity-100'); 
-                toast.classList.add('-translate-y-32', 'opacity-0'); 
-            }, 3000); 
-        }
-
-        function toggleMenu(e) { 
-            triggerHaptic('light');
-            if(e) {
-                e.stopPropagation(); 
-            }
-            document.getElementById('top-menu').classList.toggle('active'); 
-        }
-
         function switchPage(pageId) { 
             triggerHaptic('light'); 
+            if(localStorage.getItem('loginTimestamp')) localStorage.setItem('loginTimestamp', Date.now().toString()); 
             
-            if(localStorage.getItem('loginTimestamp')) { 
-                localStorage.setItem('loginTimestamp', Date.now().toString()); 
-            } 
-            
-            const pages = ['home', 'subscriptions', 'history', 'analytics', 'dashboard', 'profile', 'goals'];
-            
+            const pages = ['home', 'subscriptions', 'history', 'analytics', 'dashboard', 'profile', 'goals', 'calendar'];
             pages.forEach(id => { 
-                const pageEl = document.getElementById('page-' + id); 
-                if(pageEl) {
-                    pageEl.classList.remove('page-active'); 
-                }
-                
-                const navEl = document.getElementById('nav-' + id); 
-                if(navEl) {
-                    navEl.classList.remove('nav-active'); 
-                }
+                if(document.getElementById('page-' + id)) document.getElementById('page-' + id).classList.remove('page-active'); 
+                if(document.getElementById('nav-' + id)) document.getElementById('nav-' + id).classList.remove('nav-active'); 
             }); 
             
             document.getElementById('page-' + pageId).classList.add('page-active'); 
-            
-            const targetNav = document.getElementById('nav-' + pageId); 
-            if(targetNav) {
-                targetNav.classList.add('nav-active'); 
-            }
-            
+            if(document.getElementById('nav-' + pageId)) document.getElementById('nav-' + pageId).classList.add('nav-active'); 
             document.getElementById('top-menu').classList.remove('active'); 
             
-            if (pageId === 'history' || pageId === 'analytics' || pageId === 'dashboard' || pageId === 'subscriptions' || pageId === 'goals') { 
+            if (['history', 'analytics', 'dashboard', 'subscriptions', 'goals'].includes(pageId)) { 
                 loadDataFromSheet(); 
+            } else if (pageId === 'calendar') {
+                renderCalendar();
             } else if (pageId === 'profile') {
                 document.getElementById('profile-display-name').value = localStorage.getItem('userDisplayName') || '';
                 document.getElementById('profile-email-readonly').value = localStorage.getItem('userEmail') || '';
+                document.getElementById('profile-promptpay').value = localStorage.getItem('promptPayId') || '';
                 document.getElementById('profile-preview').src = localStorage.getItem('userProfileImg') || 'https://via.placeholder.com/150';
-                newProfilePicBase64 = null; 
-                newProfilePicName = null;
                 
-                document.getElementById('profile-new-password').type = 'password'; 
-                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash'; 
-                document.getElementById('profile-confirm-password').type = 'password'; 
-                document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
-
-                // อัปเดตสถานะปุ่ม Toggle PIN
-                const hasPin = localStorage.getItem('appPin') !== null;
-                document.getElementById('toggle-pin-lock').checked = hasPin;
-                document.getElementById('pin-status-text').innerText = hasPin ? "PIN Lock is Enabled" : "Set a 4-digit PIN to secure your wallet.";
-            } else { 
-                updateUI(); 
-            }
+                document.getElementById('toggle-pin-lock').checked = localStorage.getItem('appPin') !== null;
+                document.getElementById('pin-status-text').innerText = localStorage.getItem('appPin') ? "PIN Lock is Enabled" : "Set a 4-digit PIN to secure your wallet.";
+            } else { updateUI(); }
             
             window.scrollTo(0,0); 
         }
@@ -1895,30 +1958,21 @@
         async function saveProfile() {
             triggerHaptic('light');
             const displayName = document.getElementById('profile-display-name').value;
+            const promptpay = document.getElementById('profile-promptpay').value.trim();
             const newPassword = document.getElementById('profile-new-password').value; 
             const confirmPassword = document.getElementById('profile-confirm-password').value; 
             const email = localStorage.getItem('userEmail');
             
-            if(!displayName) { 
-                showToast("Please enter a display name", true); 
-                return; 
-            }
-
-            if(newPassword && newPassword !== confirmPassword) {
-                showToast("Passwords do not match!", true);
-                return;
-            }
+            if(!displayName) { showToast("Please enter a display name", true); return; }
+            if(newPassword && newPassword !== confirmPassword) { showToast("Passwords do not match!", true); return; }
             
             const btn = document.getElementById('btn-save-profile'); 
             btn.disabled = true; 
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
             
             const payload = { 
-                email: email, 
-                displayName: displayName, 
-                password: newPassword, 
-                profilePicBase64: newProfilePicBase64, 
-                profilePicName: newProfilePicName 
+                email: email, displayName: displayName, password: newPassword, 
+                profilePicBase64: newProfilePicBase64, profilePicName: newProfilePicName 
             };
             
             const res = await callApi("updateProfile", payload);
@@ -1928,90 +1982,48 @@
                 triggerHaptic('success');
                 showToast("Profile updated!"); 
                 localStorage.setItem('userDisplayName', displayName); 
+                if (promptpay) localStorage.setItem('promptPayId', promptpay);
+                else localStorage.removeItem('promptPayId');
+                
                 document.getElementById('nav-display-name').innerText = displayName; 
-                
-                document.getElementById('profile-new-password').value = ''; 
-                document.getElementById('profile-confirm-password').value = ''; 
-                document.getElementById('profile-new-password').type = 'password';
-                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash';
-                document.getElementById('profile-confirm-password').type = 'password';
-                document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
-                
-                if(newProfilePicBase64) { 
-                    document.getElementById('user-profile-img').src = newProfilePicBase64; 
-                    localStorage.setItem('userProfileImg', newProfilePicBase64); 
-                }
+                if(newProfilePicBase64) localStorage.setItem('userProfileImg', newProfilePicBase64); 
             } else { 
                 showToast("Error updating profile", true); 
             }
-            
-            btn.disabled = false; 
-            btn.innerHTML = 'Save Changes <i class="fas fa-save text-white/80"></i>';
+            btn.disabled = false; btn.innerHTML = 'Save Changes <i class="fas fa-save text-white/80"></i>';
         }
 
         async function loadDataFromSheet() { 
             const list = document.getElementById('history-list'); 
-            const subsList = document.getElementById('subscriptions-list');
-            
-            if(list) {
-                list.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
-            }
-            
-            if(subsList) {
-                subsList.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
-            }
+            if(list && expenses.length === 0) list.innerHTML = '<div class="text-center p-10"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl"></i></div>'; 
             
             const res = await callApi("get");
-            
             if(res.status === "Success") { 
                 if(res.data) expenses = res.data; 
                 if(res.goals) goalsData = res.goals;
             }
-            
             updateTimestampDisplay(); 
             updateUI();
         }
 
-        function loadMoreHistory() { 
-            currentHistoryLimit += 20; 
-            updateUI(); 
-        }
+        function loadMoreHistory() { currentHistoryLimit += 20; updateUI(); }
 
         function openEditForm(rowId) {
             triggerHaptic('light');
             const item = expenses.find(x => x.rowId == rowId);
-            
-            if(!item) {
-                return;
-            }
-            
+            if(!item) return;
             editingRowId = rowId;
             document.getElementById('amount').value = item.amount;
             document.getElementById('date').value = item.date;
             document.getElementById('payment').value = item.payment;
-            
-            let catSelect = document.getElementById('category');
-            let optionExists = Array.from(catSelect.options).some(opt => opt.value === item.category);
-            
-            if (!optionExists) {
-                let tempOpt = document.createElement("option");
-                tempOpt.value = item.category;
-                tempOpt.text = "🔄 " + item.category;
-                catSelect.appendChild(tempOpt);
-            }
-            
             document.getElementById('category').value = item.category;
             document.getElementById('details').value = item.details;
             
             document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Transaction';
-            document.getElementById('submit-btn').innerHTML = 'Update Transaction <i class="fas fa-check text-white/80"></i>';
+            document.getElementById('submit-btn').innerHTML = 'Update Transaction';
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
-            
             switchPage('home');
-            
-            setTimeout(() => { 
-                document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' }); 
-            }, 300);
+            setTimeout(() => { document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' }); }, 300);
         }
 
         function cancelEdit() {
@@ -2019,641 +2031,62 @@
             editingRowId = null;
             document.getElementById('expense-form').reset();
             document.getElementById('date').valueAsDate = new Date();
-            
             document.getElementById('form-title').innerHTML = '<i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction';
             document.getElementById('submit-btn').innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        function openSubsEditForm(rowId) {
-            triggerHaptic('light');
-            const item = expenses.find(x => x.rowId == rowId);
-            
-            if(!item) {
-                return;
-            }
-            
-            editingSubsRowId = rowId;
-            document.getElementById('subs-amount').value = item.amount;
-            
-            let editDateStr = item.date || ""; 
-            const mInput = document.getElementById('subs-date-monthly');
-            const yInput = document.getElementById('subs-date-yearly');
-            const cycleSelect = document.getElementById('subs-cycle');
-            
-            if (editDateStr.includes('-') && isNaN(editDateStr)) {
-                cycleSelect.value = 'Yearly';
-                mInput.classList.add('hidden');
-                mInput.required = false;
-                yInput.classList.remove('hidden');
-                yInput.required = true;
-                
-                let parts = editDateStr.split('-');
-                let currentYear = new Date().getFullYear();
-                let monthNum = "01";
-                
-                if (isNaN(parts[1])) {
-                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                    const monthIndex = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase());
-                    
-                    if(monthIndex !== -1) {
-                        monthNum = (monthIndex + 1).toString().padStart(2, '0');
-                    }
-                } else {
-                    monthNum = parts[1].padStart(2, '0');
-                }
-                
-                if(parts.length >= 2) {
-                    yInput.value = `${currentYear}-${monthNum}-${parts[0].padStart(2, '0')}`;
-                }
-            } else {
-                cycleSelect.value = 'Monthly';
-                mInput.classList.remove('hidden');
-                mInput.required = true;
-                yInput.classList.add('hidden');
-                yInput.required = false;
-                
-                let dayNum = parseInt(editDateStr);
-                
-                if(!isNaN(dayNum)) {
-                    mInput.value = dayNum;
-                } else {
-                    mInput.value = new Date().getDate();
-                }
-            }
-            
-            let paymentStr = item.payment || '';
-            let basePay = 'VISA';
-            let cardName = '';
-            
-            if(paymentStr.includes(' - ')) {
-                let parts = paymentStr.split(' - ');
-                basePay = parts[0];
-                cardName = parts[1];
-            } else {
-                const knownTypes = ['VISA', 'MasterCard', 'JCB', 'UnionPay', 'Cash', 'E-Wallet', 'Bank Transfer'];
-                let found = knownTypes.find(t => paymentStr.startsWith(t));
-                
-                if(found) {
-                    basePay = found;
-                    cardName = paymentStr.substring(found.length).trim();
-                } else {
-                    basePay = 'VISA';
-                    cardName = paymentStr;
-                }
-            }
-            
-            document.getElementById('subs-payment').value = basePay;
-            updatePaymentDisplay('subs-payment', basePay);
-            document.getElementById('subs-card-name').value = cardName;
-            
-            document.getElementById('subs-details').value = item.details;
-            
-            document.getElementById('subs-form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Subscription';
-            document.getElementById('subs-submit-btn').innerHTML = 'Update Subscription';
-            document.getElementById('cancel-subs-edit-btn').classList.remove('hidden');
-            
-            switchPage('subscriptions');
-            
-            setTimeout(() => { 
-                document.getElementById('subs-form-section').scrollIntoView({ behavior: 'smooth' }); 
-            }, 300);
-        }
-
-        function cancelSubsEdit() {
-            triggerHaptic('light');
-            editingSubsRowId = null;
-            document.getElementById('subs-form').reset();
-            
-            document.getElementById('subs-cycle').value = 'Monthly';
-            document.getElementById('subs-date-monthly').classList.remove('hidden');
-            document.getElementById('subs-date-monthly').required = true;
-            document.getElementById('subs-date-yearly').classList.add('hidden');
-            document.getElementById('subs-date-yearly').required = false;
-            
-            document.getElementById('subs-date-monthly').value = new Date().getDate();
-            document.getElementById('subs-date-yearly').valueAsDate = new Date();
-            
-            document.getElementById('subs-payment').value = 'VISA';
-            updatePaymentDisplay('subs-payment', 'VISA');
-            document.getElementById('subs-card-name').value = '';
-            
-            document.getElementById('subs-form-title').innerHTML = '<i class="fas fa-plus-circle text-violet-500"></i> Add Subscription';
-            document.getElementById('subs-submit-btn').innerHTML = 'Save Subscription';
-            document.getElementById('cancel-subs-edit-btn').classList.add('hidden');
-        }
-
         document.getElementById('expense-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
-            
             const detailsVal = document.getElementById('details').value; 
             const amountVal = document.getElementById('amount').value.replace(/,/g, '');
-            
-            if (!detailsVal || !detailsVal.trim()) { 
-                showToast("Please enter a Note!", true); 
-                return; 
-            }
-            
-            if (!amountVal || parseFloat(amountVal) <= 0) { 
-                showToast("Please enter a valid amount!", true); 
-                return; 
-            }
+            if (!detailsVal || !amountVal || parseFloat(amountVal) <= 0) return; 
             
             const btn = document.getElementById('submit-btn'); 
-            btn.disabled = true; 
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...'; 
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...'; 
             
             const loc = document.getElementById('save-location').checked ? await getCurrentLocation() : "";
-            const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
-            
             const payload = { 
                 date: document.getElementById('date').value, 
-                time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }), 
-                payment: document.getElementById('payment').value, 
-                category: document.getElementById('category').value, 
-                details: detailsVal.trim(), 
-                amount: amountVal, 
-                location: loc, 
-                receiptBase64: receiptBase64, 
-                receiptName: receiptName, 
-                recordedBy: recordedByName 
+                time: new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' }), 
+                payment: document.getElementById('payment').value, category: document.getElementById('category').value, 
+                details: detailsVal.trim(), amount: amountVal, location: loc, 
+                receiptBase64: receiptBase64, receiptName: receiptName, 
+                recordedBy: localStorage.getItem('userDisplayName') || 'Unknown' 
             };
             
-            if(localStorage.getItem('loginTimestamp')) { 
-                localStorage.setItem('loginTimestamp', Date.now().toString()); 
-            }
-            
-            const actionType = editingRowId ? "edit" : "save";
-            const rowIdToSend = editingRowId || null;
-
-            const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
+            const res = await callApi(editingRowId ? "edit" : "save", { ...payload, rowId: editingRowId || null });
             
             if(res.status === "Success") { 
-                playSuccessSound(); 
-                triggerHaptic('success'); 
-                
-                if(editingRowId) {
-                    showToast("Updated successfully!");
-                } else {
-                    showToast("Record saved successfully!");
-                }
-                
-                cancelEdit();
-                receiptBase64 = null; 
-                receiptName = null; 
+                playSuccessSound(); triggerHaptic('success'); 
+                showToast(editingRowId ? "Updated successfully!" : "Record saved!");
+                cancelEdit(); receiptBase64 = null; receiptName = null; 
                 document.getElementById('receipt-text').innerText = "Add Receipt"; 
                 loadDataFromSheet(); 
-            } else { 
-                showToast("Error: " + res.message, true); 
-            } 
+            } else showToast("Error", true); 
             
-            btn.disabled = false; 
-            btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
-        });
-
-        async function paySubscription(rowId) {
-            triggerHaptic('medium');
-            if(!confirm("Are you sure you want to log this as 'Paid' to the Home expenses?")) {
-                return;
-            }
-            
-            const item = expenses.find(x => x.rowId == rowId); 
-            
-            if(!item) {
-                return;
-            }
-
-            showToast("Processing payment...");
-            
-            const amt = parseFloat(item.amount) || 0;
-            const today = new Date();
-            const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-            const timeStr = today.toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' });
-            
-            let paymentStr = item.payment || ''; 
-            let basePay = 'Credit Card / E-Wallet'; 
-            
-            if(paymentStr.includes('Cash')) {
-                basePay = 'Cash'; 
-            } else if(paymentStr.includes('Bank Transfer')) {
-                basePay = 'Internet Banking / QR Payment'; 
-            } else if(paymentStr.includes('E-Wallet')) {
-                basePay = 'Credit Card / E-Wallet';
-            }
-            
-            const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
-
-            const payload = { 
-                date: dateStr, 
-                time: timeStr, 
-                payment: basePay, 
-                category: "Bills", 
-                details: item.details, 
-                amount: amt, 
-                location: "", 
-                receiptBase64: null, 
-                receiptName: null, 
-                recordedBy: recordedByName 
-            };
-            
-            const res = await callApi("save", payload);
-            
-            if(res.status === "Success") { 
-                playSuccessSound();
-                triggerHaptic('success');
-                showToast("Paid & Saved to Home!"); 
-                loadDataFromSheet(); 
-            } else { 
-                showToast("Error: " + res.message, true); 
-            }
-        }
-
-        document.getElementById('goal-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const nameVal = document.getElementById('goal-name').value.trim();
-            const targetVal = document.getElementById('goal-target').value.replace(/,/g, '');
-            
-            if (!nameVal || !targetVal || parseFloat(targetVal) <= 0) {
-                showToast("Please enter valid Goal Name and Target", true);
-                return;
-            }
-            
-            const btn = document.getElementById('goal-submit-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
-            
-            const payload = {
-                name: nameVal,
-                target: targetVal,
-                date: new Date().toISOString().slice(0,10)
-            };
-            
-            const res = await callApi("saveGoal", payload);
-            
-            if (res.status === "Success") {
-                playSuccessSound();
-                triggerHaptic('success');
-                showToast("Goal created successfully!");
-                document.getElementById('goal-form').reset();
-                loadDataFromSheet();
-            } else {
-                showToast("Error: " + res.message, true);
-            }
-            
-            btn.disabled = false;
-            btn.innerHTML = 'Create Goal <i class="fas fa-flag"></i>';
-        });
-
-        function openAddFundModal(goalId, goalName) {
-            triggerHaptic('light');
-            document.getElementById('fund-goal-id').value = goalId;
-            document.getElementById('fund-goal-title').innerText = "Add to: " + goalName;
-            document.getElementById('fund-remaining-display').innerText = currentRemainingHome.toLocaleString();
-            document.getElementById('fund-amount').value = '';
-
-            const modal = document.getElementById('add-fund-modal');
-            const content = document.getElementById('add-fund-modal-content');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeAddFundModal() {
-            triggerHaptic('light');
-            const modal = document.getElementById('add-fund-modal');
-            const content = document.getElementById('add-fund-modal-content');
-            modal.classList.add('opacity-0');
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        async function confirmAddFund() {
-            triggerHaptic('medium');
-            const amountVal = document.getElementById('fund-amount').value.replace(/,/g, '');
-            if (!amountVal || parseFloat(amountVal) <= 0) {
-                showToast("Please enter a valid amount", true);
-                return;
-            }
-            
-            if (parseFloat(amountVal) > currentRemainingHome) {
-                if(!confirm("The amount exceeds your remaining budget. Do you want to proceed anyway?")) {
-                    return;
-                }
-            }
-
-            const btn = document.getElementById('confirm-fund-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
-
-            const payload = {
-                goalId: document.getElementById('fund-goal-id').value,
-                amount: amountVal,
-                date: new Date().toISOString().slice(0,10),
-                time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }),
-                recordedBy: localStorage.getItem('userDisplayName') || localStorage.getItem('userEmail').split('@')[0]
-            };
-
-            const res = await callApi("addFund", payload);
-
-            if (res.status === "Success") {
-                playSuccessSound();
-                triggerHaptic('success');
-                showToast("Added to your goal!");
-                closeAddFundModal();
-                loadDataFromSheet(); 
-            } else {
-                showToast("Error: " + res.message, true);
-            }
-            
-            btn.disabled = false;
-            btn.innerHTML = 'Add Fund';
-        }
-
-        function renderGoals() {
-            const list = document.getElementById('goals-list');
-            if(!list) return;
-
-            if (goalsData.length === 0) {
-                list.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Active Goals<br><span class="text-[9px] font-normal mt-2 block">Start saving for your dreams today!</span></div>';
-                return;
-            }
-
-            list.innerHTML = '';
-            goalsData.forEach(goal => {
-                const percentage = Math.min(100, (goal.current / goal.target) * 100).toFixed(1);
-                const isComplete = goal.current >= goal.target;
-                const barColor = isComplete ? 'bg-emerald-500' : 'bg-gradient-to-r from-violet-500 to-fuchsia-500';
-
-                list.innerHTML += `
-                    <div class="modern-card p-5 border-none shadow-md shadow-slate-200/40 relative overflow-hidden">
-                        ${isComplete ? '<div class="absolute -right-6 top-4 bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest py-1 px-8 transform rotate-45 shadow-sm">Achieved</div>' : ''}
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <h4 class="font-black text-slate-800 text-lg">${goal.name}</h4>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mt-0.5">${goal.current.toLocaleString()} / ${goal.target.toLocaleString()} THB</p>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-xl font-black ${isComplete ? 'text-emerald-500' : 'text-violet-600'}">${percentage}%</span>
-                            </div>
-                        </div>
-
-                        <div class="w-full bg-slate-100 rounded-full h-3.5 mb-4 overflow-hidden shadow-inner">
-                            <div class="${barColor} h-full rounded-full transition-all duration-1000 ease-out relative" style="width: ${percentage}%">
-                                ${!isComplete ? '<div class="absolute inset-0 bg-white/20 w-full animate-[shimmer_2s_infinite]"></div>' : ''}
-                            </div>
-                        </div>
-
-                        ${!isComplete ? `
-                        <button onclick="openAddFundModal('${goal.rowId}', '${goal.name}')" class="w-full py-2.5 rounded-xl bg-violet-50 text-violet-600 text-xs font-bold hover:bg-violet-100 transition-colors flex items-center justify-center gap-2">
-                            <i class="fas fa-coins"></i> หยอดกระปุก (Add Fund)
-                        </button>
-                        ` : `
-                        <div class="w-full py-2.5 rounded-xl bg-emerald-50 text-emerald-600 text-xs font-bold text-center flex items-center justify-center gap-2">
-                            <i class="fas fa-check-circle"></i> Goal Completed!
-                        </div>
-                        `}
-                    </div>
-                `;
-            });
-        }
-
-        document.getElementById('subs-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            
-            const detailsVal = document.getElementById('subs-details').value; 
-            const amountVal = document.getElementById('subs-amount').value.replace(/,/g, ''); 
-            const basePay = document.getElementById('subs-payment').value;
-            const cardName = document.getElementById('subs-card-name').value.trim();
-            const cycleVal = document.getElementById('subs-cycle').value;
-            
-            let formattedDate = "";
-            
-            if (cycleVal === 'Monthly') {
-                const dayVal = document.getElementById('subs-date-monthly').value;
-                if(!dayVal || dayVal < 1 || dayVal > 31) { 
-                    showToast("Please enter a valid day (1-31)!", true); 
-                    return; 
-                }
-                formattedDate = dayVal; 
-            } else {
-                const rawDate = document.getElementById('subs-date-yearly').value;
-                if(!rawDate) { 
-                    showToast("Please select a date!", true); 
-                    return; 
-                }
-                const parts = rawDate.split('-');
-                if (parts.length === 3) {
-                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                    const monthIndex = parseInt(parts[1]) - 1; 
-                    const monthName = monthNames[monthIndex];
-                    formattedDate = `${parts[2]}-${monthName}`; 
-                }
-            }
-            
-            const finalPayment = cardName ? `${basePay} - ${cardName}` : basePay;
-            
-            if (!detailsVal || !detailsVal.trim()) { 
-                showToast("Please enter a Name!", true); 
-                return; 
-            }
-            
-            if (!amountVal || parseFloat(amountVal) <= 0) { 
-                showToast("Please enter a valid amount!", true); 
-                return; 
-            }
-            
-            const btn = document.getElementById('subs-submit-btn'); 
-            btn.disabled = true; 
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...'; 
-            
-            const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
-            
-            const payload = { 
-                date: formattedDate, 
-                time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }), 
-                payment: finalPayment, 
-                category: "Subscription_List", 
-                details: detailsVal.trim(), 
-                amount: amountVal, 
-                location: "", 
-                receiptBase64: null, 
-                receiptName: null, 
-                recordedBy: recordedByName 
-            };
-            
-            if(localStorage.getItem('loginTimestamp')) { 
-                localStorage.setItem('loginTimestamp', Date.now().toString()); 
-            }
-            
-            const actionType = editingSubsRowId ? "edit" : "save"; 
-            const rowIdToSend = editingSubsRowId || null;
-
-            const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
-            
-            if(res.status === "Success") { 
-                playSuccessSound();
-                triggerHaptic('success');
-                if(editingSubsRowId) { 
-                    showToast("Subscription updated!"); 
-                } else { 
-                    showToast("Subscription saved successfully!"); 
-                }
-                 
-                cancelSubsEdit(); 
-                loadDataFromSheet(); 
-            } else { 
-                showToast("Error: " + res.message, true); 
-            } 
-            
-            btn.disabled = false; 
-            btn.innerHTML = 'Save Subscription'; 
+            btn.disabled = false; btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
         async function deleteItem(rowId) { 
             triggerHaptic('medium');
             if(confirm('Delete this record permanently?')) { 
                 showToast("Deleting...");
-                
                 const res = await callApi("delete", { rowId: rowId });
-                
-                if(res.status === "Success") { 
-                    triggerHaptic('light');
-                    showToast("Deleted successfully!"); 
-                    loadDataFromSheet(); 
-                } else { 
-                    showToast("Error: " + res.message, true); 
-                }
+                if(res.status === "Success") { triggerHaptic('light'); showToast("Deleted successfully!"); loadDataFromSheet(); } 
+                else showToast("Error", true); 
             } 
         }
 
         function toggleDay(date) { 
             triggerHaptic('light');
-            const el = document.getElementById('details-' + date); 
-            const icon = document.getElementById('icon-' + date); 
-            
-            if(el) {
-                el.classList.toggle('active'); 
-            }
-            
-            if(icon) {
-                icon.classList.toggle('rotated'); 
-            }
+            document.getElementById('details-' + date).classList.toggle('active'); 
+            document.getElementById('icon-' + date).classList.toggle('rotated'); 
         }
         
         function getIcon(cat) { 
-            const icons = { 
-                'Food': 'fa-utensils', 
-                'Transport': 'fa-car', 
-                'Gasoline': 'fa-gas-pump', 
-                'Shopping': 'fa-bag-shopping', 
-                'Bills': 'fa-file-invoice-dollar', 
-                'Subscription': 'fa-sync-alt', 
-                'Housing': 'fa-house', 
-                'Health': 'fa-heart', 
-                'Entertainment': 'fa-film', 
-                'Other': 'fa-receipt', 
-                'Salary': 'fa-money-bill-wave', 
-                'Extra Income': 'fa-coins', 
-                'Other Income': 'fa-hand-holding-dollar', 
-                'Invest': 'fa-chart-pie', 
-                'Invest_Other': 'fa-seedling' 
-            }; 
+            const icons = { 'Food':'fa-utensils', 'Transport':'fa-car', 'Gasoline':'fa-gas-pump', 'Shopping':'fa-bag-shopping', 'Bills':'fa-file-invoice-dollar', 'Subscription':'fa-sync-alt', 'Housing':'fa-house', 'Health':'fa-heart', 'Entertainment':'fa-film', 'Salary':'fa-money-bill-wave', 'Extra Income':'fa-coins', 'Other Income':'fa-hand-holding-dollar', 'Invest':'fa-chart-pie', 'Invest_Other':'fa-seedling' }; 
             return icons[cat] || 'fa-receipt'; 
-        }
-
-        function renderDoughnutChart(ctxId, chartVar, dataObj) { 
-            const ctx = document.getElementById(ctxId); 
-            
-            if(!ctx) {
-                return chartVar; 
-            }
-            
-            const labels = Object.keys(dataObj); 
-            const dataValues = Object.values(dataObj); 
-            const bgColors = labels.map(cat => globalColorsMap[cat] || '#cbd5e1'); 
-            
-            if(chartVar) {
-                chartVar.destroy(); 
-            }
-            
-            Chart.defaults.font.family = "'Plus Jakarta Sans', 'Kanit', sans-serif";
-            
-            return new Chart(ctx, { 
-                type: 'doughnut', 
-                data: { 
-                    labels: labels, 
-                    datasets: [{ 
-                        data: dataValues, 
-                        backgroundColor: bgColors, 
-                        borderWidth: 3, 
-                        borderColor: '#ffffff', 
-                        hoverOffset: 6 
-                    }] 
-                }, 
-                options: { 
-                    responsive: true, 
-                    cutout: '75%', 
-                    plugins: { 
-                        legend: { 
-                            display: false 
-                        }, 
-                        tooltip: { 
-                            backgroundColor: 'rgba(15, 23, 42, 0.9)', 
-                            padding: 12, 
-                            cornerRadius: 16, 
-                            callbacks: { 
-                                label: function(context) { 
-                                    return ' ' + new Intl.NumberFormat('en-US').format(context.parsed) + ' THB'; 
-                                } 
-                            } 
-                        } 
-                    } 
-                } 
-            }); 
-        }
-
-        function updateDailyCategoryChart() { 
-            const dateStr = document.getElementById('dashboard-date-filter').value; 
-            const dataObj = globalDailyCategoryStats[dateStr] || {}; 
-            myDailyCategoryChart = renderDoughnutChart('dailyCategoryChart', myDailyCategoryChart, dataObj); 
-            
-            const listContainer = document.getElementById('daily-category-list'); 
-            listContainer.innerHTML = ''; 
-            
-            const sortedCat = Object.keys(dataObj).map(k => ({label: k, val: dataObj[k]})).sort((a,b) => b.val - a.val); 
-            
-            if(sortedCat.length === 0) { 
-                listContainer.innerHTML = '<div class="text-center text-xs text-slate-400 py-4 font-medium">No Data Available</div>'; 
-                return; 
-            } 
-            
-            const dailyTotal = sortedCat.reduce((sum, item) => sum + item.val, 0);
-            
-            sortedCat.forEach(item => { 
-                const percent = dailyTotal > 0 ? ((item.val / dailyTotal) * 100).toFixed(1) : 0; 
-                const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
-                
-                const div = document.createElement('div'); 
-                div.className = "flex justify-between items-center text-xs px-3 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50/50 rounded-xl transition-colors"; 
-                div.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <span class="w-3.5 h-3.5 rounded-full shadow-sm" style="background-color: ${globalColorsMap[item.label] || '#cbd5e1'}"></span>
-                        <div class="flex items-baseline gap-2">
-                            <span class="font-bold text-slate-700">${item.label}</span>
-                            <span class="text-[10px] text-slate-400 font-medium bg-slate-100 px-1.5 py-0.5 rounded-md">${displayPercent}%)</span>
-                        </div>
-                    </div>
-                    <span class="font-black text-slate-800">${item.val.toLocaleString()} THB</span>
-                `; 
-                listContainer.appendChild(div); 
-            }); 
         }
 
         function updateUI() {
@@ -2661,118 +2094,53 @@
             const stats = document.getElementById('stats-container');
             const pSum = document.getElementById('payment-summary-container');
             const subsList = document.getElementById('subscriptions-list');
+            if(!list || !stats) return; 
             
-            if(!list || !stats) {
-                return; 
-            }
-            
-            list.innerHTML = ''; 
-            stats.innerHTML = ''; 
-            pSum.innerHTML = '';
-            
-            if (subsList) {
-                subsList.innerHTML = '';
-            }
+            list.innerHTML = ''; stats.innerHTML = ''; pSum.innerHTML = ''; if (subsList) subsList.innerHTML = '';
 
-            const monthFilterEl = document.getElementById('summary-month-filter');
-            const summaryMonthVal = monthFilterEl ? monthFilterEl.value : ''; 
-            
-            // 🌟 Smart Search Logic
-            const searchInput = document.getElementById('search-history');
-            const searchKeyword = searchInput ? searchInput.value.toLowerCase().trim() : "";
+            const summaryMonthVal = document.getElementById('summary-month-filter') ? document.getElementById('summary-month-filter').value : ''; 
+            const searchKeyword = document.getElementById('search-history') ? document.getElementById('search-history').value.toLowerCase().trim() : "";
 
-            if (expenses.length === 0) {
-                list.innerHTML = '<div class="text-center p-12 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm"><i class="fas fa-box-open text-4xl mb-4 text-slate-200"></i><br>No Records Found</div>';
-                stats.innerHTML = '<div class="text-center p-12 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm"><i class="fas fa-box-open text-4xl mb-4 text-slate-200"></i><br>No Records Found</div>';
-            }
+            let totalExpenseHome = 0, totalIncomeHome = 0, totalExpenseSummary = 0, totalIncomeSummary = 0;
+            const daily = {}, payStats = { 'Cash': 0, 'Credit Card / E-Wallet': 0, 'Internet Banking / QR Payment': 0, 'Loan etc.': 0 };
             
-            let totalExpenseHome = 0; 
-            let totalIncomeHome = 0; 
-            let totalExpenseSummary = 0; 
-            let totalIncomeSummary = 0;
+            let sortedExpenses = [...expenses].sort((a,b) => new Date(b.date + ' ' + (b.time || '00:00')) - new Date(a.date + ' ' + (a.time || '00:00')));
             
-            const daily = {}; 
-            const payStats = { 'Cash': 0, 'Credit Card / E-Wallet': 0, 'Internet Banking / QR Payment': 0, 'Loan etc.': 0 };
-            
-            let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
-            let sortedExpenses = [...expenses];
-            
-            sortedExpenses.sort((a,b) => {
-                let rawDateB = new Date(b.date + ' ' + (b.time || '00:00')); 
-                let rawDateA = new Date(a.date + ' ' + (a.time || '00:00'));
-                
-                let dateB = isNaN(rawDateB) ? new Date(0) : rawDateB; 
-                let dateA = isNaN(rawDateA) ? new Date(0) : rawDateA;
-                
-                let isIncomeA = ["Salary", "Extra Income", "Other Income"].includes(a.category); 
-                let amtA = parseFloat(a.amount) || 0; 
-                let realAmtA = isIncomeA ? amtA : -amtA;
-                
-                let isIncomeB = ["Salary", "Extra Income", "Other Income"].includes(b.category); 
-                let amtB = parseFloat(b.amount) || 0; 
-                let realAmtB = isIncomeB ? amtB : -amtB;
-                
-                if (sortType === 'latest') return expenses.indexOf(b) - expenses.indexOf(a); 
-                if (sortType === 'date') return dateB - dateA; 
-                if (sortType === 'payment') return a.payment === b.payment ? dateB - dateA : a.payment.localeCompare(b.payment); 
-                if (sortType === 'category') return a.category === b.category ? dateB - dateA : a.category.localeCompare(b.category); 
-                if (sortType === 'price-high') return realAmtB - realAmtA; 
-                if (sortType === 'price-low') return realAmtA - realAmtB; 
-                if (sortType === 'user') { 
-                    let userA = a.recordedBy || ""; 
-                    let userB = b.recordedBy || ""; 
-                    return userA === userB ? dateB - dateA : userA.localeCompare(userB); 
-                }
-                return 0;
-            });
-            
-            const categoryStats = {}; 
-            globalDailyCategoryStats = {};
-
-            let regularExpenses = []; 
-            let subsExpenses = [];
+            const categoryStats = {}; globalDailyCategoryStats = {};
+            let regularExpenses = [], subsExpenses = [];
             
             sortedExpenses.forEach(item => { 
-                if (item.category === "Subscription_List") { 
-                    subsExpenses.push(item); 
-                } else { 
-                    regularExpenses.push(item); 
-                } 
+                if (item.category === "Subscription_List") subsExpenses.push(item); 
+                else regularExpenses.push(item); 
             });
 
+            subsExpensesGlobal = subsExpenses; // อัปเดตตัวแปร Global สำหรับใช้ในปฏิทิน
+
             let expensesToRender = regularExpenses;
-            
             if (searchKeyword !== "") {
                 expensesToRender = expensesToRender.filter(item => 
                     (item.details && item.details.toLowerCase().includes(searchKeyword)) ||
                     (item.category && item.category.toLowerCase().includes(searchKeyword)) ||
-                    (item.amount && item.amount.toString().includes(searchKeyword)) ||
-                    (item.payment && item.payment.toLowerCase().includes(searchKeyword))
+                    (item.amount && item.amount.toString().includes(searchKeyword))
                 );
             }
             
-            expensesToRender = expensesToRender.slice(0, currentHistoryLimit);
-            
-            expensesToRender.forEach((item) => {
+            expensesToRender.slice(0, currentHistoryLimit).forEach((item) => {
                 const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
                 const amt = parseFloat(item.amount) || 0; 
-                let recordedByText = "";
-                
-                if (item.recordedBy && item.recordedBy !== '-' && item.recordedBy !== 'undefined' && item.recordedBy.trim() !== '') { 
-                    recordedByText = `<span class="text-[8.5px] font-bold bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fas fa-user-circle text-violet-400 mr-1"></i>${item.recordedBy}</span>`; 
-                }
+                let recordedByText = item.recordedBy ? `<span class="text-[8.5px] font-bold bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fas fa-user-circle mr-1"></i>${item.recordedBy}</span>` : "";
 
                 const div = document.createElement('div'); 
                 div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow"; 
                 div.innerHTML = `
                     <div class="flex gap-3.5 items-center text-left w-full overflow-hidden">
-                        <div class="w-12 h-12 flex-shrink-0 ${isIncome ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow-emerald-500/30' : 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 border border-white'} rounded-2xl flex items-center justify-center shadow-md">
+                        <div class="w-12 h-12 flex-shrink-0 ${isIncome ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white' : 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 border border-white'} rounded-2xl flex items-center justify-center shadow-md">
                             <i class="fas ${getIcon(item.category)} text-lg"></i>
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
                                 <p class="font-bold text-slate-800 text-sm leading-tight truncate">${item.category}</p>
-                                <span class="text-[8px] flex-shrink-0 font-bold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded uppercase tracking-wider">${item.payment}</span>
+                                <span class="text-[8px] flex-shrink-0 font-bold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded uppercase">${item.payment}</span>
                             </div>
                             <div class="flex items-center gap-2 mt-1">
                                 <p class="text-[10px] font-bold text-slate-400 truncate max-w-[100px]">${item.details || "-"}</p>
@@ -2785,7 +2153,6 @@
                         <p class="text-lg font-black ${isIncome ? 'text-emerald-500' : 'text-slate-800'} leading-none mt-1">${isIncome ? '+' : '-'}${amt.toLocaleString()}</p>
                         <div class="flex justify-end gap-3 mt-1.5 items-center">
                             ${item.receipt ? `<button type="button" onclick="openReceiptModal('${item.receipt}')" class="text-slate-300 hover:text-violet-500 transition-colors"><i class="fas fa-image"></i></button>` : ''}
-                            ${item.location ? `<a href="${item.location}" target="_blank" class="text-slate-300 hover:text-blue-500 transition-colors"><i class="fas fa-location-dot"></i></a>` : ''}
                             <button onclick="openEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors ml-1"><i class="fas fa-edit"></i></button>
                             <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>
                         </div>
@@ -2794,17 +2161,8 @@
                 list.appendChild(div);
             });
 
-            if(searchKeyword !== "" && expensesToRender.length === 0) {
-                list.innerHTML = `<div class="text-center p-8 text-slate-400 font-bold text-xs">No results found for "${searchKeyword}"</div>`;
-            }
-
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            if(loadMoreBtn) {
-                if(searchKeyword === "" && regularExpenses.length > currentHistoryLimit) { 
-                    loadMoreBtn.classList.remove('hidden'); 
-                } else { 
-                    loadMoreBtn.classList.add('hidden'); 
-                }
+            if (document.getElementById('load-more-btn')) {
+                document.getElementById('load-more-btn').classList.toggle('hidden', searchKeyword !== "" || regularExpenses.length <= currentHistoryLimit);
             }
 
             regularExpenses.forEach((item) => {
@@ -2812,387 +2170,84 @@
                 const amt = parseFloat(item.amount) || 0; 
                 const impact = isIncome ? amt : -amt; 
                 
-                if (isIncome) { 
-                    totalIncomeHome += amt; 
-                } else { 
-                    totalExpenseHome += amt; 
-                }
+                if (isIncome) totalIncomeHome += amt; else totalExpenseHome += amt; 
                 
-                const isMatchMonth = summaryMonthVal === '' || item.date.startsWith(summaryMonthVal);
-                
-                if (isMatchMonth) {
-                    if (isIncome) { 
-                        totalIncomeSummary += amt; 
-                    } else { 
+                if (summaryMonthVal === '' || item.date.startsWith(summaryMonthVal)) {
+                    if (isIncome) totalIncomeSummary += amt; 
+                    else { 
                         totalExpenseSummary += amt; 
-                        
-                        if (!categoryStats[item.category]) { 
-                            categoryStats[item.category] = 0; 
-                        } 
-                        
-                        categoryStats[item.category] += amt; 
+                        categoryStats[item.category] = (categoryStats[item.category] || 0) + amt; 
                     }
+                    payStats[item.payment] = (payStats[item.payment] || 0) + impact;
                     
-                    let pKey = item.payment; 
-                    
-                    if (!payStats.hasOwnProperty(pKey)) { 
-                        payStats[pKey] = 0; 
-                    } 
-                    
-                    payStats[pKey] += impact;
-                    
-                    if (!daily[item.date]) { 
-                        daily[item.date] = { total: 0, categories: {} }; 
-                    }
-                    
+                    if (!daily[item.date]) daily[item.date] = { total: 0, categories: {} }; 
                     daily[item.date].total += impact; 
-                    
-                    if (!daily[item.date].categories[item.category]) { 
-                        daily[item.date].categories[item.category] = { amt: 0, isIncome: isIncome }; 
-                    }
-                    
+                    if (!daily[item.date].categories[item.category]) daily[item.date].categories[item.category] = { amt: 0, isIncome: isIncome }; 
                     daily[item.date].categories[item.category].amt += amt;
                 }
 
                 if (!isIncome) {
-                    if (!globalDailyCategoryStats[item.date]) { 
-                        globalDailyCategoryStats[item.date] = {}; 
-                    }
-                    
-                    if (!globalDailyCategoryStats[item.date][item.category]) { 
-                        globalDailyCategoryStats[item.date][item.category] = 0; 
-                    }
-                    
-                    globalDailyCategoryStats[item.date][item.category] += amt;
+                    if (!globalDailyCategoryStats[item.date]) globalDailyCategoryStats[item.date] = {}; 
+                    globalDailyCategoryStats[item.date][item.category] = (globalDailyCategoryStats[item.date][item.category] || 0) + amt;
                 }
             });
 
-            // 🛑 3. เรนเดอร์หน้า Subscriptions 
-            let totalSubsCost = 0;
-            const today = new Date(); 
-            const currentDay = today.getDate(); 
-            const currentMonth = today.getMonth() + 1; 
-            
-            if (subsExpenses.length === 0) {
-                if (subsList) { 
-                    subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">There are no recent subscription records in your history.</span></div>'; 
-                }
-            } else {
+            // 🛑 เรนเดอร์ Subs
+            if (subsList && subsExpenses.length > 0) {
                 subsExpenses.forEach(item => {
                     const amt = parseFloat(item.amount) || 0;
-                    
-                    let payText = item.payment || ''; 
-                    let payIcon = '<i class="fas fa-credit-card text-slate-400"></i>';
-                    
-                    if(payText.includes('VISA')) { 
-                        payIcon = '<img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain inline">'; 
-                    } else if(payText.includes('MasterCard')) { 
-                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-3 inline">'; 
-                    } else if(payText.includes('JCB')) { 
-                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-3 inline">'; 
-                    } else if(payText.includes('UnionPay')) { 
-                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-3 inline">'; 
-                    } else if(payText.includes('Cash')) { 
-                        payIcon = '<span class="text-[10px]">💵</span>'; 
-                    } else if(payText.includes('E-Wallet')) { 
-                        payIcon = '<span class="text-[10px]">📱</span>'; 
-                    } else if(payText.includes('Bank Transfer')) { 
-                        payIcon = '<span class="text-[10px]">🏦</span>'; 
-                    }
-
-                    let daysLeft = 999; 
-                    let cycleDisplay = item.date; 
-                    let isYearly = item.date && item.date.includes('-');
-                    
-                    if (isYearly) {
-                        totalSubsCost += (amt / 12); 
-                        const parts = item.date.split('-'); 
-                        const itemDay = parseInt(parts[0]);
-                        
-                        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                        const itemMonth = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase()) + 1;
-                        
-                        if (itemMonth === currentMonth) {
-                            if (itemDay === currentDay) {
-                                daysLeft = 0;
-                            } else if (itemDay > currentDay && itemDay <= currentDay + 5) {
-                                daysLeft = itemDay - currentDay;
-                            } else if (itemDay < currentDay && currentDay - itemDay <= 3) {
-                                daysLeft = itemDay - currentDay;
-                            }
-                        }
-                    } else {
-                        totalSubsCost += amt; 
-                        const itemDay = parseInt(item.date);
-                        
-                        if (!isNaN(itemDay)) {
-                            cycleDisplay = 'Day ' + item.date;
-                            if (itemDay === currentDay) {
-                                daysLeft = 0;
-                            } else if (itemDay > currentDay && itemDay <= currentDay + 5) {
-                                daysLeft = itemDay - currentDay;
-                            } else if (itemDay < currentDay && currentDay - itemDay <= 3) {
-                                daysLeft = itemDay - currentDay;
-                            }
-                        }
-                    }
-                    
-                    let dateStyle = "text-slate-400"; 
-                    let dateIconStyle = "text-slate-400";
-                    
-                    if (daysLeft === 0) {
-                        dateStyle = "text-rose-500 font-bold"; 
-                        dateIconStyle = "text-rose-500 animate-pulse"; 
-                        cycleDisplay += " (Today!)";
-                    } else if (daysLeft < 0 && daysLeft >= -3) {
-                        dateStyle = "text-rose-500 font-bold"; 
-                        dateIconStyle = "text-rose-500"; 
-                        cycleDisplay += ` (${Math.abs(daysLeft)} days ago)`;
-                    } else if (daysLeft > 0 && daysLeft <= 5) {
-                        dateStyle = "text-amber-500 font-bold"; 
-                        dateIconStyle = "text-amber-500"; 
-                        cycleDisplay += ` (In ${daysLeft} days)`;
-                    }
-
-                    if (subsList) {
-                        const div = document.createElement('div'); 
-                        div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow";
-                        div.innerHTML = `
+                    subsList.innerHTML += `
+                        <div class="modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40">
                             <div class="flex items-center gap-3 w-full">
-                                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shadow-inner text-lg flex-shrink-0">
-                                    <i class="fas fa-sync-alt"></i>
-                                </div>
+                                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center"><i class="fas fa-sync-alt"></i></div>
                                 <div class="flex-1 min-w-0">
                                     <p class="font-bold text-slate-800 text-sm truncate">${item.details}</p>
-                                    <p class="text-[10px] ${dateStyle} font-medium flex items-center gap-1.5 mt-0.5">
-                                        <i class="far fa-calendar-alt ${dateIconStyle}"></i> ${cycleDisplay} 
-                                        <span class="mx-1 text-slate-300">•</span> 
-                                        <span class="flex items-center gap-1 text-slate-400">${payIcon} ${payText}</span>
-                                    </p>
+                                    <p class="text-[10px] text-slate-400 font-medium">Cycle: ${item.date} | ${item.payment}</p>
                                 </div>
                             </div>
-                            <div class="text-right flex flex-col items-end ml-2 flex-shrink-0">
-                                <p class="text-base font-black text-rose-500">-${amt.toLocaleString()} THB</p>
-                                <div class="flex gap-2 mt-1.5 items-center">
-                                    <!-- ปุ่ม Pay -->
-                                    <button onclick="paySubscription('${item.rowId}')" class="text-white bg-violet-500 hover:bg-violet-600 px-2 py-1 rounded text-[9px] font-bold shadow-sm transition-colors flex items-center gap-1">
-                                        <i class="fas fa-check-circle"></i> Pay
-                                    </button>
-                                    <button onclick="openSubsEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors ml-1">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </div>
+                            <div class="text-right ml-2 flex-shrink-0">
+                                <p class="text-base font-black text-rose-500">-${amt.toLocaleString()}</p>
                             </div>
-                        `;
-                        subsList.appendChild(div);
-                    }
+                        </div>`;
                 });
             }
-            
-            const totalSubsEl = document.getElementById('total-subs-cost'); 
-            if (totalSubsEl) { 
-                totalSubsEl.innerText = totalSubsCost.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}); 
-            }
 
-            const dateDropdown = document.getElementById('dashboard-date-filter'); 
-            if (dateDropdown) { 
-                const currentSelectedDate = dateDropdown.value; 
-                dateDropdown.innerHTML = ''; 
-                const sortedDates = Object.keys(globalDailyCategoryStats).sort((a,b) => new Date(b) - new Date(a)); 
-                
-                if(sortedDates.length === 0) { 
-                    dateDropdown.innerHTML = '<option value="">No Data</option>'; 
-                } else { 
-                    sortedDates.forEach(date => { 
-                        const opt = document.createElement('option'); 
-                        opt.value = date; 
-                        opt.text = date; 
-                        
-                        if(date === currentSelectedDate) {
-                            opt.selected = true; 
-                        }
-                        
-                        dateDropdown.appendChild(opt); 
-                    }); 
-                    
-                    if(!currentSelectedDate || !globalDailyCategoryStats[currentSelectedDate]) { 
-                        dateDropdown.value = sortedDates[0]; 
-                    } 
-                } 
-            }
-            
-            Object.entries(payStats).forEach(([method, total]) => { 
-                if (total !== 0 || ['Cash', 'Credit Card / E-Wallet', 'Internet Banking / QR Payment', 'Loan etc.'].includes(method)) { 
-                    const payDiv = document.createElement('div'); 
-                    payDiv.className = "modern-card p-4 text-left border border-slate-100 shadow-sm bg-white hover:shadow-md transition-shadow"; 
-                    
-                    let textColor = total < 0 ? "text-rose-500" : (total > 0 ? "text-emerald-500" : "text-slate-800"); 
-                    let prefix = total > 0 ? "+" : "";
-                    
-                    payDiv.innerHTML = `
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${method}</span>
-                        <p class="text-xl font-black ${textColor} mt-1 leading-none">${prefix}${total.toLocaleString()}</p>
-                    `; 
-                    
-                    pSum.appendChild(payDiv); 
-                } 
-            });
-            
             Object.keys(daily).sort((a,b) => new Date(b) - new Date(a)).forEach(date => { 
                 const data = daily[date]; 
                 const mainDiv = document.createElement('div'); 
-                
-                let totalColor = data.total >= 0 ? "text-emerald-500" : "text-slate-800"; 
-                let totalPrefix = data.total > 0 ? "+" : "";
-                
                 mainDiv.className = "modern-card overflow-hidden border-none shadow-md shadow-slate-200/50 mb-3"; 
                 mainDiv.innerHTML = `
-                    <div onclick="toggleDay('${date}')" class="p-4 flex justify-between items-center cursor-pointer hover:bg-violet-50/30 transition-colors">
+                    <div onclick="toggleDay('${date}')" class="p-4 flex justify-between items-center cursor-pointer hover:bg-violet-50/30">
                         <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center font-black text-sm border border-violet-200 shadow-inner">${date.split('-')[2]}</div>
+                            <div class="w-11 h-11 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center font-black">${date.split('-')[2]}</div>
                             <p class="text-xs font-bold text-slate-500 uppercase">${date}</p>
                         </div>
                         <div class="flex items-center gap-3 text-right">
-                            <p class="text-lg font-black ${totalColor}">${totalPrefix}${data.total.toLocaleString()}</p>
-                            <div class="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center">
-                                <i id="icon-${date}" class="fas fa-chevron-down text-slate-400 text-[10px] rotate-icon"></i>
-                            </div>
+                            <p class="text-lg font-black ${data.total >= 0 ? "text-emerald-500" : "text-slate-800"}">${data.total > 0 ? "+" : ""}${data.total.toLocaleString()}</p>
                         </div>
                     </div>
-                    <div id="details-${date}" class="day-details pb-4 px-5 bg-slate-50/50 border-t border-slate-100 text-left">
+                    <div id="details-${date}" class="day-details pb-4 px-5 bg-slate-50/50 text-left border-t border-slate-100">
                         <div class="pt-2">
-                        ${Object.keys(data.categories).map(cat => { 
-                            const catInfo = data.categories[cat]; 
-                            return `
-                                <div class="flex justify-between items-center text-xs py-2.5 border-b border-slate-200/60 last:border-0">
-                                    <div class="flex items-center gap-3">
-                                        <span class="w-3 h-3 rounded-full shadow-sm" style="background-color: ${globalColorsMap[cat] || '#cbd5e1'}"></span>
-                                        <span class="font-bold text-slate-700">${cat}</span>
-                                    </div>
-                                    <span class="font-black ${catInfo.isIncome ? 'text-emerald-500' : 'text-slate-800'}">${catInfo.isIncome ? '+' : '-'}${catInfo.amt.toLocaleString()}</span>
-                                </div>
-                            `; 
-                        }).join('')}
+                        ${Object.keys(data.categories).map(cat => `<div class="flex justify-between text-xs py-2 border-b border-slate-200"><span class="font-bold text-slate-700">${cat}</span><span class="font-black ${data.categories[cat].isIncome ? 'text-emerald-500' : 'text-slate-800'}">${data.categories[cat].amt.toLocaleString()}</span></div>`).join('')}
                         </div>
-                    </div>
-                `; 
+                    </div>`; 
                 stats.appendChild(mainDiv); 
             });
 
-            // 🌟 Monthly Budget Limit
-            let monthlyBudgetStr = localStorage.getItem('monthlyBudget');
-            let budgetBase = monthlyBudgetStr ? parseFloat(monthlyBudgetStr) : totalIncomeHome;
-            
-            const remainingHome = monthlyBudgetStr ? (budgetBase - totalExpenseHome) : (totalIncomeHome - totalExpenseHome); 
-            let percentHome = budgetBase > 0 ? (totalExpenseHome / budgetBase) : 0; 
-            
-            const bar = document.getElementById('budget-progress-bar');
-            
-            if(bar) { 
-                setTimeout(() => { 
-                    bar.style.width = (Math.min(1, percentHome) * 100) + '%'; 
-                }, 100); 
-                
-                if (percentHome >= 1) { 
-                    bar.style.backgroundColor = "#fda4af"; // แดง
-                } else if (percentHome >= 0.8) { 
-                    bar.style.backgroundColor = "#fcd34d"; // เหลืองเตือน
-                } else { 
-                    bar.style.backgroundColor = "#ffffff"; 
-                }
-            }
+            // อัปเดตยอดคงเหลือ
+            let budgetBase = parseFloat(localStorage.getItem('monthlyBudget')) || totalIncomeHome;
+            const remainingHome = (localStorage.getItem('monthlyBudget') ? budgetBase : totalIncomeHome) - totalExpenseHome; 
             
             document.getElementById('cash-remaining').innerText = remainingHome.toLocaleString(); 
-            
-            const usedEl = document.getElementById('cash-used-text'); 
-            if(usedEl) { 
-                usedEl.innerText = totalExpenseHome.toLocaleString(); 
-            }
-            
-            const baseBudgetEl = document.getElementById('budget-base-text'); 
-            if(baseBudgetEl) { 
-                baseBudgetEl.innerText = budgetBase.toLocaleString(); 
-            }
+            if(document.getElementById('cash-used-text')) document.getElementById('cash-used-text').innerText = totalExpenseHome.toLocaleString(); 
+            if(document.getElementById('budget-base-text')) document.getElementById('budget-base-text').innerText = budgetBase.toLocaleString(); 
             
             document.getElementById('total-expenses-text').innerText = totalExpenseSummary.toLocaleString() + " THB"; 
             document.getElementById('total-income-text').innerText = totalIncomeSummary.toLocaleString() + " THB"; 
+            document.getElementById('total-balance-text').innerText = (totalIncomeSummary - totalExpenseSummary).toLocaleString();
             
-            let netBalanceSummary = totalIncomeSummary - totalExpenseSummary;
-            let balanceEl = document.getElementById('total-balance-text'); 
-            balanceEl.innerText = netBalanceSummary.toLocaleString();
-            
-            if(netBalanceSummary < 0) { 
-                balanceEl.classList.add('text-rose-500'); 
-                balanceEl.classList.remove('text-slate-800'); 
-            } else { 
-                balanceEl.classList.remove('text-rose-500'); 
-                balanceEl.classList.add('text-slate-800'); 
-            }
-            
-            myOverallCategoryChart = renderDoughnutChart('overallCategoryChart', myOverallCategoryChart, categoryStats);
-            const overallListContainer = document.getElementById('category-dashboard-list'); 
-            
-            if(overallListContainer) { 
-                overallListContainer.innerHTML = ''; 
-                const sortedCatOverall = Object.keys(categoryStats).map(k => ({label: k, val: categoryStats[k]})).sort((a,b) => b.val - a.val); 
-                const overallTotal = sortedCatOverall.reduce((sum, item) => sum + item.val, 0);
-                
-                sortedCatOverall.forEach(item => { 
-                    const percent = overallTotal > 0 ? ((item.val / overallTotal) * 100).toFixed(1) : 0; 
-                    const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
-                    
-                    const div = document.createElement('div'); 
-                    div.className = "flex justify-between items-center text-xs px-3 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50/50 rounded-xl transition-colors"; 
-                    div.innerHTML = `
-                        <div class="flex items-center gap-3">
-                            <span class="w-3.5 h-3.5 rounded-full shadow-sm" style="background-color: ${globalColorsMap[item.label] || '#cbd5e1'}"></span>
-                            <div class="flex items-baseline gap-2">
-                                <span class="font-bold text-slate-700">${item.label}</span>
-                                <span class="text-[10px] text-slate-400 font-medium bg-slate-100 px-1.5 py-0.5 rounded-md">${displayPercent}%)</span>
-                            </div>
-                        </div>
-                        <span class="font-black text-slate-800">${item.val.toLocaleString()} THB</span>
-                    `; 
-                    overallListContainer.appendChild(div); 
-                }); 
-            }
-            
-            updateDailyCategoryChart();
-
-            // 🛑 4. เก็บตัวแปรยอดคงเหลือไว้ใช้กับระบบ Goal และเรนเดอร์ Goals
             currentRemainingHome = remainingHome;
             renderGoals();
-        }
-
-        async function getCurrentLocation() { 
-            return new Promise(res => { 
-                if(!navigator.geolocation) { 
-                    return res(""); 
-                } 
-                
-                navigator.geolocation.getCurrentPosition( 
-                    p => res(`https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`), 
-                    () => res(""), 
-                    { timeout: 5000 } 
-                ); 
-            }); 
-        }
-
-        function exportToExcel() { 
-            triggerHaptic('light');
-            if (expenses.length === 0) { 
-                showToast("No data to export", true); 
-                return; 
-            } 
-            
-            const ws = XLSX.utils.json_to_sheet(expenses); 
-            const wb = XLSX.utils.book_new(); 
-            
-            XLSX.utils.book_append_sheet(wb, ws, "Expenses"); 
-            XLSX.writeFile(wb, `Wallet_${new Date().toISOString().slice(0,10)}.xlsx`); 
         }
     </script>
 </body>
