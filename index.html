@@ -31,85 +31,308 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         
-        .ambient-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; }
-        .ambient-glow-1 { position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vw; background: rgba(139, 92, 246, 0.2); border-radius: 50%; filter: blur(90px); }
-        .ambient-glow-2 { position: absolute; bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: rgba(236, 72, 153, 0.15); border-radius: 50%; filter: blur(90px); }
-        .ambient-glow-3 { position: absolute; top: 40%; left: 40%; width: 50vw; height: 50vw; background: rgba(56, 189, 248, 0.15); border-radius: 50%; filter: blur(100px); }
+        .ambient-bg { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            z-index: -1; 
+            pointer-events: none; 
+            overflow: hidden; 
+        }
+        
+        .ambient-glow-1 { 
+            position: absolute; 
+            top: -10%; 
+            left: -10%; 
+            width: 60vw; 
+            height: 60vw; 
+            background: rgba(139, 92, 246, 0.2); 
+            border-radius: 50%; 
+            filter: blur(90px); 
+        }
+        
+        .ambient-glow-2 { 
+            position: absolute; 
+            bottom: -10%; 
+            right: -10%; 
+            width: 60vw; 
+            height: 60vw; 
+            background: rgba(236, 72, 153, 0.15); 
+            border-radius: 50%; 
+            filter: blur(90px); 
+        }
+        
+        .ambient-glow-3 { 
+            position: absolute; 
+            top: 40%; 
+            left: 40%; 
+            width: 50vw; 
+            height: 50vw; 
+            background: rgba(56, 189, 248, 0.15); 
+            border-radius: 50%; 
+            filter: blur(100px); 
+        }
         
         .modern-card { 
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); 
-            border: 1px solid rgba(255, 255, 255, 1); border-radius: 24px; 
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 1); 
+            border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); 
+            transition: all 0.3s ease;
         }
         
-        .input-style { background: #f8fafc; border: 2px solid transparent; transition: all 0.3s ease; appearance: none; }
-        .input-style:focus { background: #ffffff; border-color: #c4b5fd; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+        .input-style { 
+            background: #f8fafc; 
+            border: 2px solid transparent; 
+            transition: all 0.3s ease; 
+            appearance: none; 
+        }
+        
+        .input-style:focus { 
+            background: #ffffff; 
+            border-color: #c4b5fd; 
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); 
+        }
         
         .btn-modern { 
-            background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; 
+            background: linear-gradient(135deg, #8b5cf6, #ec4899); 
+            color: white; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            box-shadow: 0 10px 20px rgba(219, 39, 119, 0.2); border: none; 
+            box-shadow: 0 10px 20px rgba(219, 39, 119, 0.2); 
+            border: none; 
         }
-        .btn-modern:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(219, 39, 119, 0.3); }
-        .btn-modern:active { transform: scale(0.96) translateY(0); box-shadow: 0 5px 10px rgba(219, 39, 119, 0.2); }
         
-        .nav-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .nav-active { color: #8b5cf6 !important; font-weight: 800; background: #f5f3ff; border-radius: 100px; box-shadow: inset 0 2px 4px rgba(139, 92, 246, 0.05); }
+        .btn-modern:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 12px 25px rgba(219, 39, 119, 0.3); 
+        }
         
-        .page-content { display: none; }
-        .page-active { display: block; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-modern:active { 
+            transform: scale(0.96) translateY(0); 
+            box-shadow: 0 5px 10px rgba(219, 39, 119, 0.2); 
+        }
         
-        .day-details { display: none; overflow: hidden; }
-        .day-details.active { display: block; animation: fadeDown 0.3s ease-out forwards; }
-        @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-btn { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
         
-        .rotate-icon { transition: transform 0.3s ease; }
-        .rotated { transform: rotate(180deg); }
+        .nav-active { 
+            color: #8b5cf6 !important; 
+            font-weight: 800; 
+            background: #f5f3ff; 
+            border-radius: 100px; 
+            box-shadow: inset 0 2px 4px rgba(139, 92, 246, 0.05); 
+        }
         
-        .menu-dropdown { opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .menu-dropdown.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .page-content { 
+            display: none; 
+        }
         
-        #toast-notification { transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .page-active { 
+            display: block; 
+            animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
         
-        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes fadeUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
         
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #c4b5fd; border-radius: 4px; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .day-details { 
+            display: none; 
+            overflow: hidden; 
+        }
+        
+        .day-details.active { 
+            display: block; 
+            animation: fadeDown 0.3s ease-out forwards;
+        }
+        
+        @keyframes fadeDown { 
+            from { opacity: 0; transform: translateY(-10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .rotate-icon { 
+            transition: transform 0.3s ease; 
+        }
+        
+        .rotated { 
+            transform: rotate(180deg); 
+        }
+        
+        .menu-dropdown { 
+            opacity: 0; 
+            pointer-events: none; 
+            transform: translateY(-10px); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        
+        .menu-dropdown.active { 
+            opacity: 1; 
+            pointer-events: auto; 
+            transform: translateY(0); 
+        }
+        
+        #toast-notification { 
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+        }
 
-        .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #8b5cf6; transition: all 0.2s ease; }
-        .pin-dot.filled { background-color: #8b5cf6; transform: scale(1.1); }
-        .pin-btn { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: #334155; background-color: #f8fafc; transition: all 0.1s ease; user-select: none; cursor: pointer; }
-        .pin-btn:active { background-color: #e2e8f0; transform: scale(0.9); }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
-        .shake-animation { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        ::-webkit-scrollbar { 
+            width: 4px; 
+        }
+        
+        ::-webkit-scrollbar-thumb { 
+            background: #c4b5fd; 
+            border-radius: 4px; 
+        }
 
-        .calendar-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; transition: all 0.2s ease; position: relative; }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* PIN Pad Styles */
+        .pin-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #8b5cf6;
+            transition: all 0.2s ease;
+        }
+        .pin-dot.filled {
+            background-color: #8b5cf6;
+            transform: scale(1.1);
+        }
+        .pin-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #334155;
+            background-color: #f8fafc;
+            transition: all 0.1s ease;
+            user-select: none;
+            cursor: pointer;
+        }
+        .pin-btn:active {
+            background-color: #e2e8f0;
+            transform: scale(0.9);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        .shake-animation {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Calendar Styles */
+        .calendar-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
 
         /* 🌙 Dark Mode Global Styles */
-        body.dark-mode { background-color: #0f172a; color: #f8fafc; }
-        body.dark-mode .modern-card { background: rgba(30, 41, 59, 0.8) !important; border-color: rgba(255, 255, 255, 0.05) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-        body.dark-mode .input-style { background: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important; }
-        body.dark-mode .input-style:focus { background: #0f172a !important; border-color: #8b5cf6 !important; }
-        body.dark-mode .bg-white { background-color: #1e293b !important; }
-        body.dark-mode .bg-slate-50 { background-color: #0f172a !important; }
-        body.dark-mode .bg-slate-100 { background-color: #334155 !important; }
-        body.dark-mode .text-slate-800, body.dark-mode .text-slate-700 { color: #f1f5f9 !important; }
-        body.dark-mode .text-slate-600 { color: #cbd5e1 !important; }
-        body.dark-mode .text-slate-500, body.dark-mode .text-slate-400 { color: #94a3b8 !important; }
-        body.dark-mode .border-slate-100, body.dark-mode .border-slate-50, body.dark-mode .border-slate-200 { border-color: #334155 !important; }
-        body.dark-mode .hover\:bg-slate-50:hover { background-color: #334155 !important; }
-        body.dark-mode .hover\:bg-violet-50:hover { background-color: rgba(139, 92, 246, 0.15) !important; }
-        body.dark-mode .nav-active { background: #334155 !important; color: #c4b5fd !important; }
-        body.dark-mode #toast-bg { background: rgba(30, 41, 59, 0.95) !important; border-color: #334155 !important; color: #f8fafc !important; }
-        body.dark-mode select.input-style option { background: #1e293b; color: #f8fafc; }
-        body.dark-mode #subs-payment-dropdown, body.dark-mode #payment-dropdown { background: #1e293b !important; border-color: #334155 !important; }
-        body.dark-mode .fixed.bottom-6 { background: rgba(30, 41, 59, 0.85) !important; border-color: rgba(255, 255, 255, 0.1) !important; }
-        body.dark-mode .day-details { background: rgba(15, 23, 42, 0.6) !important; border-color: #334155 !important; }
-        body.dark-mode .pin-btn { background-color: #1e293b; color: #f8fafc; }
-        body.dark-mode .pin-btn:active { background-color: #334155; }
+        body.dark-mode { 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+        }
+        body.dark-mode .modern-card { 
+            background: rgba(30, 41, 59, 0.8) !important; 
+            border-color: rgba(255, 255, 255, 0.05) !important; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
+        }
+        body.dark-mode .input-style { 
+            background: #1e293b !important; 
+            border-color: #334155 !important; 
+            color: #f8fafc !important; 
+        }
+        body.dark-mode .input-style:focus { 
+            background: #0f172a !important; 
+            border-color: #8b5cf6 !important; 
+        }
+        body.dark-mode .bg-white { 
+            background-color: #1e293b !important; 
+        }
+        body.dark-mode .bg-slate-50 { 
+            background-color: #0f172a !important; 
+        }
+        body.dark-mode .bg-slate-100 { 
+            background-color: #334155 !important; 
+        }
+        body.dark-mode .text-slate-800, body.dark-mode .text-slate-700 { 
+            color: #f1f5f9 !important; 
+        }
+        body.dark-mode .text-slate-600 { 
+            color: #cbd5e1 !important; 
+        }
+        body.dark-mode .text-slate-500, body.dark-mode .text-slate-400 { 
+            color: #94a3b8 !important; 
+        }
+        body.dark-mode .border-slate-100, body.dark-mode .border-slate-50, body.dark-mode .border-slate-200 { 
+            border-color: #334155 !important; 
+        }
+        body.dark-mode .hover\:bg-slate-50:hover { 
+            background-color: #334155 !important; 
+        }
+        body.dark-mode .hover\:bg-violet-50:hover { 
+            background-color: rgba(139, 92, 246, 0.15) !important; 
+        }
+        body.dark-mode .nav-active { 
+            background: #334155 !important; 
+            color: #c4b5fd !important; 
+        }
+        body.dark-mode #toast-bg { 
+            background: rgba(30, 41, 59, 0.95) !important; 
+            border-color: #334155 !important; 
+            color: #f8fafc !important; 
+        }
+        body.dark-mode select.input-style option { 
+            background: #1e293b; 
+            color: #f8fafc; 
+        }
+        body.dark-mode #subs-payment-dropdown, body.dark-mode #payment-dropdown { 
+            background: #1e293b !important; 
+            border-color: #334155 !important; 
+        }
+        body.dark-mode .fixed.bottom-6 { 
+            background: rgba(30, 41, 59, 0.85) !important; 
+            border-color: rgba(255, 255, 255, 0.1) !important; 
+        }
+        body.dark-mode .day-details { 
+            background: rgba(15, 23, 42, 0.6) !important; 
+            border-color: #334155 !important; 
+        }
+        body.dark-mode .pin-btn { 
+            background-color: #1e293b; 
+            color: #f8fafc; 
+        }
+        body.dark-mode .pin-btn:active { 
+            background-color: #334155; 
+        }
     </style>
 </head>
 <body class="pb-32 relative">
@@ -359,12 +582,11 @@
                 <i class="fas fa-sparkles text-fuchsia-500 text-xs"></i> Expenses
             </div>
 
-            <!-- ปุ่มเปิดหน้าต่างหารบิล -->
             <div class="flex items-center justify-end gap-3 z-10 w-1/3">
                 <button onclick="openSplitBillModal()" class="w-10 h-10 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center transition-colors shadow-sm border border-blue-100 focus:outline-none" title="Split Bill">
                     <i class="fas fa-qrcode"></i>
                 </button>
-                <button id="menu-btn" onclick="toggleMenu(event)" class="text-slate-500 hover:text-violet-600 transition-colors focus:outline-none w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-50 shadow-sm border border-slate-100 relative z-10">
+                <button id="menu-btn" onclick="toggleMenu(event)" class="text-slate-500 hover:text-violet-600 transition-colors focus:outline-none w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-50 shadow-sm border border-slate-100">
                     <i class="fas fa-ellipsis-v"></i>
                 </button>
             </div>
@@ -407,6 +629,7 @@
 
         <!-- PAGE: HOME -->
         <div id="page-home" class="page-content page-active max-w-xl mx-auto px-5 py-3 space-y-5">
+            
             <div class="modern-card p-6 mt-2 relative overflow-hidden bg-gradient-to-br from-[#9b2def] to-[#ed3d85] border-none shadow-xl shadow-fuchsia-600/20 text-white">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -z-10 opacity-10 transform translate-x-10 -translate-y-10 blur-xl"></div>
                 <div class="absolute bottom-0 left-0 w-32 h-32 bg-yellow-300 rounded-full -z-10 opacity-20 transform -translate-x-10 translate-y-10 blur-xl"></div>
@@ -1279,7 +1502,7 @@
                 }); 
                 return await response.json(); 
             } catch (e) { 
-                return { status: "Error" }; 
+                return { status: "Error", message: "Network Error" }; 
             }
         }
 
@@ -1532,20 +1755,19 @@
         // --- Data Fetching & Sync ---
         async function loadDataFromSheet() { 
             const list = document.getElementById('history-list'); 
-            if(list && expenses.length === 0) list.innerHTML = '<div class="text-center p-10"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl"></i></div>'; 
-            
-            const res = await callApi("get");
-            if(res.status === "Success") { 
-                if(res.data) expenses = res.data; 
-                if(res.goals) goalsData = res.goals; 
-            }
-            updateTimestampDisplay(); 
+            if(list && expenses.length === 0) list.innerHTML = '<div class="text-center p-10"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
             
             try {
+                const res = await callApi("get");
+                if(res.status === "Success") { 
+                    expenses = Array.isArray(res.data) ? res.data : [];
+                    goalsData = Array.isArray(res.goals) ? res.goals : [];
+                }
+                updateTimestampDisplay(); 
                 updateUI();
             } catch (error) {
-                console.error("UpdateUI Error:", error);
-                showToast("UI Error, please check console.", true);
+                console.error("Fetch Data Error:", error);
+                showToast("UI Update Error.", true);
             }
         }
 
@@ -1698,7 +1920,7 @@
                         if (parseInt(subDateStr) === d) hasS = true; 
                     } else if (subDateStr.includes('-')) { 
                         const p = subDateStr.split('-'); 
-                        if (parseInt(p[0]) === d && mNames.findIndex(mn => mn.toLowerCase() === p[1].toLowerCase()) === m) hasS = true; 
+                        if (parseInt(p[0]) === d && mNames.findIndex(mn => mn.toLowerCase() === String(p[1] || "").toLowerCase()) === m) hasS = true; 
                     } 
                 });
                 
@@ -1712,7 +1934,7 @@
             triggerHaptic('light'); 
             const c = document.getElementById('calendar-day-details'); 
             c.innerHTML = '';
-            const dayExps = expenses.filter(x => String(x.date || '') === dateStr && String(x.category || '') !== 'Subscription_List'); 
+            const dayExps = expenses.filter(x => String(x.date || "") === dateStr && String(x.category || "") !== 'Subscription_List'); 
             let hasD = false;
             
             if (dayExps.length > 0) {
@@ -1744,7 +1966,7 @@
                 if (!subDateStr.includes('-')) return parseInt(subDateStr) === dNum; 
                 if (subDateStr.includes('-')) { 
                     const p = subDateStr.split('-'); 
-                    return parseInt(p[0]) === dNum && p[1].toLowerCase() === mStr.toLowerCase(); 
+                    return parseInt(p[0]) === dNum && String(p[1] || "").toLowerCase() === mStr.toLowerCase(); 
                 } 
                 return false; 
             });
@@ -1772,18 +1994,20 @@
             if (!hasD) c.innerHTML = `<div class="text-center p-6 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-2xl shadow-sm">No expenses on this date</div>`;
         }
 
-        // 🌟 แก้ไขฟังก์ชันดึงพิกัด (GPS) ให้มี Timeout ป้องกัน WebView ค้าง
+        // 🌟 แก้ไขฟังก์ชันดึงพิกัด (GPS) Timeout กันค้าง
         async function getCurrentLocation() { 
             return new Promise(res => { 
-                if(!navigator.geolocation) return res(""); 
+                if(!navigator.geolocation) {
+                    return res(""); 
+                }
                 
                 let isResolved = false;
                 const timeoutId = setTimeout(() => {
                     if(!isResolved) {
                         isResolved = true;
-                        res("");
+                        res(""); 
                     }
-                }, 3000); // หากระบบ GPS ค้างเกิน 3 วินาที จะบังคับข้ามทันที
+                }, 3000); 
 
                 navigator.geolocation.getCurrentPosition( 
                     p => {
@@ -1868,6 +2092,7 @@
             } 
         }
         
+        // 🌟 แก้ไขการหยุดค้างเวลากด Save ให้มี try...catch...finally ป้องกัน
         document.getElementById('expense-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             const det = document.getElementById('details').value;
@@ -1903,11 +2128,12 @@
                     receiptBase64 = null; 
                     receiptName = null; 
                     document.getElementById('receipt-text').innerText = "Add Receipt"; 
-                    loadDataFromSheet(); 
+                    await loadDataFromSheet(); 
                 } else {
                     showToast("Error", true); 
                 }
             } catch (err) {
+                console.error("Save error:", err);
                 showToast("Connection Error", true);
             } finally {
                 btn.disabled = false; 
@@ -1915,7 +2141,6 @@
             }
         });
 
-        // Subs & Goals Forms Handlers 
         document.getElementById('subs-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             const d = document.getElementById('subs-details').value;
@@ -1959,7 +2184,7 @@
                     triggerHaptic('success'); 
                     showToast("Subscription saved!"); 
                     cancelSubsEdit(); 
-                    loadDataFromSheet(); 
+                    await loadDataFromSheet(); 
                 } else {
                     showToast("Error", true); 
                 }
@@ -2110,7 +2335,7 @@
                     triggerHaptic('success'); 
                     showToast("Goal created!"); 
                     document.getElementById('goal-form').reset(); 
-                    loadDataFromSheet(); 
+                    await loadDataFromSheet(); 
                 } else {
                     showToast("Error", true); 
                 }
@@ -2171,7 +2396,7 @@
                     triggerHaptic('success'); 
                     showToast("Added to goal!"); 
                     closeAddFundModal(); 
-                    loadDataFromSheet(); 
+                    await loadDataFromSheet(); 
                 } else {
                     showToast("Error", true); 
                 }
@@ -2214,8 +2439,8 @@
             
             // 🌟 1. แปลง Data Format ป้องกันแครช
             let sorted = [...expenses].sort((a,b) => {
-                let dA = new Date((a.date || '') + ' ' + (a.time||'00:00'));
-                let dB = new Date((b.date || '') + ' ' + (b.time||'00:00'));
+                let dA = new Date(String(a.date || '') + ' ' + String(a.time||'00:00'));
+                let dB = new Date(String(b.date || '') + ' ' + String(b.time||'00:00'));
                 if(isNaN(dA)) dA = new Date(0); 
                 if(isNaN(dB)) dB = new Date(0);
                 
@@ -2308,7 +2533,6 @@
                 if (isInc) tIncH += amt; 
                 else tExpH += amt; 
                 
-                // 🌟 ป้องกัน .startsWith แครช
                 const isMatchMonth = summaryMonthVal === '' || String(item.date || '').startsWith(summaryMonthVal);
                 
                 if (isMatchMonth) {
@@ -2399,9 +2623,15 @@
                             <div class="text-right flex flex-col items-end ml-2 flex-shrink-0">
                                 <p class="text-base font-black text-rose-500">-${amt.toLocaleString()} THB</p>
                                 <div class="flex gap-2 mt-1.5 items-center">
-                                    <button onclick="paySubscription('${it.rowId}')" class="bg-violet-500 text-white px-2 py-1 rounded text-[9px] font-bold shadow-sm"><i class="fas fa-check-circle"></i> Pay</button>
-                                    <button onclick="openSubsEditForm('${it.rowId}')" class="text-slate-300 hover:text-amber-500 ml-1"><i class="fas fa-edit"></i></button>
-                                    <button onclick="deleteItem('${it.rowId}')" class="text-slate-300 hover:text-rose-500"><i class="fas fa-trash-alt"></i></button>
+                                    <button onclick="paySubscription('${it.rowId}')" class="text-white bg-violet-500 hover:bg-violet-600 px-2 py-1 rounded text-[9px] font-bold shadow-sm transition-colors flex items-center gap-1">
+                                        <i class="fas fa-check-circle"></i> Pay
+                                    </button>
+                                    <button onclick="openSubsEditForm('${it.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors ml-1">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteItem('${it.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </div>
                             </div>`;
                         subsList.appendChild(d);
@@ -2445,7 +2675,7 @@
                 const mD = document.createElement('div'); 
                 mD.className = "modern-card overflow-hidden border-none shadow-md mb-3"; 
                 mD.innerHTML = `
-                    <div onclick="toggleDay('${dt}')" class="p-4 flex justify-between items-center cursor-pointer hover:bg-violet-50/30">
+                    <div onclick="toggleDay('${dt}')" class="p-4 flex justify-between items-center cursor-pointer hover:bg-violet-50/30 transition-colors">
                         <div class="flex items-center gap-4">
                             <div class="w-11 h-11 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center font-black text-sm">${dt.split('-')[2]}</div>
                             <p class="text-xs font-bold text-slate-500 uppercase">${dt}</p>
@@ -2485,19 +2715,9 @@
             if(nB < 0) { bEl.classList.add('text-rose-500'); bEl.classList.remove('text-slate-800'); } 
             else { bEl.classList.remove('text-rose-500'); bEl.classList.add('text-slate-800'); }
             
-            const oC = document.getElementById('category-dashboard-list'); 
-            if(oC) { 
-                oC.innerHTML = ''; 
-                const sCat = Object.keys(catStats).map(k => ({label: k, val: catStats[k]})).sort((a,b) => b.val - a.val); 
-                const oT = sCat.reduce((sum, i) => sum + i.val, 0); 
-                sCat.forEach(i => { 
-                    let pNum = oT > 0 ? ((i.val / oT) * 100).toFixed(1) : "0"; 
-                    let pStr = String(pNum).endsWith('.0') ? String(pNum).slice(0,-2) : pNum;
-                    oC.innerHTML += `<div class="flex justify-between items-center text-xs px-3 py-3 border-b border-slate-50"><div class="flex items-center gap-3"><span class="w-3.5 h-3.5 rounded-full" style="background-color: ${globalColorsMap[i.label]||'#cbd5e1'}"></span><div class="flex items-baseline gap-2"><span class="font-bold text-slate-700">${i.label}</span><span class="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md">${pStr}%)</span></div></div><span class="font-black text-slate-800">${i.val.toLocaleString()} THB</span></div>`; 
-                }); 
-            }
-            
+            // 🌟 2. ป้องกัน Chart แครช
             function rChart(id, chrt, dO) { 
+                if (typeof Chart === 'undefined') return chrt;
                 const ctx = document.getElementById(id); 
                 if(!ctx) return chrt; 
                 const l = Object.keys(dO), v = Object.values(dO), c = l.map(cat => globalColorsMap[cat]||'#cbd5e1'); 
@@ -2523,7 +2743,7 @@
                 } 
                 const dT = sC.reduce((sum, i) => sum + i.val, 0); 
                 sC.forEach(i => { 
-                    let pNum = dT > 0 ? ((i.val / dT) * 100).toFixed(1) : "0";
+                    let pNum = dT > 0 ? ((i.val / dT) * 100).toFixed(1) : "0"; 
                     let pStr = String(pNum).endsWith('.0') ? String(pNum).slice(0,-2) : pNum;
                     lC.innerHTML += `<div class="flex justify-between items-center text-xs px-3 py-3 border-b border-slate-50"><div class="flex items-center gap-3"><span class="w-3.5 h-3.5 rounded-full" style="background-color: ${globalColorsMap[i.label]||'#cbd5e1'}"></span><div class="flex items-baseline gap-2"><span class="font-bold text-slate-700">${i.label}</span><span class="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md">${pStr}%)</span></div></div><span class="font-black text-slate-800">${i.val.toLocaleString()} THB</span></div>`; 
                 }); 
@@ -2562,7 +2782,7 @@
                                 </div>
                             </div>
                             ${!isC ? `
-                                <button onclick="openAddFundModal('${g.rowId}', '${g.name}')" class="w-full py-2.5 rounded-xl bg-violet-50 text-violet-600 text-xs font-bold flex items-center justify-center gap-2"><i class="fas fa-coins"></i> Add Fund</button>
+                                <button onclick="openAddFundModal('${g.rowId}', '${g.name}')" class="w-full py-2.5 rounded-xl bg-violet-50 text-violet-600 text-xs font-bold flex items-center justify-center gap-2 transition-colors"><i class="fas fa-coins"></i> Add Fund</button>
                             ` : `
                                 <div class="w-full py-2.5 rounded-xl bg-emerald-50 text-emerald-600 text-xs font-bold text-center flex items-center justify-center gap-2"><i class="fas fa-check-circle"></i> Goal Completed!</div>
                             `}
