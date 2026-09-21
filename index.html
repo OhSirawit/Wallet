@@ -31,22 +31,10 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         
-        .ambient-bg { 
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            z-index: -1; pointer-events: none; overflow: hidden; 
-        }
-        .ambient-glow-1 { 
-            position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vw; 
-            background: rgba(139, 92, 246, 0.2); border-radius: 50%; filter: blur(90px); 
-        }
-        .ambient-glow-2 { 
-            position: absolute; bottom: -10%; right: -10%; width: 60vw; height: 60vw; 
-            background: rgba(236, 72, 153, 0.15); border-radius: 50%; filter: blur(90px); 
-        }
-        .ambient-glow-3 { 
-            position: absolute; top: 40%; left: 40%; width: 50vw; height: 50vw; 
-            background: rgba(56, 189, 248, 0.15); border-radius: 50%; filter: blur(100px); 
-        }
+        .ambient-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; }
+        .ambient-glow-1 { position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vw; background: rgba(139, 92, 246, 0.2); border-radius: 50%; filter: blur(90px); }
+        .ambient-glow-2 { position: absolute; bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: rgba(236, 72, 153, 0.15); border-radius: 50%; filter: blur(90px); }
+        .ambient-glow-3 { position: absolute; top: 40%; left: 40%; width: 50vw; height: 50vw; background: rgba(56, 189, 248, 0.15); border-radius: 50%; filter: blur(100px); }
         
         .modern-card { 
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); 
@@ -54,14 +42,8 @@
             box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); transition: all 0.3s ease;
         }
         
-        .input-style { 
-            background: #f8fafc; border: 2px solid transparent; 
-            transition: all 0.3s ease; appearance: none; 
-        }
-        .input-style:focus { 
-            background: #ffffff; border-color: #c4b5fd; 
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); 
-        }
+        .input-style { background: #f8fafc; border: 2px solid transparent; transition: all 0.3s ease; appearance: none; }
+        .input-style:focus { background: #ffffff; border-color: #c4b5fd; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
         
         .btn-modern { 
             background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; 
@@ -72,33 +54,20 @@
         .btn-modern:active { transform: scale(0.96) translateY(0); box-shadow: 0 5px 10px rgba(219, 39, 119, 0.2); }
         
         .nav-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .nav-active { 
-            color: #8b5cf6 !important; font-weight: 800; background: #f5f3ff; 
-            border-radius: 100px; box-shadow: inset 0 2px 4px rgba(139, 92, 246, 0.05); 
-        }
+        .nav-active { color: #8b5cf6 !important; font-weight: 800; background: #f5f3ff; border-radius: 100px; box-shadow: inset 0 2px 4px rgba(139, 92, 246, 0.05); }
         
         .page-content { display: none; }
         .page-active { display: block; animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        @keyframes fadeUp { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
         .day-details { display: none; overflow: hidden; }
         .day-details.active { display: block; animation: fadeDown 0.3s ease-out forwards; }
-        @keyframes fadeDown { 
-            from { opacity: 0; transform: translateY(-10px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
         .rotate-icon { transition: transform 0.3s ease; }
         .rotated { transform: rotate(180deg); }
         
-        .menu-dropdown { 
-            opacity: 0; pointer-events: none; transform: translateY(-10px); 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
+        .menu-dropdown { opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .menu-dropdown.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
         
         #toast-notification { transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
@@ -110,41 +79,18 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* PIN Pad Styles */
-        .pin-dot { 
-            width: 16px; height: 16px; border-radius: 50%; 
-            border: 2px solid #8b5cf6; transition: all 0.2s ease; 
-        }
+        .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #8b5cf6; transition: all 0.2s ease; }
         .pin-dot.filled { background-color: #8b5cf6; transform: scale(1.1); }
-        .pin-btn { 
-            width: 70px; height: 70px; border-radius: 50%; display: flex; 
-            align-items: center; justify-content: center; font-size: 24px; 
-            font-weight: 700; color: #334155; background-color: #f8fafc; 
-            transition: all 0.1s ease; user-select: none; cursor: pointer;
-        }
+        .pin-btn { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: #334155; background-color: #f8fafc; transition: all 0.1s ease; user-select: none; cursor: pointer; }
         .pin-btn:active { background-color: #e2e8f0; transform: scale(0.9); }
-        
-        @keyframes shake { 
-            0%, 100% { transform: translateX(0); } 
-            20%, 60% { transform: translateX(-10px); } 
-            40%, 80% { transform: translateX(10px); } 
-        }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
         .shake-animation { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
 
-        /* Calendar Styles */
-        .calendar-cell { 
-            aspect-ratio: 1; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; border-radius: 12px; 
-            transition: all 0.2s ease; position: relative; 
-        }
+        .calendar-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; transition: all 0.2s ease; position: relative; }
 
         /* 🌙 Dark Mode Global Styles */
         body.dark-mode { background-color: #0f172a; color: #f8fafc; }
-        body.dark-mode .modern-card { 
-            background: rgba(30, 41, 59, 0.8) !important; 
-            border-color: rgba(255, 255, 255, 0.05) !important; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
-        }
+        body.dark-mode .modern-card { background: rgba(30, 41, 59, 0.8) !important; border-color: rgba(255, 255, 255, 0.05) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
         body.dark-mode .input-style { background: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important; }
         body.dark-mode .input-style:focus { background: #0f172a !important; border-color: #8b5cf6 !important; }
         body.dark-mode .bg-white { background-color: #1e293b !important; }
@@ -222,7 +168,7 @@
         </div>
     </div>
 
-    <!-- 🌟 Split Bill & QR Modal -->
+    <!-- Split Bill & QR Modal -->
     <div id="split-bill-modal" class="fixed inset-0 z-[300] bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center px-6 transition-opacity duration-300 opacity-0">
         <div class="modern-card p-6 w-full max-w-sm transform scale-95 transition-transform duration-300 border-none" id="split-bill-modal-content">
             <div class="flex justify-between items-start mb-4">
@@ -284,7 +230,7 @@
         </div>
     </div>
 
-    <!-- 🔒 PIN Lock Page -->
+    <!-- PIN Lock Page -->
     <div id="pin-page" class="fixed inset-0 z-[250] bg-slate-50 flex items-center justify-center hidden transition-opacity duration-300 opacity-0 overflow-hidden">
         <div class="ambient-bg">
             <div class="ambient-glow-1"></div>
@@ -413,12 +359,12 @@
                 <i class="fas fa-sparkles text-fuchsia-500 text-xs"></i> Expenses
             </div>
 
+            <!-- ปุ่มเปิดหน้าต่างหารบิล -->
             <div class="flex items-center justify-end gap-3 z-10 w-1/3">
-                <!-- 🌟 ปุ่มเปิด Modal หารบิล -->
                 <button onclick="openSplitBillModal()" class="w-10 h-10 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center transition-colors shadow-sm border border-blue-100 focus:outline-none" title="Split Bill">
                     <i class="fas fa-qrcode"></i>
                 </button>
-                <button id="menu-btn" onclick="toggleMenu(event)" class="text-slate-500 hover:text-violet-600 transition-colors focus:outline-none w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-50 shadow-sm border border-slate-100">
+                <button id="menu-btn" onclick="toggleMenu(event)" class="text-slate-500 hover:text-violet-600 transition-colors focus:outline-none w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-50 shadow-sm border border-slate-100 relative z-10">
                     <i class="fas fa-ellipsis-v"></i>
                 </button>
             </div>
@@ -507,7 +453,6 @@
                     </button>
                 </div>
 
-                <!-- Quick Add Favorites -->
                 <div id="quick-add-container" class="flex gap-2.5 overflow-x-auto pb-3 mb-3 scrollbar-hide">
                     <button type="button" onclick="quickAdd('60', 'Food', 'Coffee', 'Cash')" class="flex-shrink-0 bg-white border border-slate-100 px-4 py-2.5 rounded-xl shadow-sm text-[10px] font-bold text-slate-600 hover:text-violet-600 hover:border-violet-200 hover:bg-violet-50 transition-all flex items-center gap-1.5">
                         <i class="fas fa-coffee text-amber-500"></i> Coffee
@@ -527,7 +472,7 @@
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Amount <span class="text-rose-500">*</span></label>
                         <div class="relative">
-                            <input type="text" inputmode="decimal" id="amount" placeholder="0" class="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl p-5 text-4xl font-black text-slate-800 outline-none text-center focus:bg-white focus:border-violet-400 focus:ring-4 focus:ring-violet-400/10 transition-all" required oninput="formatNumberInput(event); this.setCustomValidity('')" oninvalid="this.setCustomValidity('Please complete this form.')">
+                            <input type="text" inputmode="decimal" id="amount" placeholder="0" class="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl p-5 text-4xl font-black text-slate-800 outline-none text-center focus:bg-white focus:border-violet-400 focus:ring-4 focus:ring-violet-400/10 transition-all" required oninput="formatNumberInput(event)">
                             <span class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm bg-white px-2 py-1 rounded-lg border border-slate-100 shadow-sm">THB</span>
                         </div>
                     </div>
@@ -831,6 +776,7 @@
                 </div>
             </div>
 
+            <!-- 🔍 Smart Search Bar -->
             <div class="relative w-full mb-4">
                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                     <i class="fas fa-search text-slate-400 text-sm"></i>
@@ -976,7 +922,7 @@
                         </div>
                     </div>
 
-                    <!-- 🔒 เพิ่มส่วนเปิดใช้งาน PIN Lock ในหน้า Profile -->
+                    <!-- 🔒 ส่วนเปิดใช้งาน PIN Lock -->
                     <div class="w-full space-y-3 mt-6 pt-4 border-t border-slate-100 text-left">
                         <div class="flex justify-between items-center">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">App Lock (PIN)</label>
@@ -1468,56 +1414,44 @@
             err.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking account status...';
             
             const res = await callApi("checkUser", { email: payload.email });
-            
-            if(res.status === "Success") {
-                if(res.userStatus === "Approved") {
-                    localStorage.setItem('loginTimestamp', Date.now().toString()); 
-                    localStorage.setItem('userEmail', payload.email); 
+            if(res.status === "Success" && res.userStatus === "Approved") {
+                localStorage.setItem('loginTimestamp', Date.now().toString()); 
+                localStorage.setItem('userEmail', payload.email); 
+                const finalPic = res.profilePic || payload.picture; 
+                const finalName = res.displayName || payload.name || payload.email.split('@')[0];
+                localStorage.setItem('userProfileImg', finalPic); 
+                localStorage.setItem('userDisplayName', finalName);
+                
+                document.getElementById('login-page').classList.add('opacity-0'); 
+                setTimeout(() => { 
+                    document.getElementById('date').valueAsDate = new Date(); 
+                    document.getElementById('subs-date-monthly').value = new Date().getDate(); 
+                    document.getElementById('subs-date-yearly').valueAsDate = new Date();
+                    document.getElementById('user-profile-img').src = finalPic; 
+                    document.getElementById('user-profile-img').classList.remove('hidden'); 
+                    document.getElementById('user-profile-icon').classList.add('hidden'); 
+                    document.getElementById('nav-display-name').innerText = finalName; 
+                    document.getElementById('login-page').classList.add('hidden'); 
                     
-                    const finalPic = res.profilePic || payload.picture; 
-                    const finalName = res.displayName || payload.name || payload.email.split('@')[0];
-                    localStorage.setItem('userProfileImg', finalPic); 
-                    localStorage.setItem('userDisplayName', finalName);
-                    
-                    document.getElementById('login-page').classList.add('opacity-0'); 
-                    setTimeout(() => { 
-                        document.getElementById('date').valueAsDate = new Date(); 
-                        document.getElementById('subs-date-monthly').value = new Date().getDate(); 
-                        document.getElementById('subs-date-yearly').valueAsDate = new Date();
-                        document.getElementById('user-profile-img').src = finalPic; 
-                        document.getElementById('user-profile-img').classList.remove('hidden'); 
-                        document.getElementById('user-profile-icon').classList.add('hidden'); 
-                        document.getElementById('nav-display-name').innerText = finalName; 
-                        document.getElementById('login-page').classList.add('hidden'); 
-                        
-                        if (localStorage.getItem('appPin')) {
-                            pinProcessMode = 'unlock'; 
-                            currentPinInput = ""; 
-                            document.getElementById('pin-title').innerText = "Enter PIN"; 
-                            document.getElementById('pin-icon').className = "fas fa-lock";
-                            updatePinUI(); 
-                            const p = document.getElementById('pin-page'); 
-                            p.classList.remove('hidden'); 
-                            setTimeout(() => { p.classList.remove('opacity-0'); }, 10);
-                        } else { 
-                            playSuccessSound(); 
-                            document.getElementById('main-app').classList.remove('hidden'); 
-                            loadDataFromSheet(); 
-                        }
-                    }, 500); 
-                } else if (res.userStatus === "Pending") { 
-                    err.classList.remove('text-violet-500'); 
-                    err.classList.add('text-amber-500'); 
-                    err.innerHTML = '<i class="fas fa-clock"></i> Waiting for Admin Approval'; 
-                } else { 
-                    err.classList.remove('text-violet-500'); 
-                    err.classList.add('text-rose-500'); 
-                    err.innerHTML = '<i class="fas fa-ban"></i> Access Denied'; 
-                }
+                    if (localStorage.getItem('appPin')) {
+                        pinProcessMode = 'unlock'; 
+                        currentPinInput = ""; 
+                        document.getElementById('pin-title').innerText = "Enter PIN"; 
+                        document.getElementById('pin-icon').className = "fas fa-lock";
+                        updatePinUI(); 
+                        const p = document.getElementById('pin-page'); 
+                        p.classList.remove('hidden'); 
+                        setTimeout(() => { p.classList.remove('opacity-0'); }, 10);
+                    } else { 
+                        playSuccessSound(); 
+                        document.getElementById('main-app').classList.remove('hidden'); 
+                        loadDataFromSheet(); 
+                    }
+                }, 500); 
             } else { 
                 err.classList.remove('text-violet-500'); 
                 err.classList.add('text-rose-500'); 
-                err.innerText = "System Error. Please try again."; 
+                err.innerHTML = res.userStatus === "Pending" ? '<i class="fas fa-clock"></i> Waiting for Admin' : '<i class="fas fa-ban"></i> Access Denied'; 
             }
         }
         
@@ -1606,7 +1540,13 @@
                 if(res.goals) goalsData = res.goals; 
             }
             updateTimestampDisplay(); 
-            updateUI();
+            
+            try {
+                updateUI();
+            } catch (error) {
+                console.error("UpdateUI Error:", error);
+                showToast("UI Error, please check console.", true);
+            }
         }
 
         async function saveProfile() {
@@ -1727,7 +1667,7 @@
             const exps = {};
             
             Object.keys(globalDailyCategoryStats).forEach(d => { 
-                if (d.startsWith(prefix)) { 
+                if (String(d || '').startsWith(prefix)) { 
                     let sum = 0; 
                     Object.values(globalDailyCategoryStats[d]).forEach(a => sum += a); 
                     exps[d] = sum; 
@@ -1772,7 +1712,7 @@
             triggerHaptic('light'); 
             const c = document.getElementById('calendar-day-details'); 
             c.innerHTML = '';
-            const dayExps = expenses.filter(x => x.date === dateStr && x.category !== 'Subscription_List'); 
+            const dayExps = expenses.filter(x => String(x.date || '') === dateStr && String(x.category || '') !== 'Subscription_List'); 
             let hasD = false;
             
             if (dayExps.length > 0) {
@@ -1832,7 +1772,49 @@
             if (!hasD) c.innerHTML = `<div class="text-center p-6 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-2xl shadow-sm">No expenses on this date</div>`;
         }
 
-        // --- Data Interaction Functions ---
+        // 🌟 แก้ไขฟังก์ชันดึงพิกัด (GPS) ให้มี Timeout ป้องกัน WebView ค้าง
+        async function getCurrentLocation() { 
+            return new Promise(res => { 
+                if(!navigator.geolocation) return res(""); 
+                
+                let isResolved = false;
+                const timeoutId = setTimeout(() => {
+                    if(!isResolved) {
+                        isResolved = true;
+                        res("");
+                    }
+                }, 3000); // หากระบบ GPS ค้างเกิน 3 วินาที จะบังคับข้ามทันที
+
+                navigator.geolocation.getCurrentPosition( 
+                    p => {
+                        if(!isResolved) {
+                            isResolved = true;
+                            clearTimeout(timeoutId);
+                            res(`https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`);
+                        }
+                    }, 
+                    () => {
+                        if(!isResolved) {
+                            isResolved = true;
+                            clearTimeout(timeoutId);
+                            res("");
+                        }
+                    }, 
+                    { enableHighAccuracy: false, timeout: 2500, maximumAge: 10000 } 
+                ); 
+            }); 
+        }
+
+        function exportToExcel() { 
+            triggerHaptic('light'); 
+            if (expenses.length === 0) { showToast("No data", true); return; } 
+            const ws = XLSX.utils.json_to_sheet(expenses); 
+            const wb = XLSX.utils.book_new(); 
+            XLSX.utils.book_append_sheet(wb, ws, "Expenses"); 
+            XLSX.writeFile(wb, `Wallet_${new Date().toISOString().slice(0,10)}.xlsx`); 
+        }
+
+        // --- Transactions / Goals ---
         function openEditForm(rowId) { 
             triggerHaptic('light'); 
             const item = expenses.find(x => x.rowId == rowId); 
@@ -1896,38 +1878,44 @@
             btn.disabled = true; 
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
             
-            const loc = document.getElementById('save-location').checked ? await getCurrentLocation() : "";
-            const payload = { 
-                date: document.getElementById('date').value, 
-                time: new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' }), 
-                payment: document.getElementById('payment').value, 
-                category: document.getElementById('category').value, 
-                details: det.trim(), 
-                amount: amt, 
-                location: loc, 
-                receiptBase64: receiptBase64, 
-                receiptName: receiptName, 
-                recordedBy: localStorage.getItem('userDisplayName') || 'Unknown' 
-            };
-            
-            const res = await callApi(editingRowId ? "edit" : "save", { ...payload, rowId: editingRowId || null });
-            
-            if(res.status === "Success") { 
-                playSuccessSound(); 
-                triggerHaptic('success'); 
-                showToast(editingRowId ? "Updated!" : "Saved!"); 
-                cancelEdit(); 
-                receiptBase64 = null; 
-                receiptName = null; 
-                document.getElementById('receipt-text').innerText = "Add Receipt"; 
-                loadDataFromSheet(); 
-            } else {
-                showToast("Error", true); 
+            try {
+                const loc = document.getElementById('save-location').checked ? await getCurrentLocation() : "";
+                const payload = { 
+                    date: document.getElementById('date').value, 
+                    time: new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' }), 
+                    payment: document.getElementById('payment').value, 
+                    category: document.getElementById('category').value, 
+                    details: det.trim(), 
+                    amount: amt, 
+                    location: loc, 
+                    receiptBase64: receiptBase64, 
+                    receiptName: receiptName, 
+                    recordedBy: localStorage.getItem('userDisplayName') || 'Unknown' 
+                };
+                
+                const res = await callApi(editingRowId ? "edit" : "save", { ...payload, rowId: editingRowId || null });
+                
+                if(res.status === "Success") { 
+                    playSuccessSound(); 
+                    triggerHaptic('success'); 
+                    showToast(editingRowId ? "Updated!" : "Saved!"); 
+                    cancelEdit(); 
+                    receiptBase64 = null; 
+                    receiptName = null; 
+                    document.getElementById('receipt-text').innerText = "Add Receipt"; 
+                    loadDataFromSheet(); 
+                } else {
+                    showToast("Error", true); 
+                }
+            } catch (err) {
+                showToast("Connection Error", true);
+            } finally {
+                btn.disabled = false; 
+                btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>';
             }
-            btn.disabled = false; 
-            btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>';
         });
 
+        // Subs & Goals Forms Handlers 
         document.getElementById('subs-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             const d = document.getElementById('subs-details').value;
@@ -1951,31 +1939,36 @@
             btn.disabled = true; 
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
             
-            const res = await callApi(editingSubsRowId ? "edit" : "save", { 
-                date: fd, 
-                time: new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' }), 
-                payment: fPay, 
-                category: "Subscription_List", 
-                details: d.trim(), 
-                amount: a, 
-                location: "", 
-                receiptBase64: null, 
-                receiptName: null, 
-                recordedBy: localStorage.getItem('userDisplayName') || 'Unknown', 
-                rowId: editingSubsRowId || null 
-            });
-            
-            if(res.status === "Success") { 
-                playSuccessSound(); 
-                triggerHaptic('success'); 
-                showToast("Subscription saved!"); 
-                cancelSubsEdit(); 
-                loadDataFromSheet(); 
-            } else {
-                showToast("Error", true); 
+            try {
+                const res = await callApi(editingSubsRowId ? "edit" : "save", { 
+                    date: fd, 
+                    time: new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' }), 
+                    payment: fPay, 
+                    category: "Subscription_List", 
+                    details: d.trim(), 
+                    amount: a, 
+                    location: "", 
+                    receiptBase64: null, 
+                    receiptName: null, 
+                    recordedBy: localStorage.getItem('userDisplayName') || 'Unknown', 
+                    rowId: editingSubsRowId || null 
+                });
+                
+                if(res.status === "Success") { 
+                    playSuccessSound(); 
+                    triggerHaptic('success'); 
+                    showToast("Subscription saved!"); 
+                    cancelSubsEdit(); 
+                    loadDataFromSheet(); 
+                } else {
+                    showToast("Error", true); 
+                }
+            } catch (err) {
+                showToast("Connection Error", true);
+            } finally {
+                btn.disabled = false; 
+                btn.innerHTML = 'Save Subscription';
             }
-            btn.disabled = false; 
-            btn.innerHTML = 'Save Subscription';
         });
 
         function cancelSubsEdit() { 
@@ -2006,8 +1999,9 @@
             showToast("Processing...");
             
             let bp = 'Credit Card / E-Wallet'; 
-            if(it.payment.includes('Cash')) bp = 'Cash'; 
-            else if(it.payment.includes('Bank Transfer')) bp = 'Internet Banking / QR Payment';
+            let paymentStr = String(it.payment || "");
+            if(paymentStr.includes('Cash')) bp = 'Cash'; 
+            else if(paymentStr.includes('Bank Transfer')) bp = 'Internet Banking / QR Payment';
             
             const res = await callApi("save", { 
                 date: new Date().toISOString().slice(0,10), 
@@ -2054,12 +2048,12 @@
                 let mn = "01"; 
                 
                 if (isNaN(p[1])) { 
-                    const mIdx = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].findIndex(m => m.toLowerCase() === p[1].toLowerCase()); 
+                    const mIdx = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].findIndex(m => m.toLowerCase() === String(p[1] || "").toLowerCase()); 
                     if(mIdx !== -1) mn = (mIdx + 1).toString().padStart(2, '0'); 
                 } else {
-                    mn = p[1].padStart(2, '0');
+                    mn = String(p[1] || "").padStart(2, '0');
                 }
-                if(p.length >= 2) document.getElementById('subs-date-yearly').value = `${y}-${mn}-${p[0].padStart(2, '0')}`; 
+                if(p.length >= 2) document.getElementById('subs-date-yearly').value = `${y}-${mn}-${String(p[0] || "").padStart(2, '0')}`; 
             } else { 
                 document.getElementById('subs-cycle').value = 'Monthly'; 
                 document.getElementById('subs-date-monthly').classList.remove('hidden'); 
@@ -2069,7 +2063,7 @@
                 document.getElementById('subs-date-monthly').value = parseInt(editDateStr) || new Date().getDate(); 
             }
             
-            let pStr = it.payment || '';
+            let pStr = String(it.payment || '');
             let bp = 'VISA';
             let cn = ''; 
             
@@ -2109,18 +2103,23 @@
             btn.disabled = true; 
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
             
-            const res = await callApi("saveGoal", { name: n, target: t, date: new Date().toISOString().slice(0,10) });
-            if (res.status === "Success") { 
-                playSuccessSound(); 
-                triggerHaptic('success'); 
-                showToast("Goal created!"); 
-                document.getElementById('goal-form').reset(); 
-                loadDataFromSheet(); 
-            } else {
-                showToast("Error", true); 
+            try {
+                const res = await callApi("saveGoal", { name: n, target: t, date: new Date().toISOString().slice(0,10) });
+                if (res.status === "Success") { 
+                    playSuccessSound(); 
+                    triggerHaptic('success'); 
+                    showToast("Goal created!"); 
+                    document.getElementById('goal-form').reset(); 
+                    loadDataFromSheet(); 
+                } else {
+                    showToast("Error", true); 
+                }
+            } catch (err) {
+                showToast("Connection Error", true);
+            } finally {
+                btn.disabled = false; 
+                btn.innerHTML = 'Create Goal <i class="fas fa-flag"></i>';
             }
-            btn.disabled = false; 
-            btn.innerHTML = 'Create Goal <i class="fas fa-flag"></i>';
         });
 
         function openAddFundModal(goalId, goalName) { 
@@ -2158,28 +2157,33 @@
             btn.disabled = true; 
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
             
-            const res = await callApi("addFund", { 
-                goalId: document.getElementById('fund-goal-id').value, 
-                amount: a, 
-                date: new Date().toISOString().slice(0,10), 
-                time: new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' }), 
-                recordedBy: localStorage.getItem('userDisplayName') || 'Unknown' 
-            });
-            
-            if (res.status === "Success") { 
-                playSuccessSound(); 
-                triggerHaptic('success'); 
-                showToast("Added to goal!"); 
-                closeAddFundModal(); 
-                loadDataFromSheet(); 
-            } else {
-                showToast("Error", true); 
+            try {
+                const res = await callApi("addFund", { 
+                    goalId: document.getElementById('fund-goal-id').value, 
+                    amount: a, 
+                    date: new Date().toISOString().slice(0,10), 
+                    time: new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' }), 
+                    recordedBy: localStorage.getItem('userDisplayName') || 'Unknown' 
+                });
+                
+                if (res.status === "Success") { 
+                    playSuccessSound(); 
+                    triggerHaptic('success'); 
+                    showToast("Added to goal!"); 
+                    closeAddFundModal(); 
+                    loadDataFromSheet(); 
+                } else {
+                    showToast("Error", true); 
+                }
+            } catch (err) {
+                showToast("Connection Error", true);
+            } finally {
+                btn.disabled = false; 
+                btn.innerHTML = 'Add Fund';
             }
-            btn.disabled = false; 
-            btn.innerHTML = 'Add Fund';
         }
 
-        // --- Update Main Data ---
+        // --- Core Update UI ---
         function updateUI() {
             const list = document.getElementById('history-list');
             const stats = document.getElementById('stats-container');
@@ -2208,9 +2212,10 @@
             
             let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
             
+            // 🌟 1. แปลง Data Format ป้องกันแครช
             let sorted = [...expenses].sort((a,b) => {
-                let dA = new Date(a.date + ' ' + (a.time||'00:00'));
-                let dB = new Date(b.date + ' ' + (b.time||'00:00'));
+                let dA = new Date((a.date || '') + ' ' + (a.time||'00:00'));
+                let dB = new Date((b.date || '') + ' ' + (b.time||'00:00'));
                 if(isNaN(dA)) dA = new Date(0); 
                 if(isNaN(dB)) dB = new Date(0);
                 
@@ -2222,11 +2227,11 @@
                 
                 if (sortType === 'latest') return expenses.indexOf(b) - expenses.indexOf(a); 
                 if (sortType === 'date') return dB - dA; 
-                if (sortType === 'payment') return a.payment === b.payment ? dB - dA : a.payment.localeCompare(b.payment); 
-                if (sortType === 'category') return a.category === b.category ? dB - dA : a.category.localeCompare(b.category); 
+                if (sortType === 'payment') return String(a.payment||'').localeCompare(String(b.payment||'')); 
+                if (sortType === 'category') return String(a.category||'').localeCompare(String(b.category||'')); 
                 if (sortType === 'price-high') return vB - vA; 
                 if (sortType === 'price-low') return vA - vB; 
-                if (sortType === 'user') return (a.recordedBy||"") === (b.recordedBy||"") ? dB - dA : (a.recordedBy||"").localeCompare(b.recordedBy||""); 
+                if (sortType === 'user') return String(a.recordedBy||"").localeCompare(String(b.recordedBy||"")); 
                 return 0;
             });
 
@@ -2240,16 +2245,22 @@
             let renderExps = regExps;
             if (searchKeyword !== "") { 
                 renderExps = renderExps.filter(i => 
-                    (i.details && i.details.toLowerCase().includes(searchKeyword)) || 
-                    (i.category && i.category.toLowerCase().includes(searchKeyword)) || 
-                    (i.amount && i.amount.toString().includes(searchKeyword))
+                    String(i.details || '').toLowerCase().includes(searchKeyword) || 
+                    String(i.category || '').toLowerCase().includes(searchKeyword) || 
+                    String(i.amount || '').includes(searchKeyword) ||
+                    String(i.payment || '').toLowerCase().includes(searchKeyword)
                 ); 
             }
             
             renderExps.slice(0, currentHistoryLimit).forEach((item) => {
                 const isInc = ["Salary", "Extra Income", "Other Income"].includes(item.category);
                 const amt = parseFloat(item.amount) || 0; 
-                let rec = item.recordedBy && item.recordedBy !== '-' ? `<span class="text-[8.5px] font-bold bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fas fa-user-circle mr-1"></i>${item.recordedBy}</span>` : "";
+                let recordedByText = "";
+                
+                // 🌟 ป้องกัน .trim() แครช
+                if (item.recordedBy && String(item.recordedBy) !== '-' && String(item.recordedBy) !== 'undefined' && String(item.recordedBy).trim() !== '') { 
+                    recordedByText = `<span class="text-[8.5px] font-bold bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fas fa-user-circle mr-1"></i>${item.recordedBy}</span>`; 
+                }
                 
                 const div = document.createElement('div'); 
                 div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md hover:shadow-lg transition-shadow"; 
@@ -2265,7 +2276,7 @@
                             </div>
                             <div class="flex items-center gap-2 mt-1">
                                 <p class="text-[10px] font-bold text-slate-400 truncate max-w-[100px]">${item.details || "-"}</p>
-                                ${rec}
+                                ${recordedByText}
                             </div>
                         </div>
                     </div>
@@ -2297,7 +2308,10 @@
                 if (isInc) tIncH += amt; 
                 else tExpH += amt; 
                 
-                if (summaryMonthVal === '' || item.date.startsWith(summaryMonthVal)) {
+                // 🌟 ป้องกัน .startsWith แครช
+                const isMatchMonth = summaryMonthVal === '' || String(item.date || '').startsWith(summaryMonthVal);
+                
+                if (isMatchMonth) {
                     if (isInc) {
                         tIncS += amt; 
                     } else { 
@@ -2329,7 +2343,7 @@
             } else {
                 subExps.forEach(it => {
                     const amt = parseFloat(it.amount) || 0; 
-                    let pT = it.payment || '';
+                    let pT = String(it.payment || '');
                     let pI = '<i class="fas fa-credit-card"></i>';
                     
                     if(pT.includes('VISA')) pI = '💳'; 
@@ -2344,7 +2358,7 @@
                         tSub += (amt / 12); 
                         const pts = cDisp.split('-'); 
                         const iD = parseInt(pts[0]);
-                        const iM = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].findIndex(m=>m.toLowerCase()===pts[1].toLowerCase())+1; 
+                        const iM = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].findIndex(m=>m.toLowerCase()===String(pts[1]||'').toLowerCase())+1; 
                         
                         if (iM === cM) { 
                             if (iD === cD) dL = 0; 
@@ -2385,7 +2399,7 @@
                             <div class="text-right flex flex-col items-end ml-2 flex-shrink-0">
                                 <p class="text-base font-black text-rose-500">-${amt.toLocaleString()} THB</p>
                                 <div class="flex gap-2 mt-1.5 items-center">
-                                    <button onclick="paySubscription('${it.rowId}')" class="bg-violet-500 text-white px-2 py-1 rounded text-[9px] font-bold"><i class="fas fa-check-circle"></i> Pay</button>
+                                    <button onclick="paySubscription('${it.rowId}')" class="bg-violet-500 text-white px-2 py-1 rounded text-[9px] font-bold shadow-sm"><i class="fas fa-check-circle"></i> Pay</button>
                                     <button onclick="openSubsEditForm('${it.rowId}')" class="text-slate-300 hover:text-amber-500 ml-1"><i class="fas fa-edit"></i></button>
                                     <button onclick="deleteItem('${it.rowId}')" class="text-slate-300 hover:text-rose-500"><i class="fas fa-trash-alt"></i></button>
                                 </div>
