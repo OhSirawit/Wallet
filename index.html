@@ -351,6 +351,19 @@
         </div>
     </div>
 
+    <!-- Receipt Viewer Modal (เพิ่มใหม่) -->
+    <div id="receipt-modal" class="fixed inset-0 z-[400] bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0" onclick="closeReceiptModal()">
+        <div class="relative w-full max-w-lg flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+            <!-- ปุ่มปิดหน้าต่าง -->
+            <button onclick="closeReceiptModal()" class="absolute -top-12 right-0 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full text-white flex items-center justify-center transition-colors shadow-lg z-10">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+            <!-- รูปภาพใบเสร็จ -->
+            <img id="receipt-modal-img" src="" alt="Receipt Viewer" class="w-auto max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain transform scale-95 transition-transform duration-300 border border-white/10">
+            <p class="text-white/60 text-[10px] mt-4 font-medium tracking-widest uppercase">Tap outside to close</p>
+        </div>
+    </div>
+
     <!-- Login Page -->
     <div id="login-page" class="fixed inset-0 z-[200] bg-slate-50 flex items-center justify-center px-6 transition-opacity duration-500 overflow-y-auto">
         <div class="ambient-bg">
@@ -974,7 +987,7 @@
     </div>
 
     <script>
-        // ------------------ URL ล่าสุดของคุณ ------------------
+        // URL SCRIPT ของคุณ[cite: 1]
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzt5OSS0xZUfdmsdpyxusHEeqof7qPWv3bQ39BX_mrk8jO9OviMCdzHuxeLuwoY_3td/exec'; 
         
         const FIXED_BUDGET = 0; 
@@ -1050,6 +1063,37 @@
                 playNote(1046.50, ctx.currentTime, 0.15); 
                 playNote(1318.51, ctx.currentTime + 0.1, 0.4); 
             } catch(e) { console.log("Audio not supported or blocked"); }
+        }
+
+        // 🌟 ฟังก์ชันพรีวิวใบเสร็จ (In-app Receipt Viewer)
+        function openReceiptModal(url) {
+            triggerHaptic('light');
+            const modal = document.getElementById('receipt-modal');
+            const img = document.getElementById('receipt-modal-img');
+            
+            img.src = url;
+            modal.classList.remove('hidden');
+            
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                img.classList.remove('scale-95');
+                img.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeReceiptModal() {
+            triggerHaptic('light');
+            const modal = document.getElementById('receipt-modal');
+            const img = document.getElementById('receipt-modal-img');
+            
+            modal.classList.add('opacity-0');
+            img.classList.remove('scale-100');
+            img.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                img.src = ''; // เคลียร์รูปออกเพื่อไม่ให้ค้าง
+            }, 300);
         }
 
         // 🌟 1. ฟังก์ชันใส่ลูกน้ำอัตโนมัติ (Auto Comma)
@@ -2437,6 +2481,8 @@
 
                 const div = document.createElement('div'); 
                 div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow"; 
+                
+                // 🛑 เปลี่ยนจากลิงก์ <a> เป็น <button onclick="openReceiptModal(...)"> 🛑
                 div.innerHTML = `
                     <div class="flex gap-3.5 items-center text-left w-full overflow-hidden">
                         <div class="w-12 h-12 flex-shrink-0 ${isIncome ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow-emerald-500/30' : 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 border border-white'} rounded-2xl flex items-center justify-center shadow-md">
@@ -2457,7 +2503,7 @@
                         <span class="text-[9px] font-bold text-slate-400 mb-0.5"><i class="far fa-clock mr-1"></i>${item.date} ${item.time || ''}</span>
                         <p class="text-lg font-black ${isIncome ? 'text-emerald-500' : 'text-slate-800'} leading-none mt-1">${isIncome ? '+' : '-'}${amt.toLocaleString()}</p>
                         <div class="flex justify-end gap-3 mt-1.5 items-center">
-                            ${item.receipt ? `<a href="${item.receipt}" target="_blank" class="text-slate-300 hover:text-violet-500 transition-colors"><i class="fas fa-image"></i></a>` : ''}
+                            ${item.receipt ? `<button type="button" onclick="openReceiptModal('${item.receipt}')" class="text-slate-300 hover:text-violet-500 transition-colors"><i class="fas fa-image"></i></button>` : ''}
                             ${item.location ? `<a href="${item.location}" target="_blank" class="text-slate-300 hover:text-blue-500 transition-colors"><i class="fas fa-location-dot"></i></a>` : ''}
                             <button onclick="openEditForm('${item.rowId}')" class="text-slate-300 hover:text-amber-500 transition-colors ml-1"><i class="fas fa-edit"></i></button>
                             <button onclick="deleteItem('${item.rowId}')" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>
