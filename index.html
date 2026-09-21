@@ -17,6 +17,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- 🛑 นำเข้าไลบรารี OCR สำหรับสแกนสลิป -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
@@ -82,7 +84,7 @@
             border: 1px solid rgba(255, 255, 255, 1); 
             border-radius: 24px; 
             box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); 
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; 
         }
         
         .input-style { 
@@ -149,7 +151,7 @@
         
         .day-details.active { 
             display: block; 
-            animation: fadeDown 0.3s ease-out forwards;
+            animation: fadeDown 0.3s ease-out forwards; 
         }
         
         @keyframes fadeDown { 
@@ -190,16 +192,17 @@
             background: #c4b5fd; 
             border-radius: 4px; 
         }
-
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
+        
+        .scrollbar-hide::-webkit-scrollbar { 
+            display: none; 
         }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        
+        .scrollbar-hide { 
+            -ms-overflow-style: none; 
+            scrollbar-width: none; 
         }
 
-        /* 🌙 Dark Mode Global Styles */
+        /* 🌙 Dark Mode */
         body.dark-mode { 
             background-color: #0f172a; 
             color: #f8fafc; 
@@ -298,6 +301,11 @@
         <div class="ambient-glow-3"></div>
     </div>
 
+    <!-- 🛑 Offline Banner -->
+    <div id="offline-banner" class="hidden bg-rose-500 text-white text-[10px] font-bold text-center py-1.5 w-full fixed top-0 z-[400] shadow-md transition-all">
+        <i class="fas fa-wifi-slash mr-1"></i> Offline Mode - Data will sync automatically when online.
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast-notification" class="fixed top-8 left-1/2 transform -translate-x-1/2 z-[100] -translate-y-32 opacity-0 pointer-events-none w-auto whitespace-nowrap">
         <div id="toast-bg" class="bg-white/90 backdrop-blur-md border border-slate-100 text-slate-800 px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-3">
@@ -329,7 +337,6 @@
         </div>
         
         <div class="modern-card p-8 w-full max-w-sm text-center border-none shadow-2xl shadow-purple-500/10 my-8">
-            
             <div class="w-24 h-24 mx-auto mb-6 relative group cursor-default">
                 <div class="absolute inset-1 bg-gradient-to-tr from-fuchsia-500 to-violet-500 rounded-[2rem] blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div class="absolute inset-0 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-[2rem] transform -rotate-3 group-hover:rotate-0 transition-all duration-500 shadow-2xl flex items-center justify-center overflow-hidden border border-white/30 backdrop-blur-xl">
@@ -394,7 +401,7 @@
     </div>
 
     <!-- Main Application Container -->
-    <div id="main-app" class="hidden">
+    <div id="main-app" class="hidden mt-6">
         
         <!-- Top Navigation -->
         <nav class="sticky top-0 z-50 px-6 py-4 bg-white/70 backdrop-blur-xl border-b border-slate-100 flex justify-between items-center relative">
@@ -417,7 +424,6 @@
             <!-- Dropdown Menu -->
             <div id="top-menu" class="menu-dropdown absolute top-16 right-6 w-64 max-h-[75vh] overflow-y-auto modern-card p-2 z-50 shadow-2xl border-none">
                 <ul class="flex flex-col space-y-1">
-                    <!-- 🌙 โหมดกลางคืน (Dark Mode Toggle) -->
                     <li>
                         <button onclick="toggleDarkMode(); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
                             <i class="fas fa-moon w-4 text-violet-500" id="dark-mode-icon"></i> <span id="dark-mode-text">Dark Mode</span>
@@ -752,11 +758,22 @@
         
         <!-- PAGE: SUMMARY (STATS) -->
         <div id="page-analytics" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 tracking-tight">Summary</h2>
-                <div class="relative bg-white rounded-xl border border-slate-100 shadow-sm">
-                    <input type="month" id="summary-month-filter" onchange="updateUI()" class="bg-transparent text-violet-600 text-[10px] font-bold px-3 py-2 outline-none appearance-none cursor-pointer w-[120px]">
+                <!-- 📊 Toggle Monthly / Yearly -->
+                <div class="flex bg-slate-100 rounded-lg p-1 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <button id="btn-view-monthly" onclick="setSummaryView('monthly')" class="text-[10px] font-bold px-3 py-1.5 rounded-md bg-white shadow-sm text-violet-600 dark:bg-slate-700 dark:text-violet-400 transition-all">Monthly</button>
+                    <button id="btn-view-yearly" onclick="setSummaryView('yearly')" class="text-[10px] font-bold px-3 py-1.5 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-all">Yearly</button>
                 </div>
+            </div>
+            
+            <div class="flex justify-end mb-4">
+                <input type="month" id="summary-month-filter" onchange="updateUI()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-violet-600 text-[10px] font-bold px-3 py-2 outline-none shadow-sm cursor-pointer w-[120px]">
+                <select id="summary-year-filter" onchange="updateUI()" class="hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-violet-600 text-[10px] font-bold px-3 py-2 outline-none shadow-sm cursor-pointer w-[120px]">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                </select>
             </div>
             
             <div class="modern-card p-6 text-center space-y-4 relative overflow-hidden border-none shadow-lg shadow-slate-200/50">
@@ -775,16 +792,24 @@
                     </div>
                 </div>
             </div>
+
+            <!-- กราฟรายปี (Yearly View) -->
+            <div id="yearly-chart-container" class="hidden modern-card p-6 border-none shadow-lg shadow-slate-200/50 mt-4">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-4">Monthly Expenses</h3>
+                <canvas id="yearlyChart"></canvas>
+            </div>
             
-            <h3 class="text-xs font-bold text-violet-500 uppercase tracking-widest pt-2 flex items-center gap-2">
-                <i class="fas fa-wallet"></i> By Payment
-            </h3>
-            <div id="payment-summary-container" class="grid grid-cols-2 gap-3"></div>
-            
-            <h3 class="text-xs font-bold text-fuchsia-500 uppercase tracking-widest pt-2 flex items-center gap-2">
-                <i class="fas fa-calendar-day"></i> Daily Log
-            </h3>
-            <div id="stats-container" class="space-y-3"></div>
+            <div id="monthly-stats-container">
+                <h3 class="text-xs font-bold text-violet-500 uppercase tracking-widest pt-2 flex items-center gap-2">
+                    <i class="fas fa-wallet"></i> By Payment
+                </h3>
+                <div id="payment-summary-container" class="grid grid-cols-2 gap-3 mt-3"></div>
+                
+                <h3 class="text-xs font-bold text-fuchsia-500 uppercase tracking-widest pt-4 flex items-center gap-2">
+                    <i class="fas fa-calendar-day"></i> Daily Log
+                </h3>
+                <div id="stats-container" class="space-y-3 mt-3"></div>
+            </div>
         </div>
 
         <!-- PAGE: DASHBOARD -->
@@ -901,10 +926,10 @@
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwK8g1RqzsULPJJWKq1s7rTzEOGXyodufh-UWa5a-38eD-jgez6sgkgcOqKPD9KIABx/exec'; 
         
-        const FIXED_BUDGET = 0; 
         let expenses = []; 
         let myOverallCategoryChart = null; 
         let myDailyCategoryChart = null; 
+        let myYearlyChart = null;
         let globalDailyCategoryStats = {};
         
         let receiptBase64 = null;
@@ -918,24 +943,73 @@
         let currentHistoryLimit = 20;
 
         const globalColorsMap = { 
-            'Food': '#ec4899', 
-            'Transport': '#3b82f6', 
-            'Gasoline': '#eab308', 
-            'Shopping': '#8b5cf6', 
-            'Bills': '#f97316', 
-            'Subscription': '#6366f1',
-            'Housing': '#6366f1', 
-            'Health': '#d946ef', 
-            'Entertainment': '#0ea5e9', 
-            'Other': '#64748b', 
-            'Salary': '#10b981', 
-            'Extra Income': '#34d399', 
-            'Other Income': '#6ee7b7',
-            'Invest': '#0284c7', 
-            'Invest_Other': '#38bdf8'
+            'Food': '#ec4899', 'Transport': '#3b82f6', 'Gasoline': '#eab308', 'Shopping': '#8b5cf6', 
+            'Bills': '#f97316', 'Subscription': '#6366f1', 'Housing': '#6366f1', 'Health': '#d946ef', 
+            'Entertainment': '#0ea5e9', 'Other': '#64748b', 'Salary': '#10b981', 'Extra Income': '#34d399', 
+            'Other Income': '#6ee7b7', 'Invest': '#0284c7', 'Invest_Other': '#38bdf8'
         };
 
-        // ฟังก์ชันสุ่มสีให้หมวดหมู่ใหม่ที่ดึงมาจาก Sheet แล้วไม่มีสีในระบบ
+        // 🌟 Auto-Sync Offline Mode
+        window.addEventListener('online', () => {
+            document.getElementById('offline-banner').classList.add('hidden');
+            syncOfflineData();
+        });
+
+        window.addEventListener('offline', () => {
+            document.getElementById('offline-banner').classList.remove('hidden');
+        });
+
+        async function syncOfflineData() {
+            let queue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+            if (queue.length === 0) return;
+            
+            showToast(`Syncing ${queue.length} offline records...`);
+            let successCount = 0;
+            
+            for (let i = 0; i < queue.length; i++) {
+                let req = queue[i];
+                try {
+                    let res = await callApi(req.action, req.payload);
+                    if (res.status === "Success") {
+                        successCount++;
+                    }
+                } catch(e) {
+                    console.log(e);
+                }
+            }
+            
+            localStorage.removeItem('offlineQueue');
+            showToast(`Synced ${successCount} records!`);
+            loadDataFromSheet();
+        }
+
+        // 🌟 Yearly Dashboard Toggle
+        function setSummaryView(type) {
+            const btnMonth = document.getElementById('btn-view-monthly');
+            const btnYear = document.getElementById('btn-view-yearly');
+            const monthFilter = document.getElementById('summary-month-filter');
+            const yearFilter = document.getElementById('summary-year-filter');
+            const yearlyChartContainer = document.getElementById('yearly-chart-container');
+            const monthlyStatsContainer = document.getElementById('monthly-stats-container');
+
+            if(type === 'monthly') {
+                btnMonth.className = "text-[10px] font-bold px-3 py-1.5 rounded-md bg-white shadow-sm text-violet-600 dark:bg-slate-700 dark:text-violet-400 transition-all";
+                btnYear.className = "text-[10px] font-bold px-3 py-1.5 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-all";
+                monthFilter.classList.remove('hidden');
+                yearFilter.classList.add('hidden');
+                yearlyChartContainer.classList.add('hidden');
+                monthlyStatsContainer.classList.remove('hidden');
+            } else {
+                btnYear.className = "text-[10px] font-bold px-3 py-1.5 rounded-md bg-white shadow-sm text-violet-600 dark:bg-slate-700 dark:text-violet-400 transition-all";
+                btnMonth.className = "text-[10px] font-bold px-3 py-1.5 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-all";
+                monthFilter.classList.add('hidden');
+                yearFilter.classList.remove('hidden');
+                yearlyChartContainer.classList.remove('hidden');
+                monthlyStatsContainer.classList.add('hidden');
+            }
+            updateUI();
+        }
+
         function getRandomColor(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -985,8 +1059,10 @@
             }
             
             Chart.defaults.color = isDark ? '#94a3b8' : '#64748b';
+            
             if(myOverallCategoryChart) myOverallCategoryChart.update();
             if(myDailyCategoryChart) myDailyCategoryChart.update();
+            if(myYearlyChart) myYearlyChart.update();
         }
 
         function setMonthlyBudget() {
@@ -1019,8 +1095,8 @@
                 tempOpt.text = "🔄 " + category;
                 catSelect.appendChild(tempOpt);
             }
-            catSelect.value = category;
             
+            catSelect.value = category;
             document.getElementById('details').value = details;
             
             if (payment) {
@@ -1045,7 +1121,9 @@
             
             if (type === 'subs-payment') {
                 const el = document.getElementById('subs-payment-selected');
-                if (el) el.innerHTML = displayHtml;
+                if (el) {
+                    el.innerHTML = displayHtml;
+                }
             }
         }
 
@@ -1110,14 +1188,10 @@
             const timeString = `Updated : ${day} ${month} ${year} : ${strHours}:${minutes}:${seconds} ${ampm}`;
             
             const updateElCard = document.getElementById('last-updated-text-card');
-            if(updateElCard) {
-                updateElCard.innerText = timeString;
-            }
+            if(updateElCard) updateElCard.innerText = timeString;
             
             const updateEl = document.getElementById('last-updated-text');
-            if(updateEl) {
-                updateEl.innerText = timeString;
-            }
+            if(updateEl) updateEl.innerText = timeString;
         }
 
         async function callApi(action, payload = {}) {
@@ -1134,7 +1208,6 @@
             }
         }
 
-        // 🌟 ดึงหมวดหมู่จาก Google Sheets
         async function loadCategories() {
             try {
                 const res = await callApi("getCategories");
@@ -1143,8 +1216,8 @@
                     catSelect.innerHTML = ''; 
                     
                     const groups = [
-                        { key: 'EXPENSES', label: 'EXPENSES' },
-                        { key: 'INCOME', label: 'INCOME' },
+                        { key: 'EXPENSES', label: 'EXPENSES' }, 
+                        { key: 'INCOME', label: 'INCOME' }, 
                         { key: 'INVESTMENT', label: 'INVESTMENT' }
                     ];
 
@@ -1163,7 +1236,7 @@
                     });
                 }
             } catch (e) {
-                console.log("Failed to load dynamic categories, using defaults.");
+                console.log("Failed to load dynamic categories.");
             }
         }
 
@@ -1180,26 +1253,30 @@
                 updateDarkModeUI(true);
             }
 
+            if (!navigator.onLine) {
+                document.getElementById('offline-banner').classList.remove('hidden');
+            }
+
             if (loginTimestamp && (now - parseInt(loginTimestamp)) < SEVEN_DAYS) {
                 localStorage.setItem('loginTimestamp', now.toString());
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
                 
-                document.getElementById('date').valueAsDate = new Date(); 
+                document.getElementById('date').valueAsDate = new Date();
                 document.getElementById('subs-date-monthly').value = new Date().getDate();
                 document.getElementById('subs-date-yearly').valueAsDate = new Date();
                 
                 const profileImg = localStorage.getItem('userProfileImg');
                 const displayName = localStorage.getItem('userDisplayName');
                 
-                if(profileImg) { 
-                    document.getElementById('user-profile-img').src = profileImg; 
-                    document.getElementById('user-profile-img').classList.remove('hidden'); 
-                    document.getElementById('user-profile-icon').classList.add('hidden'); 
+                if(profileImg) {
+                    document.getElementById('user-profile-img').src = profileImg;
+                    document.getElementById('user-profile-img').classList.remove('hidden');
+                    document.getElementById('user-profile-icon').classList.add('hidden');
                 }
                 
-                if(displayName) { 
-                    document.getElementById('nav-display-name').innerText = displayName; 
+                if(displayName) {
+                    document.getElementById('nav-display-name').innerText = displayName;
                 }
                 
                 loadCategories();
@@ -1210,17 +1287,42 @@
                 document.getElementById('main-app').classList.add('hidden');
             }
 
-            document.getElementById('receipt-file').addEventListener('change', function(e) {
+            // 🌟 3. Slip OCR Scanner Logic
+            document.getElementById('receipt-file').addEventListener('change', async function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
                 
-                document.getElementById('receipt-text').innerText = file.name;
+                const btnText = document.getElementById('receipt-text');
+                btnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scanning Slip...';
+                
                 const reader = new FileReader();
-                reader.onload = function(event) { 
-                    receiptBase64 = event.target.result; 
-                    receiptName = file.name; 
+                reader.onload = function(event) {
+                    receiptBase64 = event.target.result;
+                    receiptName = file.name;
                 };
                 reader.readAsDataURL(file);
+
+                try {
+                    const worker = await Tesseract.createWorker('eng');
+                    const result = await worker.recognize(file);
+                    await worker.terminate();
+                    
+                    const text = result.data.text;
+                    const amounts = text.match(/\b\d{1,3}(,\d{3})*\.\d{2}\b/g);
+                    
+                    if (amounts && amounts.length > 0) {
+                        const maxAmt = Math.max(...amounts.map(a => parseFloat(a.replace(/,/g, ''))));
+                        if (maxAmt > 0) {
+                            document.getElementById('amount').value = maxAmt;
+                            formatNumberInput({target: document.getElementById('amount')});
+                            showToast(`Scanned Amount: ${maxAmt.toLocaleString()} THB`);
+                        }
+                    }
+                } catch(err) {
+                    console.log("OCR Error:", err);
+                }
+                
+                btnText.innerText = "Slip Attached";
             });
 
             document.getElementById('profile-pic-upload').addEventListener('change', function(e) {
@@ -1228,10 +1330,10 @@
                 if (!file) return;
                 
                 const reader = new FileReader();
-                reader.onload = function(event) { 
-                    newProfilePicBase64 = event.target.result; 
-                    newProfilePicName = file.name; 
-                    document.getElementById('profile-preview').src = newProfilePicBase64; 
+                reader.onload = function(event) {
+                    newProfilePicBase64 = event.target.result;
+                    newProfilePicName = file.name;
+                    document.getElementById('profile-preview').src = newProfilePicBase64;
                 };
                 reader.readAsDataURL(file);
             });
@@ -1242,7 +1344,7 @@
             const userEmail = responsePayload.email;
             
             const loginError = document.getElementById('login-error');
-            loginError.classList.remove('hidden', 'text-rose-500'); 
+            loginError.classList.remove('hidden', 'text-rose-500');
             loginError.classList.add('text-violet-500');
             loginError.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking account status...';
 
@@ -1250,114 +1352,115 @@
             
             if(res.status === "Success") {
                 if(res.userStatus === "Approved") {
-                    localStorage.setItem('loginTimestamp', Date.now().toString()); 
+                    localStorage.setItem('loginTimestamp', Date.now().toString());
                     localStorage.setItem('userEmail', userEmail); 
                     
-                    const finalPic = res.profilePic || responsePayload.picture; 
+                    const finalPic = res.profilePic || responsePayload.picture;
                     const finalName = res.displayName || responsePayload.name || userEmail.split('@')[0];
                     
-                    localStorage.setItem('userProfileImg', finalPic); 
+                    localStorage.setItem('userProfileImg', finalPic);
                     localStorage.setItem('userDisplayName', finalName);
                     
                     document.getElementById('login-page').classList.add('opacity-0'); 
+                    
                     setTimeout(() => { 
-                        document.getElementById('login-page').classList.add('hidden'); 
+                        document.getElementById('login-page').classList.add('hidden');
                         document.getElementById('main-app').classList.remove('hidden'); 
                         
-                        document.getElementById('date').valueAsDate = new Date(); 
-                        document.getElementById('subs-date-monthly').value = new Date().getDate(); 
+                        document.getElementById('date').valueAsDate = new Date();
+                        document.getElementById('subs-date-monthly').value = new Date().getDate();
                         document.getElementById('subs-date-yearly').valueAsDate = new Date();
                         
-                        document.getElementById('user-profile-img').src = finalPic; 
-                        document.getElementById('user-profile-img').classList.remove('hidden'); 
+                        document.getElementById('user-profile-img').src = finalPic;
+                        document.getElementById('user-profile-img').classList.remove('hidden');
                         document.getElementById('user-profile-icon').classList.add('hidden');
                         document.getElementById('nav-display-name').innerText = finalName; 
                         
                         loadCategories();
                         loadDataFromSheet(); 
                     }, 500); 
-                } else if (res.userStatus === "Pending") { 
-                    loginError.classList.remove('text-violet-500'); 
-                    loginError.classList.add('text-amber-500'); 
-                    loginError.innerHTML = '<i class="fas fa-clock"></i> Waiting for Admin Approval'; 
-                } else { 
-                    loginError.classList.remove('text-violet-500'); 
-                    loginError.classList.add('text-rose-500'); 
-                    loginError.innerHTML = '<i class="fas fa-ban"></i> Access Denied'; 
+                } else if (res.userStatus === "Pending") {
+                    loginError.classList.remove('text-violet-500');
+                    loginError.classList.add('text-amber-500');
+                    loginError.innerHTML = '<i class="fas fa-clock"></i> Waiting for Admin Approval';
+                } else {
+                    loginError.classList.remove('text-violet-500');
+                    loginError.classList.add('text-rose-500');
+                    loginError.innerHTML = '<i class="fas fa-ban"></i> Access Denied';
                 }
-            } else { 
-                loginError.classList.remove('text-violet-500'); 
-                loginError.classList.add('text-rose-500'); 
-                loginError.innerText = "System Error. Please try again."; 
+            } else {
+                loginError.classList.remove('text-violet-500');
+                loginError.classList.add('text-rose-500');
+                loginError.innerText = "System Error. Please try again.";
             }
         }
         
         async function loginWithPassword() {
-            const user = document.getElementById('login-username').value; 
-            const pass = document.getElementById('login-password').value; 
+            const user = document.getElementById('login-username').value;
+            const pass = document.getElementById('login-password').value;
             const loginError = document.getElementById('login-error');
             
-            if(!user || !pass) { 
-                loginError.classList.remove('hidden', 'text-violet-500'); 
-                loginError.classList.add('text-rose-500'); 
-                loginError.innerHTML = "Please enter username and password"; 
-                return; 
+            if(!user || !pass) {
+                loginError.classList.remove('hidden', 'text-violet-500');
+                loginError.classList.add('text-rose-500');
+                loginError.innerHTML = "Please enter username and password";
+                return;
             }
             
-            loginError.classList.remove('hidden', 'text-rose-500'); 
-            loginError.classList.add('text-violet-500'); 
+            loginError.classList.remove('hidden', 'text-rose-500');
+            loginError.classList.add('text-violet-500');
             loginError.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking credentials...';
             
             const res = await callApi("loginWithPassword", { username: user, password: pass });
             
             if (res.status === "Success") {
-                localStorage.setItem('loginTimestamp', Date.now().toString()); 
-                localStorage.setItem('userEmail', user); 
-                localStorage.setItem('userDisplayName', res.displayName); 
+                localStorage.setItem('loginTimestamp', Date.now().toString());
+                localStorage.setItem('userEmail', user);
+                localStorage.setItem('userDisplayName', res.displayName);
                 localStorage.setItem('userProfileImg', res.profilePic || 'https://ui-avatars.com/api/?name=' + user + '&background=8b5cf6&color=fff');
                 
                 document.getElementById('login-page').classList.add('opacity-0'); 
                 
                 setTimeout(() => { 
-                    document.getElementById('login-page').classList.add('hidden'); 
+                    document.getElementById('login-page').classList.add('hidden');
                     document.getElementById('main-app').classList.remove('hidden'); 
                     
-                    document.getElementById('date').valueAsDate = new Date(); 
-                    document.getElementById('subs-date-monthly').value = new Date().getDate(); 
+                    document.getElementById('date').valueAsDate = new Date();
+                    document.getElementById('subs-date-monthly').value = new Date().getDate();
                     document.getElementById('subs-date-yearly').valueAsDate = new Date();
                     
-                    document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg'); 
-                    document.getElementById('user-profile-img').classList.remove('hidden'); 
-                    document.getElementById('user-profile-icon').classList.add('hidden'); 
+                    document.getElementById('user-profile-img').src = localStorage.getItem('userProfileImg');
+                    document.getElementById('user-profile-img').classList.remove('hidden');
+                    document.getElementById('user-profile-icon').classList.add('hidden');
                     document.getElementById('nav-display-name').innerText = res.displayName; 
                     
                     loadCategories();
                     loadDataFromSheet(); 
                 }, 500);
-            } else { 
-                loginError.classList.remove('text-violet-500'); 
-                loginError.classList.add('text-rose-500'); 
-                loginError.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + (res.message || "Login failed"); 
+            } else {
+                loginError.classList.remove('text-violet-500');
+                loginError.classList.add('text-rose-500');
+                loginError.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + (res.message || "Login failed");
             }
         }
 
-        function decodeJwtResponse(token) { 
-            var base64Url = token.split('.')[1]; 
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); 
-            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) { 
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); 
-            }).join('')); 
-            return JSON.parse(jsonPayload); 
+        function decodeJwtResponse(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
         }
 
         document.addEventListener('click', function(event) { 
-            const menu = document.getElementById('top-menu'); 
+            const menu = document.getElementById('top-menu');
             const menuBtn = document.getElementById('menu-btn'); 
             
-            if (menu && menuBtn) { 
-                if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) { 
-                    menu.classList.remove('active'); 
-                } 
+            if (menu && menuBtn) {
+                if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) {
+                    menu.classList.remove('active');
+                }
             } 
             
             const subsPayDrop = document.getElementById('subs-payment-dropdown');
@@ -1368,111 +1471,111 @@
             }
         });
 
-        function logout() { 
-            const modal = document.getElementById('logout-modal'); 
-            const content = document.getElementById('logout-modal-content'); 
+        function logout() {
+            const modal = document.getElementById('logout-modal');
+            const content = document.getElementById('logout-modal-content');
             
-            modal.classList.remove('hidden'); 
+            modal.classList.remove('hidden');
             
-            setTimeout(() => { 
-                modal.classList.remove('opacity-0'); 
-                content.classList.remove('scale-95'); 
-                content.classList.add('scale-100'); 
-            }, 10); 
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
             
-            toggleMenu(); 
+            toggleMenu();
         }
 
-        function closeLogoutModal() { 
-            const modal = document.getElementById('logout-modal'); 
-            const content = document.getElementById('logout-modal-content'); 
+        function closeLogoutModal() {
+            const modal = document.getElementById('logout-modal');
+            const content = document.getElementById('logout-modal-content');
             
-            modal.classList.add('opacity-0'); 
-            content.classList.remove('scale-100'); 
-            content.classList.add('scale-95'); 
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
             
-            setTimeout(() => { 
-                modal.classList.add('hidden'); 
-            }, 300); 
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
-        function confirmLogout() { 
-            localStorage.clear(); 
-            location.reload(); 
+        function confirmLogout() {
+            localStorage.clear();
+            location.reload();
         }
 
         function showToast(message, isError = false) { 
-            const toast = document.getElementById('toast-notification'); 
-            const toastMsg = document.getElementById('toast-message'); 
+            const toast = document.getElementById('toast-notification');
+            const toastMsg = document.getElementById('toast-message');
             const toastIcon = document.getElementById('toast-icon'); 
             
             toastMsg.innerText = message; 
             
-            if (isError) { 
-                toastIcon.className = "fas fa-exclamation-circle text-rose-500 text-xl"; 
-            } else { 
-                toastIcon.className = "fas fa-check-circle text-emerald-500 text-xl"; 
+            if (isError) {
+                toastIcon.className = "fas fa-exclamation-circle text-rose-500 text-xl";
+            } else {
+                toastIcon.className = "fas fa-check-circle text-emerald-500 text-xl";
             } 
             
-            toast.classList.remove('-translate-y-32', 'opacity-0'); 
+            toast.classList.remove('-translate-y-32', 'opacity-0');
             toast.classList.add('translate-y-0', 'opacity-100'); 
             
             setTimeout(() => { 
-                toast.classList.remove('translate-y-0', 'opacity-100'); 
-                toast.classList.add('-translate-y-32', 'opacity-0'); 
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-32', 'opacity-0');
             }, 3000); 
         }
 
-        function toggleMenu(e) { 
+        function toggleMenu(e) {
             if(e) {
-                e.stopPropagation(); 
+                e.stopPropagation();
             }
-            document.getElementById('top-menu').classList.toggle('active'); 
+            document.getElementById('top-menu').classList.toggle('active');
         }
 
         function switchPage(pageId) { 
-            if(localStorage.getItem('loginTimestamp')) { 
-                localStorage.setItem('loginTimestamp', Date.now().toString()); 
+            if(localStorage.getItem('loginTimestamp')) {
+                localStorage.setItem('loginTimestamp', Date.now().toString());
             } 
             
             const pages = ['home', 'subscriptions', 'history', 'analytics', 'dashboard', 'profile'];
             
             pages.forEach(id => { 
-                const pageEl = document.getElementById('page-' + id); 
+                const pageEl = document.getElementById('page-' + id);
                 if(pageEl) {
-                    pageEl.classList.remove('page-active'); 
+                    pageEl.classList.remove('page-active');
                 }
-                
-                const navEl = document.getElementById('nav-' + id); 
+                const navEl = document.getElementById('nav-' + id);
                 if(navEl) {
-                    navEl.classList.remove('nav-active'); 
+                    navEl.classList.remove('nav-active');
                 }
             }); 
             
-            document.getElementById('page-' + pageId).classList.add('page-active'); 
+            document.getElementById('page-' + pageId).classList.add('page-active');
+            const targetNav = document.getElementById('nav-' + pageId);
             
-            const targetNav = document.getElementById('nav-' + pageId); 
             if(targetNav) {
-                targetNav.classList.add('nav-active'); 
+                targetNav.classList.add('nav-active');
             }
             
             document.getElementById('top-menu').classList.remove('active'); 
             
-            if (pageId === 'history' || pageId === 'analytics' || pageId === 'dashboard' || pageId === 'subscriptions') { 
-                loadDataFromSheet(); 
+            if (pageId === 'history' || pageId === 'analytics' || pageId === 'dashboard' || pageId === 'subscriptions') {
+                loadDataFromSheet();
             } else if (pageId === 'profile') {
                 document.getElementById('profile-display-name').value = localStorage.getItem('userDisplayName') || '';
                 document.getElementById('profile-email-readonly').value = localStorage.getItem('userEmail') || '';
                 document.getElementById('profile-preview').src = localStorage.getItem('userProfileImg') || 'https://via.placeholder.com/150';
-                newProfilePicBase64 = null; 
+                
+                newProfilePicBase64 = null;
                 newProfilePicName = null;
                 
-                document.getElementById('profile-new-password').type = 'password'; 
-                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash'; 
-                document.getElementById('profile-confirm-password').type = 'password'; 
+                document.getElementById('profile-new-password').type = 'password';
+                document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash';
+                document.getElementById('profile-confirm-password').type = 'password';
                 document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
-            } else { 
-                updateUI(); 
+            } else {
+                updateUI();
             }
             
             window.scrollTo(0,0); 
@@ -1480,91 +1583,87 @@
 
         async function saveProfile() {
             const displayName = document.getElementById('profile-display-name').value;
-            const newPassword = document.getElementById('profile-new-password').value; 
-            const confirmPassword = document.getElementById('profile-confirm-password').value; 
+            const newPassword = document.getElementById('profile-new-password').value;
+            const confirmPassword = document.getElementById('profile-confirm-password').value;
             const email = localStorage.getItem('userEmail');
             
-            if(!displayName) { 
-                showToast("Please enter a display name", true); 
-                return; 
+            if(!displayName) {
+                showToast("Please enter a display name", true);
+                return;
             }
-
+            
             if(newPassword && newPassword !== confirmPassword) {
                 showToast("Passwords do not match!", true);
                 return;
             }
             
-            const btn = document.getElementById('btn-save-profile'); 
-            btn.disabled = true; 
+            const btn = document.getElementById('btn-save-profile');
+            btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
             
-            const payload = { 
-                email: email, 
-                displayName: displayName, 
-                password: newPassword, 
-                profilePicBase64: newProfilePicBase64, 
-                profilePicName: newProfilePicName 
+            const payload = {
+                email: email,
+                displayName: displayName,
+                password: newPassword,
+                profilePicBase64: newProfilePicBase64,
+                profilePicName: newProfilePicName
             };
             
             const res = await callApi("updateProfile", payload);
             
             if(res.status === "Success") {
-                showToast("Profile updated!"); 
-                localStorage.setItem('userDisplayName', displayName); 
+                showToast("Profile updated!");
+                localStorage.setItem('userDisplayName', displayName);
                 document.getElementById('nav-display-name').innerText = displayName; 
                 
-                document.getElementById('profile-new-password').value = ''; 
-                document.getElementById('profile-confirm-password').value = ''; 
+                document.getElementById('profile-new-password').value = '';
+                document.getElementById('profile-confirm-password').value = '';
                 document.getElementById('profile-new-password').type = 'password';
                 document.getElementById('profile-eye-icon-1').className = 'fas fa-eye-slash';
                 document.getElementById('profile-confirm-password').type = 'password';
                 document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
                 
-                if(newProfilePicBase64) { 
-                    document.getElementById('user-profile-img').src = newProfilePicBase64; 
-                    localStorage.setItem('userProfileImg', newProfilePicBase64); 
+                if(newProfilePicBase64) {
+                    document.getElementById('user-profile-img').src = newProfilePicBase64;
+                    localStorage.setItem('userProfileImg', newProfilePicBase64);
                 }
-            } else { 
-                showToast("Error updating profile", true); 
+            } else {
+                showToast("Error updating profile", true);
             }
             
-            btn.disabled = false; 
+            btn.disabled = false;
             btn.innerHTML = 'Save Changes <i class="fas fa-save text-white/80"></i>';
         }
 
         async function loadDataFromSheet() { 
-            const list = document.getElementById('history-list'); 
+            const list = document.getElementById('history-list');
             const subsList = document.getElementById('subscriptions-list');
             
             if(list) {
-                list.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
+                list.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>';
             }
-            
             if(subsList) {
-                subsList.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>'; 
+                subsList.innerHTML = '<div class="text-center p-10 text-violet-400 font-bold text-xs"><i class="fas fa-circle-notch fa-spin text-violet-500 text-3xl mb-3"></i><br>Syncing Data...</div>';
             }
             
             const res = await callApi("get");
             
-            if(res.status === "Success" && res.data) { 
-                expenses = res.data; 
+            if(res.status === "Success" && res.data) {
+                expenses = res.data;
             }
             
-            updateTimestampDisplay(); 
+            updateTimestampDisplay();
             updateUI();
         }
 
-        function loadMoreHistory() { 
-            currentHistoryLimit += 20; 
-            updateUI(); 
+        function loadMoreHistory() {
+            currentHistoryLimit += 20;
+            updateUI();
         }
 
         function openEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
-            
-            if(!item) {
-                return;
-            }
+            if(!item) return;
             
             editingRowId = rowId;
             document.getElementById('amount').value = item.amount;
@@ -1590,8 +1689,8 @@
             
             switchPage('home');
             
-            setTimeout(() => { 
-                document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' }); 
+            setTimeout(() => {
+                document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
             }, 300);
         }
 
@@ -1607,10 +1706,7 @@
 
         function openSubsEditForm(rowId) {
             const item = expenses.find(x => x.rowId == rowId);
-            
-            if(!item) {
-                return;
-            }
+            if(!item) return;
             
             editingSubsRowId = rowId;
             document.getElementById('subs-amount').value = item.amount;
@@ -1685,7 +1781,6 @@
             document.getElementById('subs-payment').value = basePay;
             updatePaymentDisplay('subs-payment', basePay);
             document.getElementById('subs-card-name').value = cardName;
-            
             document.getElementById('subs-details').value = item.details;
             
             document.getElementById('subs-form-title').innerHTML = '<i class="fas fa-edit text-violet-500"></i> Edit Subscription';
@@ -1694,8 +1789,8 @@
             
             switchPage('subscriptions');
             
-            setTimeout(() => { 
-                document.getElementById('subs-form-section').scrollIntoView({ behavior: 'smooth' }); 
+            setTimeout(() => {
+                document.getElementById('subs-form-section').scrollIntoView({ behavior: 'smooth' });
             }, 300);
         }
 
@@ -1724,46 +1819,67 @@
         document.getElementById('expense-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
-            const detailsVal = document.getElementById('details').value; 
+            const detailsVal = document.getElementById('details').value;
             const amountVal = document.getElementById('amount').value.replace(/,/g, '');
             
-            if (!detailsVal || !detailsVal.trim()) { 
-                showToast("Please enter a Note!", true); 
-                return; 
+            if (!detailsVal || !detailsVal.trim()) {
+                showToast("Please enter a Note!", true);
+                return;
             }
             
-            if (!amountVal || parseFloat(amountVal) <= 0) { 
-                showToast("Please enter a valid amount!", true); 
-                return; 
+            if (!amountVal || parseFloat(amountVal) <= 0) {
+                showToast("Please enter a valid amount!", true);
+                return;
             }
             
-            const btn = document.getElementById('submit-btn'); 
-            btn.disabled = true; 
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...'; 
             
             const loc = document.getElementById('save-location').checked ? await getCurrentLocation() : "";
             const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
             
             const payload = { 
-                date: document.getElementById('date').value, 
+                date: document.getElementById('date').value,
                 time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }), 
-                payment: document.getElementById('payment').value, 
-                category: document.getElementById('category').value, 
-                details: detailsVal.trim(), 
-                amount: amountVal, 
-                location: loc, 
-                receiptBase64: receiptBase64, 
-                receiptName: receiptName, 
+                payment: document.getElementById('payment').value,
+                category: document.getElementById('category').value,
+                details: detailsVal.trim(),
+                amount: amountVal,
+                location: loc,
+                receiptBase64: receiptBase64,
+                receiptName: receiptName,
                 recordedBy: recordedByName 
             };
-            
-            if(localStorage.getItem('loginTimestamp')) { 
-                localStorage.setItem('loginTimestamp', Date.now().toString()); 
-            }
             
             const actionType = editingRowId ? "edit" : "save";
             const rowIdToSend = editingRowId || null;
 
+            // 🌟 เช็ค Offline Mode ตอนกด Save
+            if (!navigator.onLine) {
+                let q = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+                q.push({ action: actionType, payload: { ...payload, rowId: rowIdToSend } });
+                localStorage.setItem('offlineQueue', JSON.stringify(q));
+                
+                showToast("No internet. Saved to Offline Queue!");
+                
+                cancelEdit();
+                receiptBase64 = null;
+                receiptName = null;
+                document.getElementById('receipt-text').innerText = "Add Receipt";
+                
+                btn.disabled = false;
+                btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>';
+                
+                expenses.unshift({ ...payload, rowId: "offline-" + Date.now(), amount: amountVal });
+                updateUI();
+                return;
+            }
+
+            if(localStorage.getItem('loginTimestamp')) {
+                localStorage.setItem('loginTimestamp', Date.now().toString());
+            }
+            
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
@@ -1774,30 +1890,28 @@
                 }
                 
                 cancelEdit();
-                receiptBase64 = null; 
-                receiptName = null; 
-                document.getElementById('receipt-text').innerText = "Add Receipt"; 
+                receiptBase64 = null;
+                receiptName = null;
+                document.getElementById('receipt-text').innerText = "Add Receipt";
                 loadDataFromSheet(); 
-            } else { 
-                showToast("Error: " + res.message, true); 
+            } else {
+                showToast("Error: " + res.message, true);
             } 
             
-            btn.disabled = false; 
+            btn.disabled = false;
             btn.innerHTML = 'Save Transaction <i class="fas fa-paper-plane text-white/80"></i>'; 
         });
 
-        // 🌟 5. ฟังก์ชันกดจ่ายบิลจากหน้า Subs เข้าหน้า Home
         async function paySubscription(rowId) {
             if(!confirm("Are you sure you want to log this as 'Paid' to the Home expenses?")) {
                 return;
             }
             
-            const item = expenses.find(x => x.rowId == rowId); 
-            
+            const item = expenses.find(x => x.rowId == rowId);
             if(!item) {
                 return;
             }
-
+            
             showToast("Processing payment...");
             
             const amt = parseFloat(item.amount) || 0;
@@ -1805,47 +1919,55 @@
             const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
             const timeStr = today.toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' });
             
-            let paymentStr = item.payment || ''; 
+            let paymentStr = item.payment || '';
             let basePay = 'Credit Card / E-Wallet'; 
             
             if(paymentStr.includes('Cash')) {
-                basePay = 'Cash'; 
+                basePay = 'Cash';
             } else if(paymentStr.includes('Bank Transfer')) {
-                basePay = 'Internet Banking / QR Payment'; 
+                basePay = 'Internet Banking / QR Payment';
             } else if(paymentStr.includes('E-Wallet')) {
                 basePay = 'Credit Card / E-Wallet';
             }
             
             const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
-
-            const payload = { 
-                date: dateStr, 
-                time: timeStr, 
-                payment: basePay, 
-                category: "Bills", 
-                details: item.details, 
-                amount: amt, 
-                location: "", 
-                receiptBase64: null, 
-                receiptName: null, 
-                recordedBy: recordedByName 
+            
+            const payload = {
+                date: dateStr,
+                time: timeStr,
+                payment: basePay,
+                category: "Bills",
+                details: item.details,
+                amount: amt,
+                location: "",
+                receiptBase64: null,
+                receiptName: null,
+                recordedBy: recordedByName
             };
             
+            if (!navigator.onLine) {
+                let q = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+                q.push({ action: "save", payload: payload });
+                localStorage.setItem('offlineQueue', JSON.stringify(q));
+                showToast("No internet. Saved offline!");
+                return;
+            }
+
             const res = await callApi("save", payload);
             
-            if(res.status === "Success") { 
-                showToast("Paid & Saved to Home!"); 
-                loadDataFromSheet(); 
-            } else { 
-                showToast("Error: " + res.message, true); 
+            if(res.status === "Success") {
+                showToast("Paid & Saved to Home!");
+                loadDataFromSheet();
+            } else {
+                showToast("Error: " + res.message, true);
             }
         }
 
         document.getElementById('subs-form').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
-            const detailsVal = document.getElementById('subs-details').value; 
-            const amountVal = document.getElementById('subs-amount').value.replace(/,/g, ''); 
+            const detailsVal = document.getElementById('subs-details').value;
+            const amountVal = document.getElementById('subs-amount').value.replace(/,/g, '');
             const basePay = document.getElementById('subs-payment').value;
             const cardName = document.getElementById('subs-card-name').value.trim();
             const cycleVal = document.getElementById('subs-cycle').value;
@@ -1854,146 +1976,160 @@
             
             if (cycleVal === 'Monthly') {
                 const dayVal = document.getElementById('subs-date-monthly').value;
-                if(!dayVal || dayVal < 1 || dayVal > 31) { 
-                    showToast("Please enter a valid day (1-31)!", true); 
-                    return; 
+                if(!dayVal || dayVal < 1 || dayVal > 31) {
+                    showToast("Please enter a valid day (1-31)!", true);
+                    return;
                 }
                 formattedDate = dayVal; 
             } else {
                 const rawDate = document.getElementById('subs-date-yearly').value;
-                if(!rawDate) { 
-                    showToast("Please select a date!", true); 
-                    return; 
+                if(!rawDate) {
+                    showToast("Please select a date!", true);
+                    return;
                 }
                 const parts = rawDate.split('-');
                 if (parts.length === 3) {
                     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                    const monthIndex = parseInt(parts[1]) - 1; 
+                    const monthIndex = parseInt(parts[1]) - 1;
                     const monthName = monthNames[monthIndex];
-                    formattedDate = `${parts[2]}-${monthName}`; 
+                    formattedDate = `${parts[2]}-${monthName}`;
                 }
             }
             
             const finalPayment = cardName ? `${basePay} - ${cardName}` : basePay;
             
-            if (!detailsVal || !detailsVal.trim()) { 
-                showToast("Please enter a Name!", true); 
-                return; 
+            if (!detailsVal || !detailsVal.trim()) {
+                showToast("Please enter a Name!", true);
+                return;
             }
             
-            if (!amountVal || parseFloat(amountVal) <= 0) { 
-                showToast("Please enter a valid amount!", true); 
-                return; 
+            if (!amountVal || parseFloat(amountVal) <= 0) {
+                showToast("Please enter a valid amount!", true);
+                return;
             }
             
-            const btn = document.getElementById('subs-submit-btn'); 
-            btn.disabled = true; 
+            const btn = document.getElementById('subs-submit-btn');
+            btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...'; 
             
             const recordedByName = localStorage.getItem('userDisplayName') || (localStorage.getItem('userEmail') ? localStorage.getItem('userEmail').split('@')[0] : 'Unknown');
             
-            const payload = { 
-                date: formattedDate, 
-                time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }), 
-                payment: finalPayment, 
-                category: "Subscription_List", 
-                details: detailsVal.trim(), 
-                amount: amountVal, 
-                location: "", 
-                receiptBase64: null, 
-                receiptName: null, 
-                recordedBy: recordedByName 
+            const payload = {
+                date: formattedDate,
+                time: new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Bangkok', hour12: false, hour: '2-digit', minute: '2-digit' }),
+                payment: finalPayment,
+                category: "Subscription_List",
+                details: detailsVal.trim(),
+                amount: amountVal,
+                location: "",
+                receiptBase64: null,
+                receiptName: null,
+                recordedBy: recordedByName
             };
             
-            if(localStorage.getItem('loginTimestamp')) { 
-                localStorage.setItem('loginTimestamp', Date.now().toString()); 
+            const actionType = editingSubsRowId ? "edit" : "save";
+            const rowIdToSend = editingSubsRowId || null;
+            
+            if (!navigator.onLine) {
+                let q = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+                q.push({ action: actionType, payload: { ...payload, rowId: rowIdToSend } });
+                localStorage.setItem('offlineQueue', JSON.stringify(q));
+                
+                showToast("No internet. Saved to Offline Queue!");
+                cancelSubsEdit();
+                
+                btn.disabled = false;
+                btn.innerHTML = 'Save Subscription';
+                return;
+            }
+
+            if(localStorage.getItem('loginTimestamp')) {
+                localStorage.setItem('loginTimestamp', Date.now().toString());
             }
             
-            const actionType = editingSubsRowId ? "edit" : "save"; 
-            const rowIdToSend = editingSubsRowId || null;
-
             const res = await callApi(actionType, { ...payload, rowId: rowIdToSend });
             
             if(res.status === "Success") { 
-                if(editingSubsRowId) { 
-                    showToast("Subscription updated!"); 
-                } else { 
-                    showToast("Subscription saved successfully!"); 
+                if(editingSubsRowId) {
+                    showToast("Subscription updated!");
+                } else {
+                    showToast("Subscription saved successfully!");
                 }
-                 
-                cancelSubsEdit(); 
+                cancelSubsEdit();
                 loadDataFromSheet(); 
-            } else { 
-                showToast("Error: " + res.message, true); 
+            } else {
+                showToast("Error: " + res.message, true);
             } 
             
-            btn.disabled = false; 
+            btn.disabled = false;
             btn.innerHTML = 'Save Subscription'; 
         });
 
         async function deleteItem(rowId) { 
             if(confirm('Delete this record permanently?')) { 
-                showToast("Deleting...");
+                if (!navigator.onLine) {
+                    showToast("Cannot delete while offline", true);
+                    return;
+                }
                 
+                showToast("Deleting...");
                 const res = await callApi("delete", { rowId: rowId });
                 
-                if(res.status === "Success") { 
-                    showToast("Deleted successfully!"); 
-                    loadDataFromSheet(); 
-                } else { 
-                    showToast("Error: " + res.message, true); 
+                if(res.status === "Success") {
+                    showToast("Deleted successfully!");
+                    loadDataFromSheet();
+                } else {
+                    showToast("Error: " + res.message, true);
                 }
             } 
         }
 
-        function toggleDay(date) { 
-            const el = document.getElementById('details-' + date); 
-            const icon = document.getElementById('icon-' + date); 
+        function toggleDay(date) {
+            const el = document.getElementById('details-' + date);
+            const icon = document.getElementById('icon-' + date);
             
             if(el) {
-                el.classList.toggle('active'); 
+                el.classList.toggle('active');
             }
             
             if(icon) {
-                icon.classList.toggle('rotated'); 
+                icon.classList.toggle('rotated');
             }
         }
         
-        function getIcon(cat) { 
-            const icons = { 
-                'Food': 'fa-utensils', 
-                'Transport': 'fa-car', 
-                'Gasoline': 'fa-gas-pump', 
-                'Shopping': 'fa-bag-shopping', 
-                'Bills': 'fa-file-invoice-dollar', 
-                'Subscription': 'fa-sync-alt', 
-                'Housing': 'fa-house', 
-                'Health': 'fa-heart', 
-                'Entertainment': 'fa-film', 
-                'Other': 'fa-receipt', 
-                'Salary': 'fa-money-bill-wave', 
-                'Extra Income': 'fa-coins', 
-                'Other Income': 'fa-hand-holding-dollar', 
-                'Invest': 'fa-chart-pie', 
-                'Invest_Other': 'fa-seedling' 
-            }; 
-            return icons[cat] || 'fa-receipt'; 
+        function getIcon(cat) {
+            const icons = {
+                'Food': 'fa-utensils',
+                'Transport': 'fa-car',
+                'Gasoline': 'fa-gas-pump',
+                'Shopping': 'fa-bag-shopping',
+                'Bills': 'fa-file-invoice-dollar',
+                'Subscription': 'fa-sync-alt',
+                'Housing': 'fa-house',
+                'Health': 'fa-heart',
+                'Entertainment': 'fa-film',
+                'Other': 'fa-receipt',
+                'Salary': 'fa-money-bill-wave',
+                'Extra Income': 'fa-coins',
+                'Other Income': 'fa-hand-holding-dollar',
+                'Invest': 'fa-chart-pie',
+                'Invest_Other': 'fa-seedling'
+            };
+            return icons[cat] || 'fa-receipt';
         }
 
         function renderDoughnutChart(ctxId, chartVar, dataObj) { 
-            const ctx = document.getElementById(ctxId); 
-            
+            const ctx = document.getElementById(ctxId);
             if(!ctx) {
-                return chartVar; 
+                return chartVar;
             }
             
-            const labels = Object.keys(dataObj); 
-            const dataValues = Object.values(dataObj); 
-            
+            const labels = Object.keys(dataObj);
+            const dataValues = Object.values(dataObj);
             const bgColors = labels.map(cat => globalColorsMap[cat] || getRandomColor(cat)); 
             
             if(chartVar) {
-                chartVar.destroy(); 
+                chartVar.destroy();
             }
             
             Chart.defaults.font.family = "'Plus Jakarta Sans', 'Kanit', sans-serif";
@@ -2032,30 +2168,76 @@
             }); 
         }
 
+        function renderYearlyChart(dataArr) {
+            const ctx = document.getElementById('yearlyChart');
+            if(myYearlyChart) {
+                myYearlyChart.destroy();
+            }
+            
+            Chart.defaults.font.family = "'Plus Jakarta Sans', 'Kanit', sans-serif";
+            
+            myYearlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+                    datasets: [{
+                        data: dataArr,
+                        backgroundColor: '#8b5cf6',
+                        borderRadius: 6,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            callbacks: {
+                                label: function(context) {
+                                    return new Intl.NumberFormat('en-US').format(context.parsed.y) + ' THB';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
         function updateDailyCategoryChart() { 
-            const dateStr = document.getElementById('dashboard-date-filter').value; 
-            const dataObj = globalDailyCategoryStats[dateStr] || {}; 
+            const dateStr = document.getElementById('dashboard-date-filter').value;
+            const dataObj = globalDailyCategoryStats[dateStr] || {};
+            
             myDailyCategoryChart = renderDoughnutChart('dailyCategoryChart', myDailyCategoryChart, dataObj); 
             
-            const listContainer = document.getElementById('daily-category-list'); 
+            const listContainer = document.getElementById('daily-category-list');
             listContainer.innerHTML = ''; 
             
             const sortedCat = Object.keys(dataObj).map(k => ({label: k, val: dataObj[k]})).sort((a,b) => b.val - a.val); 
             
-            if(sortedCat.length === 0) { 
-                listContainer.innerHTML = '<div class="text-center text-xs text-slate-400 py-4 font-medium">No Data Available</div>'; 
-                return; 
+            if(sortedCat.length === 0) {
+                listContainer.innerHTML = '<div class="text-center text-xs text-slate-400 py-4 font-medium">No Data Available</div>';
+                return;
             } 
             
             const dailyTotal = sortedCat.reduce((sum, item) => sum + item.val, 0);
             
             sortedCat.forEach(item => { 
-                const percent = dailyTotal > 0 ? ((item.val / dailyTotal) * 100).toFixed(1) : 0; 
+                const percent = dailyTotal > 0 ? ((item.val / dailyTotal) * 100).toFixed(1) : 0;
                 const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
-                
                 const bgColor = globalColorsMap[item.label] || getRandomColor(item.label);
                 
-                const div = document.createElement('div'); 
+                const div = document.createElement('div');
                 div.className = "flex justify-between items-center text-xs px-3 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50/50 rounded-xl transition-colors"; 
                 div.innerHTML = `
                     <div class="flex items-center gap-3">
@@ -2077,22 +2259,20 @@
             const pSum = document.getElementById('payment-summary-container');
             const subsList = document.getElementById('subscriptions-list');
             
-            if(!list || !stats) {
-                return; 
-            }
+            if(!list || !stats) { return; }
             
-            list.innerHTML = ''; 
-            stats.innerHTML = ''; 
+            list.innerHTML = '';
+            stats.innerHTML = '';
             pSum.innerHTML = '';
             
             if (subsList) {
                 subsList.innerHTML = '';
             }
 
-            const monthFilterEl = document.getElementById('summary-month-filter');
-            const summaryMonthVal = monthFilterEl ? monthFilterEl.value : ''; 
+            // 🌟 ตรวจสอบโหมด Analytics (Monthly หรือ Yearly)
+            const viewType = document.getElementById('btn-view-yearly')?.classList.contains('bg-white') ? 'yearly' : 'monthly';
+            const filterVal = viewType === 'monthly' ? document.getElementById('summary-month-filter').value : document.getElementById('summary-year-filter').value;
             
-            // 🌟 Smart Search Logic
             const searchInput = document.getElementById('search-history');
             const searchKeyword = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
@@ -2101,30 +2281,31 @@
                 stats.innerHTML = '<div class="text-center p-12 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm"><i class="fas fa-box-open text-4xl mb-4 text-slate-200"></i><br>No Records Found</div>';
             }
             
-            let totalExpenseHome = 0; 
-            let totalIncomeHome = 0; 
-            let totalExpenseSummary = 0; 
+            let totalExpenseHome = 0;
+            let totalIncomeHome = 0;
+            let totalExpenseSummary = 0;
             let totalIncomeSummary = 0;
             
-            const daily = {}; 
+            const daily = {};
             const payStats = { 'Cash': 0, 'Credit Card / E-Wallet': 0, 'Internet Banking / QR Payment': 0, 'Loan etc.': 0 };
+            const yearlyData = [0,0,0,0,0,0,0,0,0,0,0,0]; // สำหรับกราฟ 12 เดือน
             
             let sortType = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'latest';
             let sortedExpenses = [...expenses];
             
             sortedExpenses.sort((a,b) => {
-                let rawDateB = new Date(b.date + ' ' + (b.time || '00:00')); 
+                let rawDateB = new Date(b.date + ' ' + (b.time || '00:00'));
                 let rawDateA = new Date(a.date + ' ' + (a.time || '00:00'));
                 
-                let dateB = isNaN(rawDateB) ? new Date(0) : rawDateB; 
+                let dateB = isNaN(rawDateB) ? new Date(0) : rawDateB;
                 let dateA = isNaN(rawDateA) ? new Date(0) : rawDateA;
                 
-                let isIncomeA = ["Salary", "Extra Income", "Other Income"].includes(a.category); 
-                let amtA = parseFloat(a.amount) || 0; 
+                let isIncomeA = ["Salary", "Extra Income", "Other Income"].includes(a.category);
+                let amtA = parseFloat(a.amount) || 0;
                 let realAmtA = isIncomeA ? amtA : -amtA;
                 
-                let isIncomeB = ["Salary", "Extra Income", "Other Income"].includes(b.category); 
-                let amtB = parseFloat(b.amount) || 0; 
+                let isIncomeB = ["Salary", "Extra Income", "Other Income"].includes(b.category);
+                let amtB = parseFloat(b.amount) || 0;
                 let realAmtB = isIncomeB ? amtB : -amtB;
                 
                 if (sortType === 'latest') return expenses.indexOf(b) - expenses.indexOf(a); 
@@ -2133,31 +2314,29 @@
                 if (sortType === 'category') return a.category === b.category ? dateB - dateA : a.category.localeCompare(b.category); 
                 if (sortType === 'price-high') return realAmtB - realAmtA; 
                 if (sortType === 'price-low') return realAmtA - realAmtB; 
-                if (sortType === 'user') { 
-                    let userA = a.recordedBy || ""; 
-                    let userB = b.recordedBy || ""; 
-                    return userA === userB ? dateB - dateA : userA.localeCompare(userB); 
+                if (sortType === 'user') {
+                    let userA = a.recordedBy || "";
+                    let userB = b.recordedBy || "";
+                    return userA === userB ? dateB - dateA : userA.localeCompare(userB);
                 }
                 return 0;
             });
             
-            const categoryStats = {}; 
+            const categoryStats = {};
             globalDailyCategoryStats = {};
-
-            let regularExpenses = []; 
+            
+            let regularExpenses = [];
             let subsExpenses = [];
             
-            sortedExpenses.forEach(item => { 
-                if (item.category === "Subscription_List") { 
-                    subsExpenses.push(item); 
-                } else { 
-                    regularExpenses.push(item); 
-                } 
+            sortedExpenses.forEach(item => {
+                if (item.category === "Subscription_List") {
+                    subsExpenses.push(item);
+                } else {
+                    regularExpenses.push(item);
+                }
             });
 
-            // กรองข้อมูลด้วยคำค้นหา (Smart Search)
             let expensesToRender = regularExpenses;
-            
             if (searchKeyword !== "") {
                 expensesToRender = expensesToRender.filter(item => 
                     (item.details && item.details.toLowerCase().includes(searchKeyword)) ||
@@ -2171,14 +2350,14 @@
             
             expensesToRender.forEach((item) => {
                 const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
-                const amt = parseFloat(item.amount) || 0; 
+                const amt = parseFloat(item.amount) || 0;
                 let recordedByText = "";
                 
-                if (item.recordedBy && item.recordedBy !== '-' && item.recordedBy !== 'undefined' && item.recordedBy.trim() !== '') { 
-                    recordedByText = `<span class="text-[8.5px] font-bold bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fas fa-user-circle text-violet-400 mr-1"></i>${item.recordedBy}</span>`; 
+                if (item.recordedBy && item.recordedBy !== '-' && item.recordedBy !== 'undefined' && item.recordedBy.trim() !== '') {
+                    recordedByText = `<span class="text-[8.5px] font-bold bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fas fa-user-circle text-violet-400 mr-1"></i>${item.recordedBy}</span>`;
                 }
 
-                const div = document.createElement('div'); 
+                const div = document.createElement('div');
                 div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow"; 
                 div.innerHTML = `
                     <div class="flex gap-3.5 items-center text-left w-full overflow-hidden">
@@ -2213,119 +2392,123 @@
             if(searchKeyword !== "" && expensesToRender.length === 0) {
                 list.innerHTML = `<div class="text-center p-8 text-slate-400 font-bold text-xs">No results found for "${searchKeyword}"</div>`;
             }
-
+            
             const loadMoreBtn = document.getElementById('load-more-btn');
             if(loadMoreBtn) {
-                if(searchKeyword === "" && regularExpenses.length > currentHistoryLimit) { 
-                    loadMoreBtn.classList.remove('hidden'); 
-                } else { 
-                    loadMoreBtn.classList.add('hidden'); 
+                if(searchKeyword === "" && regularExpenses.length > currentHistoryLimit) {
+                    loadMoreBtn.classList.remove('hidden');
+                } else {
+                    loadMoreBtn.classList.add('hidden');
                 }
             }
 
             regularExpenses.forEach((item) => {
                 const isIncome = ["Salary", "Extra Income", "Other Income"].includes(item.category);
-                const amt = parseFloat(item.amount) || 0; 
+                const amt = parseFloat(item.amount) || 0;
                 const impact = isIncome ? amt : -amt; 
                 
-                if (isIncome) { 
-                    totalIncomeHome += amt; 
-                } else { 
-                    totalExpenseHome += amt; 
+                if (isIncome) {
+                    totalIncomeHome += amt;
+                } else {
+                    totalExpenseHome += amt;
                 }
                 
-                const isMatchMonth = summaryMonthVal === '' || item.date.startsWith(summaryMonthVal);
+                const isMatch = filterVal === '' || item.date.startsWith(filterVal);
                 
-                if (isMatchMonth) {
-                    if (isIncome) { 
-                        totalIncomeSummary += amt; 
+                if (isMatch) {
+                    if (isIncome) {
+                        totalIncomeSummary += amt;
                     } else { 
                         totalExpenseSummary += amt; 
                         
-                        if (!categoryStats[item.category]) { 
-                            categoryStats[item.category] = 0; 
-                        } 
+                        if (!categoryStats[item.category]) {
+                            categoryStats[item.category] = 0;
+                        }
                         
                         categoryStats[item.category] += amt; 
+                        
+                        // 🌟 ดึงข้อมูลใส่กราฟรายปี (ถ้าเปิดโหมดรายปีอยู่)
+                        if (viewType === 'yearly') {
+                            const mIndex = parseInt(item.date.substring(5,7)) - 1; // "2026-01-01" -> 0 (Jan)
+                            if (mIndex >= 0 && mIndex <= 11) {
+                                yearlyData[mIndex] += amt;
+                            }
+                        }
                     }
                     
-                    let pKey = item.payment; 
-                    
-                    if (!payStats.hasOwnProperty(pKey)) { 
-                        payStats[pKey] = 0; 
-                    } 
+                    let pKey = item.payment;
+                    if (!payStats.hasOwnProperty(pKey)) {
+                        payStats[pKey] = 0;
+                    }
                     
                     payStats[pKey] += impact;
                     
-                    if (!daily[item.date]) { 
-                        daily[item.date] = { total: 0, categories: {} }; 
+                    if (!daily[item.date]) {
+                        daily[item.date] = { total: 0, categories: {} };
                     }
                     
                     daily[item.date].total += impact; 
                     
-                    if (!daily[item.date].categories[item.category]) { 
-                        daily[item.date].categories[item.category] = { amt: 0, isIncome: isIncome }; 
+                    if (!daily[item.date].categories[item.category]) {
+                        daily[item.date].categories[item.category] = { amt: 0, isIncome: isIncome };
                     }
                     
                     daily[item.date].categories[item.category].amt += amt;
                 }
 
                 if (!isIncome) {
-                    if (!globalDailyCategoryStats[item.date]) { 
-                        globalDailyCategoryStats[item.date] = {}; 
+                    if (!globalDailyCategoryStats[item.date]) {
+                        globalDailyCategoryStats[item.date] = {};
                     }
                     
-                    if (!globalDailyCategoryStats[item.date][item.category]) { 
-                        globalDailyCategoryStats[item.date][item.category] = 0; 
+                    if (!globalDailyCategoryStats[item.date][item.category]) {
+                        globalDailyCategoryStats[item.date][item.category] = 0;
                     }
                     
                     globalDailyCategoryStats[item.date][item.category] += amt;
                 }
             });
 
-            // 🛑 3. เรนเดอร์หน้า Subscriptions (Smart Alerts & Pay Now)
+            // 🛑 3. เรนเดอร์หน้า Subscriptions
             let totalSubsCost = 0;
-            const today = new Date(); 
-            const currentDay = today.getDate(); 
+            const today = new Date();
+            const currentDay = today.getDate();
             const currentMonth = today.getMonth() + 1; 
             
             if (subsExpenses.length === 0) {
-                if (subsList) { 
-                    subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">There are no recent subscription records in your history.</span></div>'; 
+                if (subsList) {
+                    subsList.innerHTML = '<div class="text-center p-8 text-slate-400 font-bold text-xs bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">No Subscriptions Found<br><span class="text-[9px] font-normal mt-2 block">There are no recent subscription records in your history.</span></div>';
                 }
             } else {
                 subsExpenses.forEach(item => {
                     const amt = parseFloat(item.amount) || 0;
-                    
-                    let payText = item.payment || ''; 
+                    let payText = item.payment || '';
                     let payIcon = '<i class="fas fa-credit-card text-slate-400"></i>';
                     
-                    if(payText.includes('VISA')) { 
-                        payIcon = '<img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain inline">'; 
-                    } else if(payText.includes('MasterCard')) { 
-                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-3 inline">'; 
-                    } else if(payText.includes('JCB')) { 
-                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-3 inline">'; 
-                    } else if(payText.includes('UnionPay')) { 
-                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-3 inline">'; 
-                    } else if(payText.includes('Cash')) { 
-                        payIcon = '<span class="text-[10px]">💵</span>'; 
-                    } else if(payText.includes('E-Wallet')) { 
-                        payIcon = '<span class="text-[10px]">📱</span>'; 
-                    } else if(payText.includes('Bank Transfer')) { 
-                        payIcon = '<span class="text-[10px]">🏦</span>'; 
+                    if(payText.includes('VISA')) {
+                        payIcon = '<img src="https://www.logo.wine/a/logo/Visa_Inc./Visa_Inc.-Logo.wine.svg" class="h-4 object-contain inline">';
+                    } else if(payText.includes('MasterCard')) {
+                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" class="h-3 inline">';
+                    } else if(payText.includes('JCB')) {
+                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" class="h-3 inline">';
+                    } else if(payText.includes('UnionPay')) {
+                        payIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg" class="h-3 inline">';
+                    } else if(payText.includes('Cash')) {
+                        payIcon = '<span class="text-[10px]">💵</span>';
+                    } else if(payText.includes('E-Wallet')) {
+                        payIcon = '<span class="text-[10px]">📱</span>';
+                    } else if(payText.includes('Bank Transfer')) {
+                        payIcon = '<span class="text-[10px]">🏦</span>';
                     }
 
-                    let daysLeft = 999; 
-                    let cycleDisplay = item.date; 
+                    let daysLeft = 999;
+                    let cycleDisplay = item.date;
                     let isYearly = item.date && item.date.includes('-');
                     
-                    // 🌟 คำนวณ Monthly Estimated Cost อย่างถูกต้อง
                     if (isYearly) {
-                        totalSubsCost += (amt / 12); 
-                        const parts = item.date.split('-'); 
+                        totalSubsCost += (amt / 12);
+                        const parts = item.date.split('-');
                         const itemDay = parseInt(parts[0]);
-                        
                         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                         const itemMonth = monthNames.findIndex(m => m.toLowerCase() === parts[1].toLowerCase()) + 1;
                         
@@ -2339,7 +2522,7 @@
                             }
                         }
                     } else {
-                        totalSubsCost += amt; 
+                        totalSubsCost += amt;
                         const itemDay = parseInt(item.date);
                         
                         if (!isNaN(itemDay)) {
@@ -2354,26 +2537,25 @@
                         }
                     }
                     
-                    // 🛑 ตกแต่งสีแจ้งเตือน
-                    let dateStyle = "text-slate-400"; 
+                    let dateStyle = "text-slate-400";
                     let dateIconStyle = "text-slate-400";
                     
                     if (daysLeft === 0) {
-                        dateStyle = "text-rose-500 font-bold"; 
-                        dateIconStyle = "text-rose-500 animate-pulse"; 
+                        dateStyle = "text-rose-500 font-bold";
+                        dateIconStyle = "text-rose-500 animate-pulse";
                         cycleDisplay += " (Today!)";
                     } else if (daysLeft < 0 && daysLeft >= -3) {
-                        dateStyle = "text-rose-500 font-bold"; 
-                        dateIconStyle = "text-rose-500"; 
+                        dateStyle = "text-rose-500 font-bold";
+                        dateIconStyle = "text-rose-500";
                         cycleDisplay += ` (${Math.abs(daysLeft)} days ago)`;
                     } else if (daysLeft > 0 && daysLeft <= 5) {
-                        dateStyle = "text-amber-500 font-bold"; 
-                        dateIconStyle = "text-amber-500"; 
+                        dateStyle = "text-amber-500 font-bold";
+                        dateIconStyle = "text-amber-500";
                         cycleDisplay += ` (In ${daysLeft} days)`;
                     }
 
                     if (subsList) {
-                        const div = document.createElement('div'); 
+                        const div = document.createElement('div');
                         div.className = "modern-card p-4 flex justify-between items-center border-none shadow-md shadow-slate-200/40 hover:shadow-lg transition-shadow";
                         div.innerHTML = `
                             <div class="flex items-center gap-3 w-full">
@@ -2410,162 +2592,162 @@
                 });
             }
             
-            const totalSubsEl = document.getElementById('total-subs-cost'); 
-            if (totalSubsEl) { 
-                totalSubsEl.innerText = totalSubsCost.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}); 
+            const totalSubsEl = document.getElementById('total-subs-cost');
+            if (totalSubsEl) {
+                totalSubsEl.innerText = totalSubsCost.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2});
             }
 
             const dateDropdown = document.getElementById('dashboard-date-filter'); 
             if (dateDropdown) { 
-                const currentSelectedDate = dateDropdown.value; 
-                dateDropdown.innerHTML = ''; 
+                const currentSelectedDate = dateDropdown.value;
+                dateDropdown.innerHTML = '';
                 const sortedDates = Object.keys(globalDailyCategoryStats).sort((a,b) => new Date(b) - new Date(a)); 
                 
-                if(sortedDates.length === 0) { 
-                    dateDropdown.innerHTML = '<option value="">No Data</option>'; 
-                } else { 
-                    sortedDates.forEach(date => { 
-                        const opt = document.createElement('option'); 
-                        opt.value = date; 
-                        opt.text = date; 
-                        
-                        if(date === currentSelectedDate) { 
-                            opt.selected = true; 
-                        } 
-                        
-                        dateDropdown.appendChild(opt); 
-                    }); 
+                if(sortedDates.length === 0) {
+                    dateDropdown.innerHTML = '<option value="">No Data</option>';
+                } else {
+                    sortedDates.forEach(date => {
+                        const opt = document.createElement('option');
+                        opt.value = date;
+                        opt.text = date;
+                        if(date === currentSelectedDate) {
+                            opt.selected = true;
+                        }
+                        dateDropdown.appendChild(opt);
+                    });
                     
-                    if(!currentSelectedDate || !globalDailyCategoryStats[currentSelectedDate]) { 
-                        dateDropdown.value = sortedDates[0]; 
-                    } 
+                    if(!currentSelectedDate || !globalDailyCategoryStats[currentSelectedDate]) {
+                        dateDropdown.value = sortedDates[0];
+                    }
                 } 
             }
             
-            Object.entries(payStats).forEach(([method, total]) => { 
-                if (total !== 0 || ['Cash', 'Credit Card / E-Wallet', 'Internet Banking / QR Payment', 'Loan etc.'].includes(method)) { 
-                    const payDiv = document.createElement('div'); 
-                    payDiv.className = "modern-card p-4 text-left border border-slate-100 shadow-sm bg-white hover:shadow-md transition-shadow"; 
-                    
-                    let textColor = total < 0 ? "text-rose-500" : (total > 0 ? "text-emerald-500" : "text-slate-800"); 
-                    let prefix = total > 0 ? "+" : "";
-                    
-                    payDiv.innerHTML = `
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${method}</span>
-                        <p class="text-xl font-black ${textColor} mt-1 leading-none">${prefix}${total.toLocaleString()}</p>
-                    `; 
-                    
-                    pSum.appendChild(payDiv); 
-                } 
-            });
-            
-            Object.keys(daily).sort((a,b) => new Date(b) - new Date(a)).forEach(date => { 
-                const data = daily[date]; 
-                const mainDiv = document.createElement('div'); 
+            if (viewType === 'monthly') {
+                Object.entries(payStats).forEach(([method, total]) => { 
+                    if (total !== 0 || ['Cash', 'Credit Card / E-Wallet', 'Internet Banking / QR Payment', 'Loan etc.'].includes(method)) { 
+                        const payDiv = document.createElement('div');
+                        payDiv.className = "modern-card p-4 text-left border border-slate-100 shadow-sm bg-white hover:shadow-md transition-shadow"; 
+                        
+                        let textColor = total < 0 ? "text-rose-500" : (total > 0 ? "text-emerald-500" : "text-slate-800");
+                        let prefix = total > 0 ? "+" : "";
+                        
+                        payDiv.innerHTML = `
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${method}</span>
+                            <p class="text-xl font-black ${textColor} mt-1 leading-none">${prefix}${total.toLocaleString()}</p>
+                        `;
+                        pSum.appendChild(payDiv); 
+                    } 
+                });
                 
-                let totalColor = data.total >= 0 ? "text-emerald-500" : "text-slate-800"; 
-                let totalPrefix = data.total > 0 ? "+" : "";
-                
-                mainDiv.className = "modern-card overflow-hidden border-none shadow-md shadow-slate-200/50 mb-3"; 
-                mainDiv.innerHTML = `
-                    <div onclick="toggleDay('${date}')" class="p-4 flex justify-between items-center cursor-pointer hover:bg-violet-50/30 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center font-black text-sm border border-violet-200 shadow-inner">${date.split('-')[2]}</div>
-                            <p class="text-xs font-bold text-slate-500 uppercase">${date}</p>
-                        </div>
-                        <div class="flex items-center gap-3 text-right">
-                            <p class="text-lg font-black ${totalColor}">${totalPrefix}${data.total.toLocaleString()}</p>
-                            <div class="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center">
-                                <i id="icon-${date}" class="fas fa-chevron-down text-slate-400 text-[10px] rotate-icon"></i>
+                Object.keys(daily).sort((a,b) => new Date(b) - new Date(a)).forEach(date => { 
+                    const data = daily[date];
+                    const mainDiv = document.createElement('div');
+                    
+                    let totalColor = data.total >= 0 ? "text-emerald-500" : "text-slate-800";
+                    let totalPrefix = data.total > 0 ? "+" : "";
+                    
+                    mainDiv.className = "modern-card overflow-hidden border-none shadow-md shadow-slate-200/50 mb-3"; 
+                    mainDiv.innerHTML = `
+                        <div onclick="toggleDay('${date}')" class="p-4 flex justify-between items-center cursor-pointer hover:bg-violet-50/30 transition-colors">
+                            <div class="flex items-center gap-4">
+                                <div class="w-11 h-11 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center font-black text-sm border border-violet-200 shadow-inner">${date.split('-')[2]}</div>
+                                <p class="text-xs font-bold text-slate-500 uppercase">${date}</p>
+                            </div>
+                            <div class="flex items-center gap-3 text-right">
+                                <p class="text-lg font-black ${totalColor}">${totalPrefix}${data.total.toLocaleString()}</p>
+                                <div class="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center">
+                                    <i id="icon-${date}" class="fas fa-chevron-down text-slate-400 text-[10px] rotate-icon"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div id="details-${date}" class="day-details pb-4 px-5 bg-slate-50/50 border-t border-slate-100 text-left">
-                        <div class="pt-2">
-                        ${Object.keys(data.categories).map(cat => { 
-                            const catInfo = data.categories[cat]; 
-                            const bgColor = globalColorsMap[cat] || getRandomColor(cat);
-                            return `
-                                <div class="flex justify-between items-center text-xs py-2.5 border-b border-slate-200/60 last:border-0">
-                                    <div class="flex items-center gap-3">
-                                        <span class="w-3 h-3 rounded-full shadow-sm" style="background-color: ${bgColor}"></span>
-                                        <span class="font-bold text-slate-700">${cat}</span>
+                        <div id="details-${date}" class="day-details pb-4 px-5 bg-slate-50/50 border-t border-slate-100 text-left">
+                            <div class="pt-2">
+                            ${Object.keys(data.categories).map(cat => { 
+                                const catInfo = data.categories[cat];
+                                const bgColor = globalColorsMap[cat] || getRandomColor(cat);
+                                return `
+                                    <div class="flex justify-between items-center text-xs py-2.5 border-b border-slate-200/60 last:border-0">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-3 h-3 rounded-full shadow-sm" style="background-color: ${bgColor}"></span>
+                                            <span class="font-bold text-slate-700">${cat}</span>
+                                        </div>
+                                        <span class="font-black ${catInfo.isIncome ? 'text-emerald-500' : 'text-slate-800'}">${catInfo.isIncome ? '+' : '-'}${catInfo.amt.toLocaleString()}</span>
                                     </div>
-                                    <span class="font-black ${catInfo.isIncome ? 'text-emerald-500' : 'text-slate-800'}">${catInfo.isIncome ? '+' : '-'}${catInfo.amt.toLocaleString()}</span>
-                                </div>
-                            `; 
-                        }).join('')}
+                                `; 
+                            }).join('')}
+                            </div>
                         </div>
-                    </div>
-                `; 
-                stats.appendChild(mainDiv); 
-            });
+                    `; 
+                    stats.appendChild(mainDiv); 
+                });
+            } else {
+                // 🌟 แสดงกราฟ Bar Chart 12 เดือนใน Yearly Mode
+                renderYearlyChart(yearlyData);
+            }
 
             // 🌟 Monthly Budget Limit (อัปเดตหลอด Progress Bar)
             let monthlyBudgetStr = localStorage.getItem('monthlyBudget');
             let budgetBase = monthlyBudgetStr ? parseFloat(monthlyBudgetStr) : totalIncomeHome;
             
-            const remainingHome = monthlyBudgetStr ? (budgetBase - totalExpenseHome) : (totalIncomeHome - totalExpenseHome); 
+            const remainingHome = monthlyBudgetStr ? (budgetBase - totalExpenseHome) : (totalIncomeHome - totalExpenseHome);
             let percentHome = budgetBase > 0 ? (totalExpenseHome / budgetBase) : 0; 
             
             const bar = document.getElementById('budget-progress-bar');
-            
-            if(bar) { 
-                setTimeout(() => { 
-                    bar.style.width = (Math.min(1, percentHome) * 100) + '%'; 
-                }, 100); 
+            if(bar) {
+                setTimeout(() => {
+                    bar.style.width = (Math.min(1, percentHome) * 100) + '%';
+                }, 100);
                 
-                if (percentHome >= 1) { 
-                    bar.style.backgroundColor = "#fda4af"; // แดง
-                } else if (percentHome >= 0.8) { 
-                    bar.style.backgroundColor = "#fcd34d"; // เหลืองเตือน
-                } else { 
-                    bar.style.backgroundColor = "#ffffff"; 
+                if (percentHome >= 1) {
+                    bar.style.backgroundColor = "#fda4af";
+                } else if (percentHome >= 0.8) {
+                    bar.style.backgroundColor = "#fcd34d";
+                } else {
+                    bar.style.backgroundColor = "#ffffff";
                 }
             }
             
             document.getElementById('cash-remaining').innerText = remainingHome.toLocaleString(); 
             
-            const usedEl = document.getElementById('cash-used-text'); 
-            if(usedEl) { 
-                usedEl.innerText = totalExpenseHome.toLocaleString(); 
+            const usedEl = document.getElementById('cash-used-text');
+            if(usedEl) {
+                usedEl.innerText = totalExpenseHome.toLocaleString();
             }
             
-            const baseBudgetEl = document.getElementById('budget-base-text'); 
-            if(baseBudgetEl) { 
-                baseBudgetEl.innerText = budgetBase.toLocaleString(); 
+            const baseBudgetEl = document.getElementById('budget-base-text');
+            if(baseBudgetEl) {
+                baseBudgetEl.innerText = budgetBase.toLocaleString();
             }
             
-            document.getElementById('total-expenses-text').innerText = totalExpenseSummary.toLocaleString() + " THB"; 
+            document.getElementById('total-expenses-text').innerText = totalExpenseSummary.toLocaleString() + " THB";
             document.getElementById('total-income-text').innerText = totalIncomeSummary.toLocaleString() + " THB"; 
             
             let netBalanceSummary = totalIncomeSummary - totalExpenseSummary;
-            let balanceEl = document.getElementById('total-balance-text'); 
+            let balanceEl = document.getElementById('total-balance-text');
             balanceEl.innerText = netBalanceSummary.toLocaleString();
             
-            if(netBalanceSummary < 0) { 
-                balanceEl.classList.add('text-rose-500'); 
-                balanceEl.classList.remove('text-slate-800'); 
-            } else { 
-                balanceEl.classList.remove('text-rose-500'); 
-                balanceEl.classList.add('text-slate-800'); 
+            if(netBalanceSummary < 0) {
+                balanceEl.classList.add('text-rose-500');
+                balanceEl.classList.remove('text-slate-800');
+            } else {
+                balanceEl.classList.remove('text-rose-500');
+                balanceEl.classList.add('text-slate-800');
             }
             
             myOverallCategoryChart = renderDoughnutChart('overallCategoryChart', myOverallCategoryChart, categoryStats);
             const overallListContainer = document.getElementById('category-dashboard-list'); 
             
             if(overallListContainer) { 
-                overallListContainer.innerHTML = ''; 
-                const sortedCatOverall = Object.keys(categoryStats).map(k => ({label: k, val: categoryStats[k]})).sort((a,b) => b.val - a.val); 
+                overallListContainer.innerHTML = '';
+                const sortedCatOverall = Object.keys(categoryStats).map(k => ({label: k, val: categoryStats[k]})).sort((a,b) => b.val - a.val);
                 const overallTotal = sortedCatOverall.reduce((sum, item) => sum + item.val, 0);
                 
                 sortedCatOverall.forEach(item => { 
-                    const percent = overallTotal > 0 ? ((item.val / overallTotal) * 100).toFixed(1) : 0; 
+                    const percent = overallTotal > 0 ? ((item.val / overallTotal) * 100).toFixed(1) : 0;
                     const displayPercent = percent.endsWith('.0') ? percent.slice(0, -2) : percent;
-                    
                     const bgColor = globalColorsMap[item.label] || getRandomColor(item.label);
                     
-                    const div = document.createElement('div'); 
+                    const div = document.createElement('div');
                     div.className = "flex justify-between items-center text-xs px-3 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50/50 rounded-xl transition-colors"; 
                     div.innerHTML = `
                         <div class="flex items-center gap-3">
@@ -2584,30 +2766,27 @@
             updateDailyCategoryChart();
         }
 
-        async function getCurrentLocation() { 
-            return new Promise(res => { 
-                if(!navigator.geolocation) { 
-                    return res(""); 
-                } 
-                
-                navigator.geolocation.getCurrentPosition( 
-                    p => res(`https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`), 
-                    () => res(""), 
-                    { timeout: 5000 } 
-                ); 
-            }); 
+        async function getCurrentLocation() {
+            return new Promise(res => {
+                if(!navigator.geolocation) {
+                    return res("");
+                }
+                navigator.geolocation.getCurrentPosition(
+                    p => res(`https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`),
+                    () => res(""),
+                    { timeout: 5000 }
+                );
+            });
         }
 
         function exportToExcel() { 
-            if (expenses.length === 0) { 
-                showToast("No data to export", true); 
-                return; 
+            if (expenses.length === 0) {
+                showToast("No data to export", true);
+                return;
             } 
-            
-            const ws = XLSX.utils.json_to_sheet(expenses); 
-            const wb = XLSX.utils.book_new(); 
-            
-            XLSX.utils.book_append_sheet(wb, ws, "Expenses"); 
+            const ws = XLSX.utils.json_to_sheet(expenses);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Expenses");
             XLSX.writeFile(wb, `Wallet_${new Date().toISOString().slice(0,10)}.xlsx`); 
         }
     </script>
