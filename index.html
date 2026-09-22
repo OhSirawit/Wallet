@@ -471,11 +471,6 @@
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-3"><i class="fas fa-scan"></i> Scan to Pay</p>
                     </div>
                 </div>
-
-                <!-- ปุ่มบันทึกส่วนของเรา -->
-                <button onclick="saveMyShareToExpense()" class="w-full py-3.5 rounded-xl bg-slate-900 text-white font-bold text-sm shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center justify-center gap-2 mt-2">
-                    <i class="fas fa-check"></i> Save My Share to Expenses
-                </button>
             </div>
         </div>
     </div>
@@ -3306,7 +3301,6 @@
             
             // ดึงเบอร์พร้อมเพย์ที่เคยบันทึกไว้
             const savedPPId = localStorage.getItem('promptPayId') || '';
-            document.getElementById('split-promptpay-id').value = savedPPId;
             
             document.getElementById('split-people').value = 1; // Default 1 คน
             calculateSplit();
@@ -3344,13 +3338,25 @@
             input.value = val;
             calculateSplit();
         }
+        
+        function updateAccountNameDisplay() {
+            const name = localStorage.getItem('promptPayName') || '';
+            const nameEl = document.getElementById('qr-account-name');
+            nameEl.innerText = name;
+            
+            if(name) {
+                nameEl.classList.remove('hidden');
+            } else {
+                nameEl.classList.add('hidden');
+            }
+        }
 
         let qrTimeout = null;
         function calculateSplit() {
             const totalInput = document.getElementById('split-total').value.replace(/,/g, '');
             const total = parseFloat(totalInput) || 0;
             const people = parseInt(document.getElementById('split-people').value) || 1;
-            const promptpayId = document.getElementById('split-promptpay-id').value.trim();
+            const promptpayId = localStorage.getItem('promptPayId') || '';
             
             // คำนวณยอดต่อคน
             const perPerson = total / people;
@@ -3364,15 +3370,7 @@
             const qrImg = document.getElementById('promptpay-qr');
 
             // อัปเดตชื่อบัญชีเหนือ QR
-            const savedPPName = localStorage.getItem('promptPayName') || '';
-            const nameEl = document.getElementById('qr-account-name');
-            nameEl.innerText = savedPPName;
-            
-            if(savedPPName) {
-                nameEl.classList.remove('hidden');
-            } else {
-                nameEl.classList.add('hidden');
-            }
+            updateAccountNameDisplay();
 
             // ถ้ามียอดเงิน และมีเบอร์พร้อมเพย์ ให้สร้าง QR
             if (perPerson > 0 && promptpayId.length >= 10) {
@@ -3383,39 +3381,10 @@
                     const amountFormat = perPerson.toFixed(2);
                     qrImg.src = `https://promptpay.io/${promptpayId}/${amountFormat}.png`;
                     qrContainer.classList.remove('hidden');
-                    
-                    // บันทึก PromptPay ID ลง LocalStorage อัตโนมัติเวลาพิมพ์
-                    localStorage.setItem('promptPayId', promptpayId);
                 }, 500);
             } else {
                 qrContainer.classList.add('hidden');
             }
-        }
-
-        function saveMyShareToExpense() {
-            triggerHaptic('medium');
-            const perPerson = document.getElementById('split-result').innerText.replace(/,/g, '');
-            
-            if (perPerson === '0' || !perPerson) {
-                showToast("Please enter total bill first", true);
-                return;
-            }
-
-            // เอาค่ายอดหารของเรามาใส่ในฟอร์มหน้า Home
-            document.getElementById('amount').value = perPerson;
-            formatNumberInput({target: document.getElementById('amount')}); 
-            
-            // แนะนำหมวดหมู่เป็น Food (ค่าอาหาร)
-            document.getElementById('category').value = 'Food';
-            document.getElementById('details').value = 'My share of the bill';
-            
-            closeSplitBillModal();
-            showToast("Amount copied to expense form!");
-            
-            // Scroll ไปที่ฟอร์มเพื่อกด Save
-            setTimeout(() => {
-                document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
-            }, 350);
         }
     </script>
 </body>
