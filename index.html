@@ -307,6 +307,29 @@
         </div>
     </div>
 
+    <!-- 🌟 NEW: Set Budget Modal -->
+    <div id="budget-modal" class="fixed inset-0 z-[300] bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center px-6 transition-opacity duration-300 opacity-0">
+        <div class="modern-card p-6 w-full max-w-sm transform scale-95 transition-transform duration-300 border-none" id="budget-modal-content">
+            <div class="text-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-fuchsia-400 to-fuchsia-600 text-white rounded-full mx-auto flex items-center justify-center text-xl mb-3 shadow-lg shadow-fuchsia-500/30">
+                    <i class="fas fa-crosshairs"></i>
+                </div>
+                <h3 class="text-lg font-black text-slate-800 mb-1">Set Monthly Budget</h3>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Leave blank for Total Income</p>
+            </div>
+            
+            <div class="space-y-1.5 mb-6 text-left">
+                <label class="text-[10px] font-bold text-fuchsia-500 uppercase tracking-wide ml-1">Budget Limit (THB)</label>
+                <input type="text" inputmode="decimal" id="budget-input-amount" placeholder="0" class="w-full input-style bg-slate-50 border-2 border-slate-100 rounded-xl p-4 text-3xl font-black text-center text-slate-800 outline-none focus:border-fuchsia-400" oninput="formatNumberInput(event)">
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="closeBudgetModal()" class="flex-1 py-3.5 rounded-2xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200 transition-colors">Cancel</button>
+                <button onclick="confirmBudget()" class="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-fuchsia-600 text-white font-bold text-sm shadow-lg shadow-fuchsia-500/20 hover:shadow-fuchsia-500/40 transition-all">Save</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Logout Modal -->
     <div id="logout-modal" class="fixed inset-0 z-[300] bg-slate-900/20 backdrop-blur-sm hidden flex items-center justify-center px-6 transition-opacity duration-300 opacity-0">
         <div class="modern-card p-8 w-full max-w-sm text-center transform scale-95 transition-transform duration-300 border-none" id="logout-modal-content">
@@ -1190,7 +1213,6 @@
     </div>
 
     <script>
-        // ✅ เปลี่ยนเป็น Web App URL ใหม่ล่าสุดแล้ว
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8_M64IqhSb2Tgn-QpX7tZkH6sMpJY22D9Vg8WcduKj7V_4bnvRwhf1U6Fmb822H1A/exec'; 
         
         const FIXED_BUDGET = 0; 
@@ -1269,7 +1291,6 @@
             } catch(e) { console.log("Audio not supported or blocked"); }
         }
 
-        // ✅ ฟังก์ชัน Smart Home รับค่า commandCode แบบใหม่
         function toggleSmartDevice(deviceId, status, commandCode = 'switch_1') {
             triggerHaptic('medium');
             
@@ -1280,7 +1301,7 @@
                 payload: {
                     deviceId: deviceId,
                     status: status,
-                    code: commandCode // ส่งชื่อคำสั่ง (เช่น 'switch' หรือ 'switch_1')
+                    code: commandCode 
                 }
             };
 
@@ -1491,21 +1512,47 @@
             if(myDailyCategoryChart) myDailyCategoryChart.update();
         }
 
+        // 🌟 NEW: Set Budget Functions
         function setMonthlyBudget() {
             triggerHaptic('light');
             let current = localStorage.getItem('monthlyBudget') || '';
-            let val = prompt("Set your monthly budget limit (THB) \n(Leave blank to use Total Income instead):", current);
+            document.getElementById('budget-input-amount').value = current ? Number(current).toLocaleString() : '';
             
-            if (val !== null) {
-                if (val.trim() === "" || isNaN(val.replace(/,/g, ''))) {
-                    localStorage.removeItem('monthlyBudget');
-                    showToast("Budget cleared. Using Total Income.");
-                } else {
-                    localStorage.setItem('monthlyBudget', val.replace(/,/g, ''));
-                    showToast("Budget updated!");
-                }
-                updateUI();
+            const modal = document.getElementById('budget-modal');
+            const content = document.getElementById('budget-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeBudgetModal() {
+            triggerHaptic('light');
+            const modal = document.getElementById('budget-modal');
+            const content = document.getElementById('budget-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function confirmBudget() {
+            triggerHaptic('medium');
+            let val = document.getElementById('budget-input-amount').value.replace(/,/g, '');
+            
+            if (val.trim() === "" || isNaN(val)) {
+                localStorage.removeItem('monthlyBudget');
+                showToast("Budget cleared. Using Total Income.");
+            } else {
+                localStorage.setItem('monthlyBudget', val);
+                showToast("Budget updated!");
             }
+            closeBudgetModal();
+            updateUI();
         }
 
         function quickAdd(amount, category, details, payment = 'Cash') {
@@ -3210,9 +3257,9 @@
                 }, 100); 
                 
                 if (percentHome >= 1) { 
-                    bar.style.backgroundColor = "#fda4af"; // แดง
+                    bar.style.backgroundColor = "#fda4af"; 
                 } else if (percentHome >= 0.8) { 
-                    bar.style.backgroundColor = "#fcd34d"; // เหลืองเตือน
+                    bar.style.backgroundColor = "#fcd34d"; 
                 } else { 
                     bar.style.backgroundColor = "#ffffff"; 
                 }
