@@ -458,12 +458,10 @@
                 <div class="pt-4 border-t border-slate-100">
                     <input type="hidden" id="split-promptpay-id">
                     
-                    <div class="space-y-1.5 mb-4">
-                        <label class="text-[10px] font-bold text-indigo-500 uppercase tracking-wide ml-1 flex justify-between">
-                            <span>ACCOUNT NAME</span>
-                            <span class="text-slate-400 cursor-pointer hover:text-indigo-500" onclick="closeSplitBillModal(); setTimeout(() => switchPage('profile'), 300);">Edit Profile <i class="fas fa-user-edit"></i></span>
-                        </label>
-                        <input type="text" id="split-promptpay-name" placeholder="Name on bank account" class="w-full input-style rounded-xl p-3 text-sm font-bold text-center outline-none border border-slate-200 text-slate-700 bg-white" oninput="updateAccountNameDisplay()">
+                    <div class="flex justify-end mb-2">
+                        <span class="text-[10px] font-bold text-slate-400 cursor-pointer hover:text-indigo-500 uppercase tracking-widest" onclick="closeSplitBillModal(); setTimeout(() => switchPage('profile'), 300);">
+                            Edit Profile <i class="fas fa-user-edit ml-1"></i>
+                        </span>
                     </div>
 
                     <!-- กล่องแสดง QR Code -->
@@ -3308,9 +3306,7 @@
             
             // ดึงเบอร์พร้อมเพย์ที่เคยบันทึกไว้
             const savedPPId = localStorage.getItem('promptPayId') || '';
-            const savedPPName = localStorage.getItem('promptPayName') || '';
             document.getElementById('split-promptpay-id').value = savedPPId;
-            document.getElementById('split-promptpay-name').value = savedPPName;
             
             document.getElementById('split-people').value = 1; // Default 1 คน
             calculateSplit();
@@ -3349,25 +3345,6 @@
             calculateSplit();
         }
 
-        function editPromptPay() {
-            document.getElementById('split-promptpay-id').focus();
-        }
-        
-        function updateAccountNameDisplay() {
-            const name = document.getElementById('split-promptpay-name').value.trim();
-            const nameEl = document.getElementById('qr-account-name');
-            nameEl.innerText = name;
-            
-            if(name) {
-                nameEl.classList.remove('hidden');
-            } else {
-                nameEl.classList.add('hidden');
-            }
-            
-            localStorage.setItem('promptPayName', name);
-            document.getElementById('profile-promptpay-name').value = name;
-        }
-
         let qrTimeout = null;
         function calculateSplit() {
             const totalInput = document.getElementById('split-total').value.replace(/,/g, '');
@@ -3387,7 +3364,15 @@
             const qrImg = document.getElementById('promptpay-qr');
 
             // อัปเดตชื่อบัญชีเหนือ QR
-            updateAccountNameDisplay();
+            const savedPPName = localStorage.getItem('promptPayName') || '';
+            const nameEl = document.getElementById('qr-account-name');
+            nameEl.innerText = savedPPName;
+            
+            if(savedPPName) {
+                nameEl.classList.remove('hidden');
+            } else {
+                nameEl.classList.add('hidden');
+            }
 
             // ถ้ามียอดเงิน และมีเบอร์พร้อมเพย์ ให้สร้าง QR
             if (perPerson > 0 && promptpayId.length >= 10) {
@@ -3401,7 +3386,6 @@
                     
                     // บันทึก PromptPay ID ลง LocalStorage อัตโนมัติเวลาพิมพ์
                     localStorage.setItem('promptPayId', promptpayId);
-                    document.getElementById('profile-promptpay-id').value = promptpayId;
                 }, 500);
             } else {
                 qrContainer.classList.add('hidden');
