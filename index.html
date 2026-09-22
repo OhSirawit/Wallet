@@ -181,7 +181,6 @@
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
         }
 
-        /* Animation for Progress Bar */
         @keyframes shimmer {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
@@ -204,7 +203,6 @@
             scrollbar-width: none;
         }
 
-        /* PIN Pad Styles */
         .pin-dot {
             width: 16px;
             height: 16px;
@@ -243,105 +241,28 @@
             animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
         }
 
-        /* 🌙 Dark Mode Global Styles */
-        body.dark-mode { 
-            background-color: #0f172a; 
-            color: #f8fafc; 
-        }
-        
-        body.dark-mode .modern-card { 
-            background: rgba(30, 41, 59, 0.8) !important; 
-            border-color: rgba(255, 255, 255, 0.05) !important; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
-        }
-        
-        body.dark-mode .input-style { 
-            background: #1e293b !important; 
-            border-color: #334155 !important; 
-            color: #f8fafc !important; 
-        }
-        
-        body.dark-mode .input-style:focus { 
-            background: #0f172a !important; 
-            border-color: #8b5cf6 !important; 
-        }
-        
-        body.dark-mode .bg-white { 
-            background-color: #1e293b !important; 
-        }
-        
-        body.dark-mode .bg-slate-50 { 
-            background-color: #0f172a !important; 
-        }
-        
-        body.dark-mode .bg-slate-100 { 
-            background-color: #334155 !important; 
-        }
-        
-        body.dark-mode .text-slate-800, body.dark-mode .text-slate-700 { 
-            color: #f1f5f9 !important; 
-        }
-        
-        body.dark-mode .text-slate-600 { 
-            color: #cbd5e1 !important; 
-        }
-        
-        body.dark-mode .text-slate-500, body.dark-mode .text-slate-400 { 
-            color: #94a3b8 !important; 
-        }
-        
-        body.dark-mode .border-slate-100, body.dark-mode .border-slate-50, body.dark-mode .border-slate-200 { 
-            border-color: #334155 !important; 
-        }
-        
-        body.dark-mode .hover\:bg-slate-50:hover { 
-            background-color: #334155 !important; 
-        }
-        
-        body.dark-mode .hover\:bg-violet-50:hover { 
-            background-color: rgba(139, 92, 246, 0.15) !important; 
-        }
-        
-        body.dark-mode .nav-active { 
-            background: #334155 !important; 
-            color: #c4b5fd !important; 
-        }
-        
-        body.dark-mode #toast-bg { 
-            background: rgba(30, 41, 59, 0.95) !important; 
-            border-color: #334155 !important; 
-            color: #f8fafc !important; 
-        }
-        
-        body.dark-mode select.input-style option { 
-            background: #1e293b; 
-            color: #f8fafc; 
-        }
-        
-        body.dark-mode #subs-payment-dropdown, body.dark-mode #payment-dropdown { 
-            background: #1e293b !important; 
-            border-color: #334155 !important; 
-        }
-        
-        body.dark-mode .fixed.bottom-6 { 
-            background: rgba(30, 41, 59, 0.85) !important; 
-            border-color: rgba(255, 255, 255, 0.1) !important; 
-        }
-        
-        body.dark-mode .day-details { 
-            background: rgba(15, 23, 42, 0.6) !important; 
-            border-color: #334155 !important; 
-        }
+        body.dark-mode { background-color: #0f172a; color: #f8fafc; }
+        body.dark-mode .modern-card { background: rgba(30, 41, 59, 0.8) !important; border-color: rgba(255, 255, 255, 0.05) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        body.dark-mode .input-style { background: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important; }
+        body.dark-mode .input-style:focus { background: #0f172a !important; border-color: #8b5cf6 !important; }
+        body.dark-mode .bg-white { background-color: #1e293b !important; }
+        body.dark-mode .bg-slate-50 { background-color: #0f172a !important; }
+        body.dark-mode .bg-slate-100 { background-color: #334155 !important; }
+        body.dark-mode .text-slate-800, body.dark-mode .text-slate-700 { color: #f1f5f9 !important; }
+        body.dark-mode .text-slate-600 { color: #cbd5e1 !important; }
+        body.dark-mode .text-slate-500, body.dark-mode .text-slate-400 { color: #94a3b8 !important; }
+        body.dark-mode .border-slate-100, body.dark-mode .border-slate-50, body.dark-mode .border-slate-200 { border-color: #334155 !important; }
+        body.dark-mode .hover\:bg-slate-50:hover { background-color: #334155 !important; }
+        body.dark-mode .hover\:bg-violet-50:hover { background-color: rgba(139, 92, 246, 0.15) !important; }
+        body.dark-mode .nav-active { background: #334155 !important; color: #c4b5fd !important; }
+        body.dark-mode #toast-bg { background: rgba(30, 41, 59, 0.95) !important; border-color: #334155 !important; color: #f8fafc !important; }
+        body.dark-mode select.input-style option { background: #1e293b; color: #f8fafc; }
+        body.dark-mode #subs-payment-dropdown, body.dark-mode #payment-dropdown { background: #1e293b !important; border-color: #334155 !important; }
+        body.dark-mode .fixed.bottom-6 { background: rgba(30, 41, 59, 0.85) !important; border-color: rgba(255, 255, 255, 0.1) !important; }
+        body.dark-mode .day-details { background: rgba(15, 23, 42, 0.6) !important; border-color: #334155 !important; }
+        body.dark-mode .pin-btn { background-color: #1e293b; color: #f8fafc; }
+        body.dark-mode .pin-btn:active { background-color: #334155; }
 
-        body.dark-mode .pin-btn {
-            background-color: #1e293b;
-            color: #f8fafc;
-        }
-        body.dark-mode .pin-btn:active {
-            background-color: #334155;
-        }
-
-        /* 💡 Smart Home Buttons UI */
         .btn-smart-on {
             background: rgba(16, 185, 129, 0.1);
             color: #10b981;
@@ -366,13 +287,8 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(100, 116, 139, 0.3);
         }
-        body.dark-mode .btn-smart-on {
-            border-color: rgba(16, 185, 129, 0.5);
-        }
-        body.dark-mode .btn-smart-off {
-            border-color: rgba(148, 163, 184, 0.5);
-            color: #94a3b8;
-        }
+        body.dark-mode .btn-smart-on { border-color: rgba(16, 185, 129, 0.5); }
+        body.dark-mode .btn-smart-off { border-color: rgba(148, 163, 184, 0.5); color: #94a3b8; }
     </style>
 </head>
 <body class="pb-32 relative">
@@ -434,11 +350,9 @@
     <!-- Receipt Viewer Modal -->
     <div id="receipt-modal" class="fixed inset-0 z-[400] bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0" onclick="closeReceiptModal()">
         <div class="relative w-full max-w-lg flex flex-col items-center justify-center" onclick="event.stopPropagation()">
-            <!-- ปุ่มปิดหน้าต่าง -->
             <button onclick="closeReceiptModal()" class="absolute -top-12 right-0 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full text-white flex items-center justify-center transition-colors shadow-lg z-10">
                 <i class="fas fa-times text-lg"></i>
             </button>
-            <!-- รูปภาพใบเสร็จ -->
             <img id="receipt-modal-img" src="" alt="Receipt Viewer" class="w-auto max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain transform scale-95 transition-transform duration-300 border border-white/10">
             <p class="text-white/60 text-[10px] mt-4 font-medium tracking-widest uppercase">Tap outside to close</p>
         </div>
@@ -447,7 +361,6 @@
     <!-- 💸 Bill Splitter & PromptPay Modal -->
     <div id="split-bill-modal" class="fixed inset-0 z-[350] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0 overflow-y-auto">
         <div class="modern-card p-6 w-full max-w-sm my-8 transform scale-95 transition-transform duration-300 border-none relative" id="split-bill-modal-content">
-            <!-- ปุ่มปิด -->
             <button onclick="closeSplitBillModal()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-500 flex items-center justify-center transition-colors">
                 <i class="fas fa-times text-sm"></i>
             </button>
@@ -461,7 +374,6 @@
             </div>
 
             <div class="space-y-4">
-                <!-- ยอดรวมทั้งหมด -->
                 <div class="space-y-1.5">
                     <label class="text-[10px] font-bold text-blue-500 uppercase tracking-wide ml-1">TOTAL BILL</label>
                     <div class="relative">
@@ -470,7 +382,6 @@
                     </div>
                 </div>
 
-                <!-- จำนวนคนหาร -->
                 <div class="space-y-1.5">
                     <label class="text-[10px] font-bold text-blue-500 uppercase tracking-wide ml-1">DIVIDE BY (Include yourself)</label>
                     <div class="flex items-center gap-3">
@@ -480,14 +391,12 @@
                     </div>
                 </div>
 
-                <!-- ผลลัพธ์ -->
                 <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-center mt-2">
                     <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">PAY PER PERSON</p>
                     <h4 id="split-result" class="text-3xl font-black text-blue-600">0</h4>
                     <p class="text-xs font-bold text-blue-400">THB</p>
                 </div>
 
-                <!-- PromptPay Section -->
                 <div class="pt-4 border-t border-slate-100">
                     <input type="hidden" id="split-promptpay-id">
                     
@@ -497,7 +406,6 @@
                         </span>
                     </div>
 
-                    <!-- กล่องแสดง QR Code -->
                     <div id="qr-container" class="hidden flex flex-col items-center justify-center bg-white p-4 rounded-2xl border-2 border-slate-100 shadow-sm">
                         <p id="qr-account-name" class="text-[11px] font-black text-indigo-600 mb-2 uppercase tracking-wider text-center hidden"></p>
                         <img id="promptpay-qr" src="" alt="PromptPay QR" class="w-48 h-48 object-contain">
@@ -522,7 +430,6 @@
             <h2 id="pin-title" class="text-2xl font-black text-slate-800 mb-2 tracking-tight">Enter PIN</h2>
             <p id="pin-subtitle" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8">To unlock your wallet</p>
             
-            <!-- จุดแสดง PIN -->
             <div id="pin-dots" class="flex gap-4 mb-12 h-6 items-center justify-center">
                 <div class="pin-dot"></div>
                 <div class="pin-dot"></div>
@@ -530,7 +437,6 @@
                 <div class="pin-dot"></div>
             </div>
             
-            <!-- แป้นตัวเลข -->
             <div class="grid grid-cols-3 gap-4 mb-8">
                 <button onclick="handlePinInput('1')" class="pin-btn">1</button>
                 <button onclick="handlePinInput('2')" class="pin-btn">2</button>
@@ -560,7 +466,6 @@
         </div>
         
         <div class="modern-card p-8 w-full max-w-sm text-center border-none shadow-2xl shadow-purple-500/10 my-8">
-            
             <div class="w-24 h-24 mx-auto mb-6 relative group cursor-default">
                 <div class="absolute inset-1 bg-gradient-to-tr from-fuchsia-500 to-violet-500 rounded-[2rem] blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div class="absolute inset-0 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-[2rem] transform -rotate-3 group-hover:rotate-0 transition-all duration-500 shadow-2xl flex items-center justify-center overflow-hidden border border-white/30 backdrop-blur-xl">
@@ -645,7 +550,7 @@
                 <i class="fas fa-ellipsis-v"></i>
             </button>
 
-            <!-- Dropdown Menu -->
+            <!-- Dropdown Menu (ย้าย Subs และ Goals มาไว้ที่นี่) -->
             <div id="top-menu" class="menu-dropdown absolute top-16 right-6 w-64 max-h-[75vh] overflow-y-auto modern-card p-2 z-50 shadow-2xl border-none">
                 <ul class="flex flex-col space-y-1">
                     <li>
@@ -654,6 +559,22 @@
                         </button>
                     </li>
                     <div class="border-t border-slate-100 my-1"></div>
+                    
+                    <!-- ย้าย Subs และ Goals มาไว้ตรงนี้ -->
+                    <li>
+                        <button onclick="switchPage('subscriptions'); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
+                            <i class="fas fa-sync-alt w-4 text-violet-500"></i> Subscriptions
+                        </button>
+                    </li>
+                    <div class="border-t border-slate-100 my-1"></div>
+                    <li>
+                        <button onclick="switchPage('goals'); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
+                            <i class="fas fa-bullseye w-4 text-violet-500"></i> Saving Goals
+                        </button>
+                    </li>
+                    <div class="border-t border-slate-100 my-1"></div>
+                    <!-- สิ้นสุดส่วนที่ย้ายมา -->
+
                     <li>
                         <button onclick="switchPage('analytics'); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
                             <i class="fas fa-chart-bar w-4 text-violet-500"></i> Stats
@@ -713,65 +634,19 @@
 
                 <div class="flex justify-between items-center text-[11px] font-bold relative z-10 opacity-90">
                     <span>Spent: <span id="cash-used-text">0</span></span>
-                    <!-- 🎯 Budget Limit Settings -->
                     <span class="cursor-pointer hover:text-white transition-colors border-b border-white/30 border-dashed pb-0.5" onclick="setMonthlyBudget()" title="Click to set monthly budget">
                         Budget: <span id="budget-base-text">0</span> <i class="fas fa-edit ml-1 opacity-70"></i>
                     </span>
                 </div>
             </div>
 
-            <!-- 🔌 Smart Home Control Section (TUYA) -->
-            <section class="modern-card p-5 border-none shadow-lg shadow-slate-200/50">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fas fa-home text-emerald-500"></i> Smart Home Control
-                    </h3>
-                </div>
-                
-                <!-- 💡 ปุ่มควบคุมแอร์ (Air) -->
-                <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 mb-3 border border-slate-100">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center text-lg">
-                            <i class="fas fa-snowflake"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-800">Air Conditioner</p>
-                            <p class="text-[9px] text-slate-400">Living Room</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', true)">ON</button>
-                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', false)">OFF</button>
-                    </div>
-                </div>
-
-                <!-- 💡 ปุ่มควบคุมโคมไฟ (Lamp) -->
-                <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 border border-slate-100">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
-                            <i class="fas fa-lightbulb"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-800">Smart Lamp</p>
-                            <p class="text-[9px] text-slate-400">Bedroom</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', true)">ON</button>
-                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', false)">OFF</button>
-                    </div>
-                </div>
-            </section>
-
             <!-- Expense Form -->
             <section class="modern-card p-6 border-none shadow-lg shadow-slate-200/50" id="form-section">
-                <!-- แก้ไขส่วนหัวของ Expense Form -->
                 <div class="flex justify-between items-center mb-5">
                     <h3 id="form-title" class="text-sm font-bold text-slate-800 flex items-center gap-2">
                         <i class="fas fa-pen-to-square text-violet-500"></i> Add Transaction
                     </h3>
                     <div class="flex items-center gap-2">
-                        <!-- 🎯 ปุ่มหารบิล (Split Bill) -->
                         <button type="button" onclick="openSplitBillModal()" class="text-[10px] font-bold bg-violet-50 text-violet-600 px-3 py-1.5 rounded-full hover:bg-violet-100 transition-colors flex items-center gap-1.5">
                             <i class="fas fa-qrcode"></i> Split Bill
                         </button>
@@ -798,7 +673,6 @@
                 </div>
                 
                 <form id="expense-form" class="space-y-4">
-                    
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Amount <span class="text-rose-500">*</span></label>
                         <div class="relative">
@@ -872,6 +746,59 @@
                         Save Transaction <i class="fas fa-paper-plane text-white/80"></i>
                     </button>
                 </form>
+            </section>
+        </div>
+
+        <!-- PAGE: SMART HOME -->
+        <div id="page-smarthome" class="page-content max-w-xl mx-auto px-5 py-4 space-y-5">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-500 tracking-tight">Smart Home</h2>
+                <button onclick="switchPage('home')" class="text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-colors w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-sm">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            
+            <!-- 🔌 Smart Home Control Section (TUYA) -->
+            <section class="modern-card p-5 border-none shadow-lg shadow-slate-200/50">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                    <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-home text-emerald-500"></i> Device Controls
+                    </h3>
+                </div>
+                
+                <!-- 💡 ปุ่มควบคุมแอร์ (Air) -->
+                <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 mb-3 border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center text-lg shadow-inner">
+                            <i class="fas fa-snowflake"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Air Conditioner</p>
+                            <p class="text-[9px] text-slate-400 font-medium">Living Room</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', true)">ON</button>
+                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', false)">OFF</button>
+                    </div>
+                </div>
+
+                <!-- 💡 ปุ่มควบคุมโคมไฟ (Lamp) -->
+                <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg shadow-inner">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Smart Lamp</p>
+                            <p class="text-[9px] text-slate-400 font-medium">Bedroom</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', true)">ON</button>
+                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', false)">OFF</button>
+                    </div>
+                </div>
             </section>
         </div>
 
@@ -1194,7 +1121,6 @@
                         </div>
                     </div>
 
-                    <!-- PromptPay Setting -->
                     <div class="w-full space-y-1.5 mt-4 pt-4 border-t border-slate-100 text-left">
                         <label class="text-[10px] font-bold text-blue-500 uppercase tracking-wide ml-1 flex items-center gap-1.5">
                             <i class="fas fa-qrcode"></i> PROMPTPAY ID
@@ -1210,7 +1136,6 @@
                         <input type="text" id="profile-promptpay-name" class="w-full input-style rounded-xl p-4 text-sm font-bold outline-none border-2 border-slate-100 focus:border-blue-400 text-slate-800" placeholder="Name on bank account">
                     </div>
 
-                    <!-- 🔒 เพิ่มส่วนเปิดใช้งาน PIN Lock ในหน้า Profile -->
                     <div class="w-full space-y-3 mt-6 pt-4 border-t border-slate-100 text-left">
                         <div class="flex justify-between items-center">
                             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">App Lock (PIN)</label>
@@ -1231,19 +1156,15 @@
 
         <!-- Floating Bottom Navigation -->
         <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[420px] bg-white/85 backdrop-blur-xl border border-slate-100 shadow-[0_10px_40px_rgba(139,92,246,0.15)] rounded-[2rem] p-2 flex justify-between items-center">
-            <button onclick="switchPage('home')" id="nav-home" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400 nav-active">
+            <button onclick="switchPage('home')" id="nav-home" class="nav-btn w-1/3 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400 nav-active">
                 <i class="fas fa-layer-group text-xl mb-0.5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-widest">Home</span>
             </button>
-            <button onclick="switchPage('subscriptions')" id="nav-subscriptions" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
-                <i class="fas fa-sync-alt text-xl mb-0.5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Subs</span>
+            <button onclick="switchPage('smarthome')" id="nav-smarthome" class="nav-btn w-1/3 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
+                <i class="fas fa-home text-xl mb-0.5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Smart</span>
             </button>
-            <button onclick="switchPage('goals')" id="nav-goals" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
-                <i class="fas fa-bullseye text-xl mb-0.5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Goals</span>
-            </button>
-            <button onclick="switchPage('history')" id="nav-history" class="nav-btn w-1/4 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
+            <button onclick="switchPage('history')" id="nav-history" class="nav-btn w-1/3 py-3 rounded-[1.5rem] flex flex-col items-center gap-1.5 text-slate-400">
                 <i class="fas fa-receipt text-xl mb-0.5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-widest">History</span>
             </button>
@@ -1251,7 +1172,6 @@
     </div>
 
     <script>
-        // URL SCRIPT 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzhy5GWxhTAYvkvp0xfWZNwfV9uvC4x7z3Hk8FPS8VJYLNDMHExF6elG3JpbRwI2Ue/exec'; 
         
         const FIXED_BUDGET = 0; 
@@ -1273,10 +1193,9 @@
         
         let currentHistoryLimit = 20;
 
-        // 🔒 ตัวแปรสำหรับระบบ PIN
         let currentPinInput = "";
         let tempSetupPin = "";
-        let pinProcessMode = "unlock"; // 'unlock', 'setup1', 'setup2'
+        let pinProcessMode = "unlock";
 
         const globalColorsMap = { 
             'Food': '#ec4899', 
@@ -1296,7 +1215,6 @@
             'Invest_Other': '#38bdf8'
         };
 
-        // 🌟 ฟังก์ชันระบบสั่น (Haptic Feedback)
         function triggerHaptic(type = 'light') {
             if (!navigator.vibrate) return;
             try {
@@ -1308,7 +1226,6 @@
             } catch (e) { console.log("Haptic error"); }
         }
 
-        // 🌟 ฟังก์ชันระบบเสียง (Web Audio API - เสียง "ตริ๊ง")
         function playSuccessSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -1333,11 +1250,9 @@
             } catch(e) { console.log("Audio not supported or blocked"); }
         }
 
-        // 🔌 ฟังก์ชันยิงคำสั่ง Smart Home (Tuya) ไปที่ Google Apps Script
         function toggleSmartDevice(deviceId, status) {
             triggerHaptic('medium');
             
-            // แสดง Toast แจ้งว่ากำลังทำงาน
             showToast("Sending command...", false);
 
             const payloadData = {
@@ -1367,7 +1282,6 @@
             });
         }
 
-        // 🌟 ฟังก์ชันพรีวิวใบเสร็จ (In-app Receipt Viewer)
         function openReceiptModal(url) {
             triggerHaptic('light');
             const modal = document.getElementById('receipt-modal');
@@ -1398,7 +1312,6 @@
             }, 300);
         }
 
-        // 🔒 ฟังก์ชันระบบ PIN (App Lock)
         function handlePinInput(num) {
             triggerHaptic('light');
             
@@ -1423,7 +1336,7 @@
             });
 
             if (currentPinInput.length === 4) {
-                setTimeout(processCompletePin, 150); // ดีเลย์นิดนึงให้เห็นจุดเต็มก่อน
+                setTimeout(processCompletePin, 150); 
             }
         }
 
@@ -1433,7 +1346,6 @@
             
             if (pinProcessMode === 'unlock') {
                 if (currentPinInput === savedPin) {
-                    // ปลดล็อคสำเร็จ!
                     playSuccessSound();
                     document.getElementById('pin-page').classList.add('opacity-0');
                     setTimeout(() => {
@@ -1442,7 +1354,6 @@
                         loadDataFromSheet();
                     }, 300);
                 } else {
-                    // PIN ผิด
                     triggerHaptic('error');
                     pinDotsContainer.classList.add('shake-animation');
                     document.getElementById('pin-subtitle').innerText = "Incorrect PIN, try again";
@@ -1456,7 +1367,6 @@
                 }
             } 
             else if (pinProcessMode === 'setup1') {
-                // ใส่รหัสครั้งแรกตอนตั้งค่า
                 tempSetupPin = currentPinInput;
                 currentPinInput = "";
                 updatePinUI();
@@ -1465,9 +1375,7 @@
                 document.getElementById('pin-subtitle').innerText = "Re-enter your 4-digit PIN";
             } 
             else if (pinProcessMode === 'setup2') {
-                // ยืนยันรหัส
                 if (currentPinInput === tempSetupPin) {
-                    // ตั้งรหัสสำเร็จ
                     localStorage.setItem('appPin', currentPinInput);
                     playSuccessSound();
                     document.getElementById('toggle-pin-lock').checked = true;
@@ -1478,7 +1386,6 @@
                         document.getElementById('pin-page').classList.add('hidden');
                     }, 300);
                 } else {
-                    // ยืนยันไม่ตรงกัน
                     triggerHaptic('error');
                     pinDotsContainer.classList.add('shake-animation');
                     document.getElementById('pin-subtitle').innerText = "PINs do not match, try again";
@@ -1498,12 +1405,10 @@
             }
         }
 
-        // สำหรับหน้า Profile Toggle
         function handlePinToggle(checkbox) {
             triggerHaptic('medium');
             if (checkbox.checked) {
-                // เปิดใช้งาน PIN -> เปิดหน้าตั้งค่า PIN
-                checkbox.checked = false; // ป้องกันการติ๊กจนกว่าจะตั้งสำเร็จ
+                checkbox.checked = false; 
                 pinProcessMode = 'setup1';
                 currentPinInput = "";
                 tempSetupPin = "";
@@ -1518,7 +1423,6 @@
                 pinPage.classList.remove('hidden');
                 setTimeout(() => { pinPage.classList.remove('opacity-0'); }, 10);
             } else {
-                // ปิดใช้งาน PIN
                 localStorage.removeItem('appPin');
                 document.getElementById('pin-status-text').innerText = "Set a 4-digit PIN to secure your wallet.";
                 showToast("PIN Lock disabled");
@@ -1723,16 +1627,13 @@
                 updateDarkModeUI(true);
             }
 
-            // เช็คว่าเคยล็อคอินอยู่ไหม (Session ยังไม่หมดอายุ)
             if (loginTimestamp && (now - parseInt(loginTimestamp)) < SEVEN_DAYS) {
-                localStorage.setItem('loginTimestamp', now.toString()); // ต่ออายุ Session
+                localStorage.setItem('loginTimestamp', now.toString()); 
                 
                 const savedPin = localStorage.getItem('appPin');
                 
-                // ถ้ายืนยันตัวตนแล้ว ให้เช็คว่า "เปิดใช้ PIN ไว้ไหม"
                 if (savedPin) {
                     document.getElementById('login-page').classList.add('hidden');
-                    // ปิดหน้าแอปหลักไว้ก่อน โชว์หน้า PIN
                     pinProcessMode = 'unlock';
                     currentPinInput = "";
                     document.getElementById('pin-title').innerText = "Enter PIN";
@@ -1745,13 +1646,11 @@
                     pinPage.classList.remove('hidden');
                     setTimeout(() => { pinPage.classList.remove('opacity-0'); }, 10);
                 } else {
-                    // ถ้าไม่ได้เปิด PIN ไว้ ทะลุเข้าแอปปกติ
                     document.getElementById('login-page').classList.add('hidden');
                     document.getElementById('main-app').classList.remove('hidden');
                     loadDataFromSheet();
                 }
                 
-                // อัปเดตข้อมูลผู้ใช้เตรียมไว้
                 document.getElementById('date').valueAsDate = new Date(); 
                 document.getElementById('subs-date-monthly').value = new Date().getDate();
                 document.getElementById('subs-date-yearly').valueAsDate = new Date();
@@ -1769,7 +1668,6 @@
                 }
                 
             } else {
-                // Session หมดอายุ หรือเข้าครั้งแรก โชว์หน้า Login
                 localStorage.removeItem('loginTimestamp');
                 document.getElementById('login-page').classList.remove('hidden', 'opacity-0', 'pointer-events-none');
                 document.getElementById('main-app').classList.add('hidden');
@@ -1827,7 +1725,6 @@
                     document.getElementById('login-page').classList.add('opacity-0'); 
                     
                     setTimeout(() => { 
-                        // อัปเดตข้อมูลผู้ใช้
                         document.getElementById('date').valueAsDate = new Date(); 
                         document.getElementById('subs-date-monthly').value = new Date().getDate(); 
                         document.getElementById('subs-date-yearly').valueAsDate = new Date();
@@ -1838,7 +1735,6 @@
 
                         document.getElementById('login-page').classList.add('hidden'); 
 
-                        // 🔒 เช็คว่าตั้ง PIN ไว้ไหม
                         const savedPin = localStorage.getItem('appPin');
                         if (savedPin) {
                             pinProcessMode = 'unlock';
@@ -1911,7 +1807,6 @@
 
                     document.getElementById('login-page').classList.add('hidden'); 
 
-                    // 🔒 เช็คว่าตั้ง PIN ไว้ไหม
                     const savedPin = localStorage.getItem('appPin');
                     if (savedPin) {
                         pinProcessMode = 'unlock';
@@ -2038,7 +1933,7 @@
                 localStorage.setItem('loginTimestamp', Date.now().toString()); 
             } 
             
-            const pages = ['home', 'subscriptions', 'history', 'analytics', 'dashboard', 'profile', 'goals'];
+            const pages = ['home', 'subscriptions', 'history', 'analytics', 'dashboard', 'profile', 'goals', 'smarthome'];
             
             pages.forEach(id => { 
                 const pageEl = document.getElementById('page-' + id); 
@@ -2068,7 +1963,6 @@
                 document.getElementById('profile-email-readonly').value = localStorage.getItem('userEmail') || '';
                 document.getElementById('profile-preview').src = localStorage.getItem('userProfileImg') || 'https://via.placeholder.com/150';
                 
-                // โหลดค่า PromptPay ทั้ง 2 ช่อง
                 document.getElementById('profile-promptpay-id').value = localStorage.getItem('promptPayId') || '';
                 document.getElementById('profile-promptpay-name').value = localStorage.getItem('promptPayName') || '';
                 
@@ -2080,7 +1974,6 @@
                 document.getElementById('profile-confirm-password').type = 'password'; 
                 document.getElementById('profile-eye-icon-2').className = 'fas fa-eye-slash';
 
-                // อัปเดตสถานะปุ่ม Toggle PIN
                 const hasPin = localStorage.getItem('appPin') !== null;
                 document.getElementById('toggle-pin-lock').checked = hasPin;
                 document.getElementById('pin-status-text').innerText = hasPin ? "PIN Lock is Enabled" : "Set a 4-digit PIN to secure your wallet.";
@@ -2129,8 +2022,8 @@
                 triggerHaptic('success');
                 showToast("Profile updated!"); 
                 localStorage.setItem('userDisplayName', displayName); 
-                localStorage.setItem('promptPayId', promptpayId); // บันทึก PromptPay ID
-                localStorage.setItem('promptPayName', promptpayName); // บันทึกชื่อบัญชี
+                localStorage.setItem('promptPayId', promptpayId); 
+                localStorage.setItem('promptPayName', promptpayName); 
                 document.getElementById('nav-display-name').innerText = displayName; 
                 
                 document.getElementById('profile-new-password').value = ''; 
@@ -2880,7 +2773,6 @@
             const monthFilterEl = document.getElementById('summary-month-filter');
             const summaryMonthVal = monthFilterEl ? monthFilterEl.value : ''; 
             
-            // 🌟 Smart Search Logic
             const searchInput = document.getElementById('search-history');
             const searchKeyword = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
@@ -3070,7 +2962,6 @@
                 }
             });
 
-            // 🛑 3. เรนเดอร์หน้า Subscriptions 
             let totalSubsCost = 0;
             const today = new Date(); 
             const currentDay = today.getDate(); 
@@ -3177,7 +3068,6 @@
                             <div class="text-right flex flex-col items-end ml-2 flex-shrink-0">
                                 <p class="text-base font-black text-rose-500">-${amt.toLocaleString()} THB</p>
                                 <div class="flex gap-2 mt-1.5 items-center">
-                                    <!-- ปุ่ม Pay -->
                                     <button onclick="paySubscription('${item.rowId}')" class="text-white bg-violet-500 hover:bg-violet-600 px-2 py-1 rounded text-[9px] font-bold shadow-sm transition-colors flex items-center gap-1">
                                         <i class="fas fa-check-circle"></i> Pay
                                     </button>
@@ -3285,7 +3175,6 @@
                 stats.appendChild(mainDiv); 
             });
 
-            // 🌟 Monthly Budget Limit
             let monthlyBudgetStr = localStorage.getItem('monthlyBudget');
             let budgetBase = monthlyBudgetStr ? parseFloat(monthlyBudgetStr) : totalIncomeHome;
             
@@ -3365,7 +3254,6 @@
             
             updateDailyCategoryChart();
 
-            // 🛑 4. เก็บตัวแปรยอดคงเหลือไว้ใช้กับระบบ Goal และเรนเดอร์ Goals
             currentRemainingHome = remainingHome;
             renderGoals();
         }
@@ -3398,21 +3286,15 @@
             XLSX.writeFile(wb, `Wallet_${new Date().toISOString().slice(0,10)}.xlsx`); 
         }
 
-        // ==========================================
-        // 💸 ระบบ Bill Splitter & PromptPay QR
-        // ==========================================
-
         function openSplitBillModal() {
             triggerHaptic('light');
             
-            // ดึงค่ายอดเงินที่พิมพ์ไว้ในหน้า Add Transaction มาใส่ให้อัตโนมัติ (ถ้ามี)
             const currentAmount = document.getElementById('amount').value;
             document.getElementById('split-total').value = currentAmount || '';
             
-            // ดึงเบอร์พร้อมเพย์ที่เคยบันทึกไว้
             const savedPPId = localStorage.getItem('promptPayId') || '';
             
-            document.getElementById('split-people').value = 1; // Default 1 คน
+            document.getElementById('split-people').value = 1; 
             calculateSplit();
 
             const modal = document.getElementById('split-bill-modal');
@@ -3444,7 +3326,7 @@
             triggerHaptic('light');
             const input = document.getElementById('split-people');
             let val = parseInt(input.value) + change;
-            if (val < 1) val = 1; // ขั้นต่ำ 1 คน (กรณีเรียกเก็บเต็มจำนวน)
+            if (val < 1) val = 1; 
             input.value = val;
             calculateSplit();
         }
@@ -3468,10 +3350,8 @@
             const people = parseInt(document.getElementById('split-people').value) || 1;
             const promptpayId = localStorage.getItem('promptPayId') || '';
             
-            // คำนวณยอดต่อคน
             const perPerson = total / people;
             
-            // อัปเดต UI ยอดเงิน
             document.getElementById('split-result').innerText = perPerson > 0 
                 ? perPerson.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2}) 
                 : '0';
@@ -3479,15 +3359,11 @@
             const qrContainer = document.getElementById('qr-container');
             const qrImg = document.getElementById('promptpay-qr');
 
-            // อัปเดตชื่อบัญชีเหนือ QR
             updateAccountNameDisplay();
 
-            // ถ้ามียอดเงิน และมีเบอร์พร้อมเพย์ ให้สร้าง QR
             if (perPerson > 0 && promptpayId.length >= 10) {
                 clearTimeout(qrTimeout);
-                // หน่วงเวลาเล็กน้อยกันการยิง API ถี่เกินไปตอนพิมพ์
                 qrTimeout = setTimeout(() => {
-                    // ใช้ API ฟรีจาก promptpay.io (ยึดตาม PROMPTPAY ID เท่านั้น)
                     const amountFormat = perPerson.toFixed(2);
                     qrImg.src = `https://promptpay.io/${promptpayId}/${amountFormat}.png`;
                     qrContainer.classList.remove('hidden');
