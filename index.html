@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Expenses</title>
+    <title>Expenses & Smart Home</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -339,6 +339,39 @@
         }
         body.dark-mode .pin-btn:active {
             background-color: #334155;
+        }
+
+        /* 💡 Smart Home Buttons UI */
+        .btn-smart-on {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            transition: all 0.3s;
+        }
+        .btn-smart-on:hover, .btn-smart-on:active {
+            background: #10b981;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        .btn-smart-off {
+            background: rgba(100, 116, 139, 0.1);
+            color: #64748b;
+            border: 2px solid rgba(100, 116, 139, 0.3);
+            transition: all 0.3s;
+        }
+        .btn-smart-off:hover, .btn-smart-off:active {
+            background: #64748b;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(100, 116, 139, 0.3);
+        }
+        body.dark-mode .btn-smart-on {
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+        body.dark-mode .btn-smart-off {
+            border-color: rgba(148, 163, 184, 0.5);
+            color: #94a3b8;
         }
     </style>
 </head>
@@ -686,6 +719,49 @@
                     </span>
                 </div>
             </div>
+
+            <!-- 🔌 Smart Home Control Section (TUYA) -->
+            <section class="modern-card p-5 border-none shadow-lg shadow-slate-200/50">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-home text-emerald-500"></i> Smart Home Control
+                    </h3>
+                </div>
+                
+                <!-- 💡 ปุ่มควบคุมแอร์ (Air) -->
+                <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 mb-3 border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center text-lg">
+                            <i class="fas fa-snowflake"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Air Conditioner</p>
+                            <p class="text-[9px] text-slate-400">Living Room</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', true)">ON</button>
+                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', false)">OFF</button>
+                    </div>
+                </div>
+
+                <!-- 💡 ปุ่มควบคุมโคมไฟ (Lamp) -->
+                <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Smart Lamp</p>
+                            <p class="text-[9px] text-slate-400">Bedroom</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', true)">ON</button>
+                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', false)">OFF</button>
+                    </div>
+                </div>
+            </section>
 
             <!-- Expense Form -->
             <section class="modern-card p-6 border-none shadow-lg shadow-slate-200/50" id="form-section">
@@ -1176,7 +1252,7 @@
 
     <script>
         // URL SCRIPT 
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzt5OSS0xZUfdmsdpyxusHEeqof7qPWv3bQ39BX_mrk8jO9OviMCdzHuxeLuwoY_3td/exec'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzhy5GWxhTAYvkvp0xfWZNwfV9uvC4x7z3Hk8FPS8VJYLNDMHExF6elG3JpbRwI2Ue/exec'; 
         
         const FIXED_BUDGET = 0; 
         let expenses = []; 
@@ -1255,6 +1331,40 @@
                 playNote(1046.50, ctx.currentTime, 0.15); 
                 playNote(1318.51, ctx.currentTime + 0.1, 0.4); 
             } catch(e) { console.log("Audio not supported or blocked"); }
+        }
+
+        // 🔌 ฟังก์ชันยิงคำสั่ง Smart Home (Tuya) ไปที่ Google Apps Script
+        function toggleSmartDevice(deviceId, status) {
+            triggerHaptic('medium');
+            
+            // แสดง Toast แจ้งว่ากำลังทำงาน
+            showToast("Sending command...", false);
+
+            const payloadData = {
+                action: "toggleDevice",
+                payload: {
+                    deviceId: deviceId,
+                    status: status
+                }
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payloadData)
+            })
+            .then(response => response.json())
+            .then(res => {
+                if(res.status === "Success") {
+                    playSuccessSound();
+                    showToast(status ? "Device turned ON!" : "Device turned OFF!");
+                } else {
+                    showToast("Error: " + res.message, true);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast("Connection failed", true);
+            });
         }
 
         // 🌟 ฟังก์ชันพรีวิวใบเสร็จ (In-app Receipt Viewer)
