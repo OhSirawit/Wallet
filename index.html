@@ -788,20 +788,38 @@
                     </h3>
                 </div>
                 
-                <!-- 💡 ปุ่มควบคุมแอร์ (Air Conditioner) -->
-                <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 mb-3 border border-slate-100">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center text-lg shadow-inner">
-                            <i class="fas fa-snowflake"></i>
+                <!-- 💡 ปุ่มควบคุมแอร์ (Air Conditioner) แบบมีปรับอุณหภูมิและพัดลม -->
+                <div class="bg-slate-50 rounded-xl p-4 mb-3 border border-slate-100 shadow-sm">
+                    <!-- แถวบน: เปิด/ปิด -->
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center text-lg shadow-inner">
+                                <i class="fas fa-snowflake"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Air Conditioner</p>
+                                <p class="text-[9px] text-slate-400 font-medium">Living Room</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-800">Air Conditioner</p>
-                            <p class="text-[9px] text-slate-400 font-medium">Living Room</p>
+                        <div class="flex gap-2">
+                            <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', 'PowerOn', 'PowerOn')">ON</button>
+                            <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', 'PowerOff', 'PowerOff')">OFF</button>
                         </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', 'PowerOn', 'PowerOn')">ON</button>
-                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', 'PowerOff', 'PowerOff')">OFF</button>
+                    
+                    <!-- แถวล่าง: ปรับอุณหภูมิ & ความแรงลม -->
+                    <div class="flex justify-between items-center pt-3 border-t border-slate-200/80">
+                        <!-- ชุดปรับอุณหภูมิ -->
+                        <div class="flex items-center gap-2">
+                            <button onclick="changeAcTemp(-1)" class="w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-500 hover:bg-cyan-50 hover:text-cyan-600 flex items-center justify-center transition-colors shadow-sm"><i class="fas fa-minus text-[10px]"></i></button>
+                            <span id="ac-temp-display" class="font-black text-slate-700 text-lg w-10 text-center">25°</span>
+                            <button onclick="changeAcTemp(1)" class="w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-500 hover:bg-cyan-50 hover:text-cyan-600 flex items-center justify-center transition-colors shadow-sm"><i class="fas fa-plus text-[10px]"></i></button>
+                        </div>
+                        
+                        <!-- ชุดปรับพัดลม -->
+                        <button onclick="changeAcFan()" class="bg-white border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-2 text-[11px] font-bold text-slate-600 hover:bg-slate-100 transition-colors shadow-sm">
+                            <i class="fas fa-wind text-cyan-500"></i> <span id="ac-fan-display">Auto</span>
+                        </button>
                     </div>
                 </div>
 
@@ -3437,6 +3455,43 @@
             } else {
                 qrContainer.classList.add('hidden');
             }
+        }
+
+        // ==========================================
+        // 🌡️ ระบบควบคุมอุณหภูมิและความแรงลมแอร์
+        // ==========================================
+        let currentAcTemp = 25; // อุณหภูมิเริ่มต้น
+        let currentAcFan = 0;   // 0 = Auto, 1 = Low, 2 = Med, 3 = High
+
+        // ฟังก์ชันปรับอุณหภูมิ
+        function changeAcTemp(changeAmount) {
+            triggerHaptic('light');
+            currentAcTemp += changeAmount;
+            
+            // ล็อคไม่ให้ต่ำกว่า 16 และไม่ให้เกิน 30 องศา
+            if (currentAcTemp < 16) currentAcTemp = 16;
+            if (currentAcTemp > 30) currentAcTemp = 30;
+            
+            // อัปเดตตัวเลขบนหน้าจอ
+            document.getElementById('ac-temp-display').innerText = currentAcTemp + '°';
+            
+            // ส่งคำสั่งไปหลังบ้าน (ใช้ค่าตัวเลขเลย, รหัสคำสั่งคือ 'T')
+            toggleSmartDevice('eb6f76ba9f8c87e70csskq', currentAcTemp, 'T');
+        }
+
+        // ฟังก์ชันปรับพัดลม
+        function changeAcFan() {
+            triggerHaptic('light');
+            currentAcFan += 1;
+            
+            // วนลูป 0 -> 1 -> 2 -> 3 แล้วกลับไป 0 ใหม่
+            if (currentAcFan > 3) currentAcFan = 0;
+            
+            const fanLabels = ['Auto', 'Low', 'Med', 'High'];
+            document.getElementById('ac-fan-display').innerText = fanLabels[currentAcFan];
+            
+            // ส่งคำสั่งไปหลังบ้าน (ส่งค่าตัวเลข 0-3, รหัสคำสั่งคือ 'F')
+            toggleSmartDevice('eb6f76ba9f8c87e70csskq', currentAcFan, 'F');
         }
     </script>
 </body>
