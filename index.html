@@ -788,7 +788,7 @@
                     </h3>
                 </div>
                 
-                <!-- 💡 ปุ่มควบคุมแอร์ (Air) เปลี่ยนเป็น 'power' -->
+                <!-- 💡 ปุ่มควบคุมแอร์ (Air Conditioner) -->
                 <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 mb-3 border border-slate-100">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center text-lg shadow-inner">
@@ -800,13 +800,12 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <!-- แอร์เปลี่ยนใช้คำสั่ง power -->
-                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', true, 'power')">ON</button>
-                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', false, 'power')">OFF</button>
+                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', 'PowerOn', 'PowerOn')">ON</button>
+                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', 'PowerOff', 'PowerOff')">OFF</button>
                     </div>
                 </div>
 
-                <!-- 💡 ปุ่มควบคุมโคมไฟ (Lamp) เปลี่ยนเป็น 'switch_led' -->
+                <!-- 💡 ปุ่มควบคุมโคมไฟ (Smart Lamp) -->
                 <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 mb-3 border border-slate-100">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg shadow-inner">
@@ -818,13 +817,12 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <!-- หลอดไฟเปลี่ยนใช้คำสั่ง switch_led -->
-                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', true, 'switch_led')">ON</button>
-                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', false, 'switch_led')">OFF</button>
+                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', true, 'switch_1')">ON</button>
+                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', false, 'switch_1')">OFF</button>
                     </div>
                 </div>
 
-                <!-- 💡 ปุ่มควบคุมพัดลม (Fan) ใช้ 'switch_1' -->
+                <!-- 💡 ปุ่มควบคุมพัดลม (Smart Fan) -->
                 <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 border border-slate-100">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg shadow-inner">
@@ -836,9 +834,8 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <!-- พัดลมใช้ switch_1 ตามเดิมที่ทดสอบแล้วผ่าน -->
-                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('ebcb4da83c51dd1bfcn9x3', true, 'switch_1')">ON</button>
-                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('ebcb4da83c51dd1bfcn9x3', false, 'switch_1')">OFF</button>
+                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('ebcb4da83c51dd1bfcn9x3', 'PowerOn', 'PowerOn')">ON</button>
+                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('ebcb4da83c51dd1bfcn9x3', 'PowerOff', 'PowerOff')">OFF</button>
                     </div>
                 </div>
             </section>
