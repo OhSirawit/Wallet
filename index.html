@@ -456,16 +456,14 @@
 
                 <!-- PromptPay Section -->
                 <div class="pt-4 border-t border-slate-100">
-                    <div class="space-y-1.5 mb-3">
-                        <label class="text-[10px] font-bold text-indigo-500 uppercase tracking-wide ml-1 flex justify-between">
-                            <span>PROMPTPAY ID</span>
-                            <span class="text-slate-400 cursor-pointer hover:text-indigo-500" onclick="editPromptPay()">Edit <i class="fas fa-pencil-alt"></i></span>
-                        </label>
-                        <input type="text" id="split-promptpay-id" placeholder="Mobile No. or ID Card" class="w-full input-style rounded-xl p-3 text-sm font-bold text-center outline-none border border-slate-200 text-slate-700 bg-white" oninput="calculateSplit()">
-                    </div>
+                    <input type="hidden" id="split-promptpay-id">
+                    
                     <div class="space-y-1.5 mb-4">
-                        <label class="text-[10px] font-bold text-indigo-500 uppercase tracking-wide ml-1">ACCOUNT NAME</label>
-                        <input type="text" id="split-promptpay-name" placeholder="Name on account" class="w-full input-style rounded-xl p-3 text-sm font-bold text-center outline-none border border-slate-200 text-slate-700 bg-white" oninput="updateAccountNameDisplay()">
+                        <label class="text-[10px] font-bold text-indigo-500 uppercase tracking-wide ml-1 flex justify-between">
+                            <span>ACCOUNT NAME</span>
+                            <span class="text-slate-400 cursor-pointer hover:text-indigo-500" onclick="closeSplitBillModal(); setTimeout(() => switchPage('profile'), 300);">Edit Profile <i class="fas fa-user-edit"></i></span>
+                        </label>
+                        <input type="text" id="split-promptpay-name" placeholder="Name on bank account" class="w-full input-style rounded-xl p-3 text-sm font-bold text-center outline-none border border-slate-200 text-slate-700 bg-white" oninput="updateAccountNameDisplay()">
                     </div>
 
                     <!-- กล่องแสดง QR Code -->
