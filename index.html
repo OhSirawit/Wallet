@@ -442,7 +442,7 @@
                     <label class="text-[10px] font-bold text-blue-500 uppercase tracking-wide ml-1">Divide By (หารทั้งหมดกี่คน รวมตัวเอง)</label>
                     <div class="flex items-center gap-3">
                         <button type="button" onclick="adjustSplitPeople(-1)" class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold text-lg flex items-center justify-center">-</button>
-                        <input type="number" id="split-people" value="2" min="2" class="w-full input-style bg-slate-50 border-2 border-slate-100 rounded-xl p-3.5 text-xl font-black text-center text-slate-800 outline-none focus:border-blue-400" oninput="calculateSplit()" readonly>
+                        <input type="number" id="split-people" value="1" min="1" class="w-full input-style bg-slate-50 border-2 border-slate-100 rounded-xl p-3.5 text-xl font-black text-center text-slate-800 outline-none focus:border-blue-400" oninput="calculateSplit()" readonly>
                         <button type="button" onclick="adjustSplitPeople(1)" class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold text-lg flex items-center justify-center">+</button>
                     </div>
                 </div>
@@ -3295,7 +3295,7 @@
             const savedPP = localStorage.getItem('promptPayId') || '';
             document.getElementById('split-promptpay').value = savedPP;
             
-            document.getElementById('split-people').value = 2; // Default หาร 2
+            document.getElementById('split-people').value = 1; // Default 1 คน
             calculateSplit();
 
             const modal = document.getElementById('split-bill-modal');
@@ -3327,7 +3327,7 @@
             triggerHaptic('light');
             const input = document.getElementById('split-people');
             let val = parseInt(input.value) + change;
-            if (val < 2) val = 2; // ขั้นต่ำหาร 2 คน (ตัวเอง 1 + เพื่อน 1)
+            if (val < 1) val = 1; // ขั้นต่ำ 1 คน (กรณีเรียกเก็บเต็มจำนวน)
             input.value = val;
             calculateSplit();
         }
@@ -3340,7 +3340,7 @@
         function calculateSplit() {
             const totalInput = document.getElementById('split-total').value.replace(/,/g, '');
             const total = parseFloat(totalInput) || 0;
-            const people = parseInt(document.getElementById('split-people').value) || 2;
+            const people = parseInt(document.getElementById('split-people').value) || 1;
             const promptpayId = document.getElementById('split-promptpay').value.trim();
             
             // คำนวณยอดต่อคน
