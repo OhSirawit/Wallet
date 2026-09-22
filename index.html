@@ -550,7 +550,7 @@
                 <i class="fas fa-ellipsis-v"></i>
             </button>
 
-            <!-- Dropdown Menu (ย้าย Subs และ Goals มาไว้ที่นี่) -->
+            <!-- Dropdown Menu -->
             <div id="top-menu" class="menu-dropdown absolute top-16 right-6 w-64 max-h-[75vh] overflow-y-auto modern-card p-2 z-50 shadow-2xl border-none">
                 <ul class="flex flex-col space-y-1">
                     <li>
@@ -560,7 +560,6 @@
                     </li>
                     <div class="border-t border-slate-100 my-1"></div>
                     
-                    <!-- ย้าย Subs และ Goals มาไว้ตรงนี้ -->
                     <li>
                         <button onclick="switchPage('subscriptions'); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
                             <i class="fas fa-sync-alt w-4 text-violet-500"></i> Subscriptions
@@ -573,7 +572,6 @@
                         </button>
                     </li>
                     <div class="border-t border-slate-100 my-1"></div>
-                    <!-- สิ้นสุดส่วนที่ย้ายมา -->
 
                     <li>
                         <button onclick="switchPage('analytics'); toggleMenu();" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-colors flex items-center gap-3">
@@ -766,7 +764,7 @@
                     </h3>
                 </div>
                 
-                <!-- 💡 ปุ่มควบคุมแอร์ (Air) -->
+                <!-- 💡 ปุ่มควบคุมแอร์ (Air) เพิ่มคำสั่ง 'switch' ต่อท้าย -->
                 <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 mb-3 border border-slate-100">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center text-lg shadow-inner">
@@ -778,8 +776,9 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', true)">ON</button>
-                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', false)">OFF</button>
+                        <!-- เปลี่ยนโค้ดตรงนี้ให้ส่ง 'switch' เป็นพารามิเตอร์ที่ 3 -->
+                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', true, 'switch')">ON</button>
+                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('eb6f76ba9f8c87e70csskq', false, 'switch')">OFF</button>
                     </div>
                 </div>
 
@@ -795,8 +794,9 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', true)">ON</button>
-                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', false)">OFF</button>
+                        <!-- โคมไฟปลั๊กส่วนใหญ่มักใช้ switch_1 -->
+                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', true, 'switch_1')">ON</button>
+                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', false, 'switch_1')">OFF</button>
                     </div>
                 </div>
             </section>
@@ -1172,7 +1172,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzhy5GWxhTAYvkvp0xfWZNwfV9uvC4x7z3Hk8FPS8VJYLNDMHExF6elG3JpbRwI2Ue/exec'; 
+        // ✅ เปลี่ยนเป็น Web App URL ใหม่ล่าสุดแล้ว
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8_M64IqhSb2Tgn-QpX7tZkH6sMpJY22D9Vg8WcduKj7V_4bnvRwhf1U6Fmb822H1A/exec'; 
         
         const FIXED_BUDGET = 0; 
         let expenses = []; 
@@ -1250,7 +1251,8 @@
             } catch(e) { console.log("Audio not supported or blocked"); }
         }
 
-        function toggleSmartDevice(deviceId, status) {
+        // ✅ ฟังก์ชัน Smart Home รับค่า commandCode แบบใหม่
+        function toggleSmartDevice(deviceId, status, commandCode = 'switch_1') {
             triggerHaptic('medium');
             
             showToast("Sending command...", false);
@@ -1259,7 +1261,8 @@
                 action: "toggleDevice",
                 payload: {
                     deviceId: deviceId,
-                    status: status
+                    status: status,
+                    code: commandCode // ส่งชื่อคำสั่ง (เช่น 'switch' หรือ 'switch_1')
                 }
             };
 
