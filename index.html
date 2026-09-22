@@ -783,7 +783,7 @@
                 </div>
 
                 <!-- 💡 ปุ่มควบคุมโคมไฟ (Lamp) -->
-                <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 border border-slate-100">
+                <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 mb-3 border border-slate-100">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg shadow-inner">
                             <i class="fas fa-lightbulb"></i>
@@ -799,6 +799,24 @@
                         <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('20872626e09806c37ddc', false, 'switch_1')">OFF</button>
                     </div>
                 </div>
+
+                <!-- 💡 ปุ่มควบคุมพัดลม (Fan) ที่เพิ่มมาใหม่ -->
+                <div class="flex justify-between items-center bg-slate-50 rounded-xl p-3 border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg shadow-inner">
+                            <i class="fas fa-fan"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Smart Fan</p>
+                            <p class="text-[9px] text-slate-400 font-medium">Living Room</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn-smart-on rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('ebcb4da83c51dd1bfcn9x3', true, 'switch_1')">ON</button>
+                        <button class="btn-smart-off rounded-lg px-4 py-2 text-xs font-bold" onclick="triggerHaptic('light'); toggleSmartDevice('ebcb4da83c51dd1bfcn9x3', false, 'switch_1')">OFF</button>
+                    </div>
+                </div>
+
             </section>
         </div>
 
