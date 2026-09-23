@@ -17,6 +17,23 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
+    <!-- ⭐ เพิ่มระบบ OneSignal Web Push Notification -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "YOUR_ONESIGNAL_APP_ID", // ⚠️ เปลี่ยนข้อความนี้เป็น App ID ที่ได้จากเว็บ OneSignal
+          notifyButton: {
+            enable: true, // เปิดใช้งานปุ่มกระดิ่งสมัครรับแจ้งเตือนมุมจอ
+            position: 'bottom-left', // ตำแหน่งปุ่ม (bottom-left หรือ bottom-right)
+            theme: 'default',
+          }
+        });
+      });
+    </script>
+    <!-- ======================================= -->
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
         
