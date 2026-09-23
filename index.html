@@ -779,6 +779,29 @@
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
+
+            <!-- 🌡️ แสดงอุณหภูมิและความชื้นจากรีโมทห้อง -->
+            <div class="modern-card p-4 mb-4 border-none shadow-md bg-gradient-to-r from-cyan-500 to-blue-500 text-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-lg">
+                        <i class="fas fa-thermometer-half"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase font-bold tracking-wider text-white/80">Room Environment</p>
+                        <p class="text-xs font-bold">Living Room Sensor</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 text-right">
+                    <div>
+                        <p class="text-[9px] text-white/80 uppercase font-bold">Temp</p>
+                        <p class="text-xl font-black" id="room-temp">--°C</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-white/80 uppercase font-bold">Humidity</p>
+                        <p class="text-xl font-black" id="room-humidity">--%</p>
+                    </div>
+                </div>
+            </div>
             
             <!-- 🔌 Smart Home Control Section (TUYA) -->
             <section class="modern-card p-5 border-none shadow-lg shadow-slate-200/50">
@@ -901,7 +924,7 @@
                         </div>
                         
                         <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-violet-500 uppercase tracking-wide ml-1">Cycle</label>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide ml-1">Cycle</label>
                             <select id="subs-cycle" class="w-full input-style rounded-xl p-3.5 text-xs font-bold outline-none text-slate-700 cursor-pointer" required>
                                 <option value="Monthly" selected>Monthly</option>
                                 <option value="Yearly">Yearly</option>
@@ -3530,6 +3553,37 @@
             // ส่งคำสั่งไปหลังบ้าน (ส่งค่าตัวเลข 0-3, รหัสคำสั่งคือ 'F')
             toggleSmartDevice('eb6f76ba9f8c87e70csskq', currentAcFan, 'F');
         }
+
+        // ==========================================
+        // 🌡️ ฟังก์ชันดึงค่าอุณหภูมิและความชื้นห้องจากรีโมท
+        // ==========================================
+        async function fetchRoomEnvironment() {
+            const remoteDeviceId = 'eba5db5a42b8dc0696ewol'; // Device ID ของรีโมทแอร์
+            const res = await callApi("getDeviceStatus", { deviceId: remoteDeviceId });
+            
+            if (res.status === "Success" && Array.isArray(res.result)) {
+                // ค้นหาค่าอุณหภูมิและความชื้นจากเซนเซอร์
+                res.result.forEach(item => {
+                    if (item.code === 'va_temperature' || item.code === 'temp' || item.code === 'va_temp') {
+                        let tempVal = item.value > 100 ? (item.value / 10).toFixed(1) : item.value;
+                        document.getElementById('room-temp').innerText = tempVal + '°C';
+                    }
+                    if (item.code === 'va_humidity' || item.code === 'humidity') {
+                        document.getElementById('room-humidity').innerText = item.value + '%';
+                    }
+                });
+            }
+        }
+
+        // เรียกใช้งานตอนโหลดหน้า Smart Home
+        document.getElementById('nav-smarthome').addEventListener('click', () => {
+            fetchRoomEnvironment();
+        });
+        
+        // เรียกดึงค่าครั้งแรกหลังโหลดเว็บเสร็จ 2 วินาที
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(fetchRoomEnvironment, 2000);
+        });
     </script>
 </body>
 </html>
