@@ -24,6 +24,8 @@
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "4ecc9c5b-e815-4025-9a4d-41f184a18dd9",
+          serviceWorkerPath: "/Wallet/OneSignalSDKWorker.js",
+          serviceWorkerParam: { scope: "/Wallet/" },
           notifyButton: {
             enable: true, 
             position: 'bottom-left', 
